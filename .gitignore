@@ -174,3 +174,26 @@ poetry.toml
 pyrightconfig.json
 
 # End of https://www.toptal.com/developers/gitignore/api/python
+
+### Project Specific ###
+staticfiles/
+media/
+
+### OS Specific ###
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+### IDE Specific ###
+.idea/
+.vscode/
+*.swp
+*.swo
+
+### Frontend / Node ###
+node_modules/
+.npm/

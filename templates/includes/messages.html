@@ -1,0 +1,16 @@
+{% if messages %}
+<div class='mb-6 space-y-4'>
+    {% for message in messages %}
+    <div class='p-4 rounded-lg border flex items-center justify-between {% if message.tags == "success" %}bg-success/10 border-success/20 text-success{% elif message.tags == "error" %}bg-error/10 border-error/20 text-error{% elif message.tags == "warning" %}bg-warning/10 border-warning/20 text-warning{% else %}bg-info/10 border-info/20 text-info{% endif %}'>
+        <div class='flex items-center'>
+            <span class='font-medium'>{{ message }}</span>
+        </div>
+        <button onclick='this.parentElement.remove()' class='ml-4 text-current opacity-50 hover:opacity-100 transition-opacity'>
+            <svg class='h-5 w-5' fill='none' viewBox='0 0 24 24' stroke='currentColor'>
+                <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M6 18L18 6M6 6l12 12'></path>
+            </svg>
+        </button>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}

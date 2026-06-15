@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block title %}{% if object %}Editar Conta{% else %}Nova Conta{% endif %}{% endblock %}
+
+{% block content %}
+<div class='max-w-3xl mx-auto'>
+    <div class='mb-8'>
+        <h1 class='text-3xl font-bold text-white'>{% if object %}Editar Conta{% else %}Nova Conta{% endif %}</h1>
+        <p class='text-text-secondary'>{% if object %}Atualize os dados da sua conta.{% else %}Cadastre uma nova conta bancária ou carteira.{% endif %}</p>
+    </div>
+
+    <div class='bg-bg-secondary rounded-2xl shadow-lg border border-bg-tertiary overflow-hidden'>
+        <form method='post' class='p-8 space-y-6'>
+            {% csrf_token %}
+            
+            {% if form.non_field_errors %}
+                <div class='bg-error/10 border border-error/20 rounded-lg p-4 text-error text-sm'>
+                    {% for error in form.non_field_errors %}
+                        {{ error }}
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <div class='grid grid-cols-1 md:grid-cols-2 gap-6'>
+                {% for field in form %}
+                <div class='{% if field.name == "name" %}md:col-span-2{% endif %}'>
+                    <label for='{{ field.id_for_label }}' class='block text-text-secondary text-sm font-medium mb-2'>
+                        {{ field.label }}
+                    </label>
+                    {% if field.field.widget.input_type == "select" or field.name == "account_type" %}
+                        <select name='{{ field.name }}' id='{{ field.id_for_label }}' 
+                                class='w-full px-4 py-3 bg-bg-primary border border-bg-tertiary rounded-lg text-text-primary focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200'>
+                            {% for choice in field.field.choices %}
+                                <option value='{{ choice.0 }}' {% if field.value == choice.0 %}selected{% endif %}>{{ choice.1 }}</option>
+                            {% endfor %}
+                        </select>
+                    {% elif field.field.widget.input_type == "checkbox" %}
+                        <div class='flex items-center'>
+                            <input type='checkbox' name='{{ field.name }}' id='{{ field.id_for_label }}'
+                                   class='w-4 h-4 bg-bg-primary border border-bg-tertiary rounded text-accent-500 focus:ring-accent-500 focus:ring-offset-bg-secondary'
+                                   {% if field.value %}checked{% endif %}>
+                            <span class='ml-2 text-text-secondary text-sm'>{{ field.label }}</span>
+                        </div>
+                    {% else %}
+                        <input type='{{ field.field.widget.input_type|default:"text" }}' 
+                               name='{{ field.name }}' 
+                               id='{{ field.id_for_label }}'
+                               {% if field.field.widget.input_type == "number" %}step="0.01"{% endif %}
+                               class='w-full px-4 py-3 bg-bg-primary border border-bg-tertiary rounded-lg text-text-primary focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200'
+                               value='{{ field.value|default:"" }}'
+                               {% if field.field.required %}required{% endif %}>
+                    {% endif %}
+                    {% if field.errors %}
+                        <p class='mt-1 text-error text-xs'>{{ field.errors.0 }}</p>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class='mt-10 pt-6 border-t border-bg-tertiary flex justify-end gap-4'>
+                <a href='{% url "accounts:account_list" %}' class='px-6 py-3 bg-bg-tertiary text-text-primary rounded-lg font-bold hover:bg-bg-primary transition-all duration-200 border border-bg-tertiary'>
+                    Cancelar
+                </a>
+                <button type='submit' class='px-6 py-3 bg-gradient-to-r from-primary-500 to-accent-500 text-white rounded-lg font-bold hover:opacity-90 transition-all duration-200 shadow-lg'>
+                    {% if object %}Salvar Alterações{% else %}Criar Conta{% endif %}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

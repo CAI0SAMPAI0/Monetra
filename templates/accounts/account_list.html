@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% load currency_filters %}
+
+{% block title %}Minhas Contas{% endblock %}
+
+{% block content %}
+<div class='mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4'>
+    <div>
+        <h1 class='text-3xl font-bold text-white'>Minhas Contas</h1>
+        <p class='text-text-secondary'>Gerencie suas contas bancárias e saldos.</p>
+    </div>
+    <a href='{% url "accounts:account_create" %}' class='px-4 py-2 bg-gradient-to-r from-primary-500 to-accent-500 text-white rounded-lg font-medium hover:opacity-90 transition-all duration-200 shadow-lg flex items-center gap-2'>
+        <svg class='w-5 h-5' fill='none' viewBox='0 0 24 24' stroke='currentColor'>
+            <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M12 4v16m8-8H4'></path>
+        </svg>
+        Nova Conta
+    </a>
+</div>
+
+<!-- Total Balance Card -->
+<div class='bg-gradient-to-br from-primary-500 to-accent-500 rounded-xl p-6 shadow-xl mb-8 max-w-sm'>
+    <span class='text-white/80 text-sm font-medium'>Saldo Total Consolidado</span>
+    <p class='text-3xl font-bold text-white mt-1'>{{ total_balance|currency }}</p>
+</div>
+
+<div class='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
+    {% for account in accounts %}
+    <div class='bg-bg-secondary rounded-xl p-6 shadow-lg border border-bg-tertiary hover:border-accent-500 transition-all duration-200 flex flex-col'>
+        <div class='flex items-start justify-between mb-4'>
+            <div>
+                <h3 class='text-xl font-bold text-white'>{{ account.name }}</h3>
+                <p class='text-text-muted text-sm'>{{ account.bank_name }} • {{ account.get_account_type_display }}</p>
+            </div>
+            <span class='px-2 py-1 {% if account.is_active %}bg-success/10 text-success{% else %}bg-text-muted/10 text-text-muted{% endif %} rounded text-xs font-bold uppercase'>
+                {% if account.is_active %}Ativa{% else %}Inativa{% endif %}
+            </span>
+        </div>
+        
+        <div class='mt-auto pt-6 border-t border-bg-tertiary flex items-end justify-between'>
+            <div>
+                <span class='text-text-muted text-xs block mb-1'>Saldo Atual</span>
+                <p class='text-2xl font-bold text-text-primary'>{{ account.balance|currency }}</p>
+            </div>
+            <div class='flex gap-2'>
+                <a href='{% url "accounts:account_update" account.pk %}' class='p-2 text-text-secondary hover:text-accent-500 transition-colors'>
+                    <svg class='w-5 h-5' fill='none' viewBox='0 0 24 24' stroke='currentColor'>
+                        <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z'></path>
+                    </svg>
+                </a>
+                <a href='{% url "accounts:account_delete" account.pk %}' class='p-2 text-text-secondary hover:text-error transition-colors'>
+                    <svg class='w-5 h-5' fill='none' viewBox='0 0 24 24' stroke='currentColor'>
+                        <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-4v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16'></path>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class='md:col-span-2 lg:col-span-3 bg-bg-secondary rounded-xl p-12 shadow-lg border border-bg-tertiary text-center'>
+        <p class='text-text-muted mb-6'>Você ainda não possui nenhuma conta cadastrada.</p>
+        <a href='{% url "accounts:account_create" %}' class='inline-block px-6 py-3 bg-gradient-to-r from-primary-500 to-accent-500 text-white rounded-lg font-bold hover:opacity-90 transition-all duration-200 shadow-lg'>
+            Criar Minha Primeira Conta
+        </a>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

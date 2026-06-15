@@ -1,0 +1,14 @@
+Django==6.0.6
+python-decouple==3.8
+whitenoise==6.6.0
+django-tailwind==3.8.0
+asgiref==3.10.0
+sqlparse==0.5.3
+tzdata==2025.2
+python-dateutil==2.9.0.post0
+requests==2.32.5
+certifi==2025.10.5
+chardet==5.2.0
+charset-normalizer==3.4.4
+idna==3.11
+urllib3==2.5.0

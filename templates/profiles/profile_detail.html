@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block title %}Meu Perfil{% endblock %}
+
+{% block content %}
+<div class='max-w-3xl mx-auto'>
+    <div class='mb-8'>
+        <h1 class='text-3xl font-bold text-white'>Meu Perfil</h1>
+        <p class='text-text-secondary'>Gerencie suas informações pessoais.</p>
+    </div>
+
+    <div class='bg-bg-secondary rounded-2xl shadow-lg border border-bg-tertiary overflow-hidden'>
+        <div class='p-8'>
+            <div class='space-y-6'>
+                <div>
+                    <label class='block text-text-muted text-sm font-medium mb-1'>E-mail (Login)</label>
+                    <p class='text-text-primary text-lg font-medium'>{{ user.email }}</p>
+                    <p class='text-text-muted text-xs mt-1'>O e-mail não pode ser alterado.</p>
+                </div>
+
+                <div class='grid grid-cols-1 md:grid-cols-2 gap-6'>
+                    <div>
+                        <label class='block text-text-muted text-sm font-medium mb-1'>Nome Completo</label>
+                        <p class='text-text-primary text-lg font-medium'>{{ profile.full_name|default:"Não informado" }}</p>
+                    </div>
+                    <div>
+                        <label class='block text-text-muted text-sm font-medium mb-1'>Telefone</label>
+                        <p class='text-text-primary text-lg font-medium'>{{ profile.phone|default:"Não informado" }}</p>
+                    </div>
+                </div>
+
+                <div>
+                    <label class='block text-text-muted text-sm font-medium mb-1'>Membro desde</label>
+                    <p class='text-text-primary'>{{ user.date_joined|date:"d/m/Y" }}</p>
+                </div>
+            </div>
+
+            <div class='mt-10 pt-6 border-t border-bg-tertiary flex justify-end'>
+                <a href='{% url "profiles:profile_update" %}' class='px-6 py-3 bg-gradient-to-r from-primary-500 to-accent-500 text-white rounded-lg font-bold hover:opacity-90 transition-all duration-200 shadow-lg'>
+                    Editar Perfil
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

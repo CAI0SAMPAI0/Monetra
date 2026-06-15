@@ -1,0 +1,22 @@
+[run]
+source = .
+omit =
+    *apps.py
+    *migrations*
+    *settings*
+    *tests*
+    *wsgi.py
+    *asgi.py
+    manage.py
+    .venv/*
+    venv/*
+
+[report]
+show_missing = True
+exclude_lines =
+    pragma: no cover
+    def __repr__
+    if self.debug:
+    if __name__ == .__main__.:
+    raise AssertionError
+    raise NotImplementedError
