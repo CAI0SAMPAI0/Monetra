@@ -2,8 +2,10 @@
 FROM node:20-slim AS tailwind-builder
 WORKDIR /app
 
-# Copy the tailwind source code
+# Copy the tailwind source code and templates to scan for utility classes
 COPY theme/static_src/ /app/theme/static_src/
+COPY templates/ /app/templates/
+COPY theme/templates/ /app/theme/templates/
 
 # Install dependencies and build Tailwind assets
 WORKDIR /app/theme/static_src
