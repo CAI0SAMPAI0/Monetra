@@ -1,3 +1,14 @@
+---
+title: Monetra
+emoji: 💰
+colorFrom: green
+colorTo: blue
+sdk: docker
+app_port: 8000
+pinned: false
+---
+
+
 # Monetra (Finanpy) - Gestão de Finanças Pessoais
 
 Monetra (Finanpy) é um sistema completo e moderno de gestão de finanças pessoais desenvolvido com **Python 3.12+** e **Django 6+**. Ele permite aos usuários gerenciar múltiplas contas bancárias, categorizar receitas e despesas, acompanhar sua saúde financeira por meio de um dashboard interativo, e obter insights personalizados gerados por Inteligência Artificial (Langchain 1.0 + Groq API).
