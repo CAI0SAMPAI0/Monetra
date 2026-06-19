@@ -1,29 +1,29 @@
 {% extends 'base.html' %}
 {% load currency_filters %}
 
-{% block title %}Excluir Transação - Finanpy{% endblock %}
+{% block title %}Excluir Transação - Monetra{% endblock %}
 
 {% block content %}
 <div class="max-w-md mx-auto">
-    <div class="bg-[#2B130C] rounded-2xl border border-[#331F19] p-8 shadow-xl text-center">
-        <div class="w-20 h-20 bg-[#EF3823]/10 rounded-full flex items-center justify-center mx-auto mb-6">
-            <svg class="w-10 h-10 text-[#EF3823]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <div class="bg-bg-secondary rounded-2xl border border-bg-tertiary p-8 shadow-xl text-center">
+        <div class="w-20 h-20 bg-error/10 rounded-full flex items-center justify-center mx-auto mb-6">
+            <svg class="w-10 h-10 text-error" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
             </svg>
         </div>
         
         <h1 class="text-2xl font-bold text-white mb-4">Excluir Transação?</h1>
-        <p class="text-gray-400 mb-8">
+        <p class="text-text-secondary mb-8">
             Você tem certeza que deseja excluir a transação <span class="text-white font-semibold">"{{ object.description|default:"sem descrição" }}"</span> no valor de <span class="text-white font-semibold">{{ object.amount|currency }}</span>? Esta ação irá atualizar o saldo da conta e não pode ser desfeita.
         </p>
 
         <form method="post">
             {% csrf_token %}
             <div class="flex flex-col space-y-3">
-                <button type="submit" class="w-full py-3 rounded-xl text-white bg-[#EF3823] hover:bg-[#D32F2F] transition-all font-bold shadow-lg">
+                <button type="submit" class="w-full py-3 rounded-xl text-white bg-error hover:bg-red-700 transition-all font-bold shadow-lg">
                     Sim, Excluir Transação
                 </button>
-                <a href="{% url 'transactions:transaction_list' %}" class="w-full py-3 rounded-xl text-gray-400 hover:text-white hover:bg-[#331F19] transition-all">
+                <a href="{% url 'transactions:transaction_list' %}" class="w-full py-3 rounded-xl text-text-secondary hover:text-white hover:bg-bg-tertiary transition-all">
                     Não, Cancelar
                 </a>
             </div>

@@ -2,8 +2,8 @@
     <div class='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
         <div class='flex items-center justify-between h-16'>
             <div class='flex items-center'>
-                <a href='{% url "users:home" %}' class='text-2xl font-bold text-accent-500'>
-                    Finanpy
+                <a href='{% url "users:home" %}' class='text-2xl font-bold text-accent-500 tracking-tight'>
+                    Monetra
                 </a>
             </div>
             
@@ -24,7 +24,7 @@
                     </form>
                 {% else %}
                     <a href='{% url "users:login" %}' class='text-text-secondary hover:text-text-primary transition-colors duration-200'>Login</a>
-                    <a href='{% url "users:signup" %}' class='px-6 py-2 bg-accent-500 text-[#2F160E] rounded-lg font-bold hover:bg-accent-600 transition-all duration-200 shadow-lg'>
+                    <a href='{% url "users:signup" %}' class='px-6 py-2 bg-accent-500 text-[#080808] rounded-lg font-bold hover:bg-accent-600 transition-all duration-200 shadow-lg'>
                         Cadastrar
                     </a>
                 {% endif %}
@@ -57,7 +57,7 @@
             </form>
         {% else %}
             <a href='{% url "users:login" %}' class='block px-4 py-2 text-text-secondary hover:text-text-primary hover:bg-bg-tertiary rounded-lg'>Login</a>
-            <a href='{% url "users:signup" %}' class='block px-4 py-2 text-center bg-accent-500 text-[#2F160E] rounded-lg font-bold hover:bg-accent-600 transition-all'>
+            <a href='{% url "users:signup" %}' class='block px-4 py-2 text-center bg-accent-500 text-[#080808] rounded-lg font-bold hover:bg-accent-600 transition-all'>
                 Cadastrar
             </a>
         {% endif %}

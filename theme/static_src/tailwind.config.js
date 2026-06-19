@@ -45,31 +45,31 @@ module.exports = {
         extend: {
             colors: {
                 primary: {
-                    500: '#331F19',
-                    600: '#2F160E',
-                    700: '#2B130C',
+                    500: '#0F0F0F',
+                    600: '#080808',
+                    700: '#050505',
                 },
                 accent: {
-                    500: '#D4AF37', // Changed to Gold for better visibility and elegant feel
-                    600: '#B8962E',
-                    700: '#9C7F27',
+                    500: '#00E676', // Neon green
+                    600: '#00C853',
+                    700: '#00A843',
                 },
-                'bg-primary': '#2F160E',
-                'bg-secondary': '#2B130C',
-                'bg-tertiary': '#27110A',
-                'text-primary': '#f1f5f9',
-                'text-secondary': '#EBDCD5',
-                'text-muted': '#EBDCD5', // Changed from #9A8176 for better visibility
-                success: '#2EC47D',
+                'bg-primary': '#080808',
+                'bg-secondary': '#0F0F0F',
+                'bg-tertiary': '#1A1A1A',
+                'text-primary': '#F1F5F9',
+                'text-secondary': '#CBD5E1',
+                'text-muted': '#64748B',
+                success: '#00E676',
                 error: '#EF3823',
                 warning: '#F5A623',
-                info: '#EDF63B',
+                info: '#38BDF8',
             },
             fontFamily: {
                 sans: ['Inter', 'sans-serif'],
             },
             backgroundImage: {
-                'primary-gradient': 'linear-gradient(135deg, #331F19 0%, #2F160E 100%)',
+                'primary-gradient': 'linear-gradient(135deg, #0F0F0F 0%, #080808 100%)',
             }
         },
     },
