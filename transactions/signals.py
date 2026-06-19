@@ -6,6 +6,8 @@ from .models import Transaction
 
 @receiver(post_save, sender=Transaction)
 def update_balance_on_create(sender, instance, created, **kwargs):
+    if kwargs.get('raw'):
+        return
     if created:
         account = instance.account
         amount = Decimal(str(instance.amount))
@@ -29,6 +31,8 @@ def update_balance_on_delete(sender, instance, **kwargs):
 
 @receiver(pre_save, sender=Transaction)
 def update_balance_on_update(sender, instance, **kwargs):
+    if kwargs.get('raw'):
+        return
     if instance.pk:
         old_instance = Transaction.objects.get(pk=instance.pk)
         old_account = old_instance.account

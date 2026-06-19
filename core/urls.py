@@ -10,4 +10,5 @@ urlpatterns = [
     path('categories/', include('categories.urls')),
     path('transactions/', include('transactions.urls')),
     path('ai/', include('ai.urls')),
+    path('chatbot/', include('chatbot.urls')),
 ]

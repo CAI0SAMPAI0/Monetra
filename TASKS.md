@@ -1070,119 +1070,119 @@
 
 ---
 
-### Sprint 6: Refinamentos e Otimizações
+### Sprint 8: Refinamentos e Otimizações
 
-#### Tarefa 6.1: Validações Adicionais
+#### Tarefa 8.1: Validações Adicionais
 **Descrição**: Implementar validações de negócio adicionais
 
 **Subtarefas**:
-- [X] 6.1.1: Validar que não é possível excluir conta com transações
-- [X] 6.1.2: Validar que não é possível excluir categoria com transações
-- [X] 6.1.3: Adicionar validação de data no futuro para transações
-- [X] 6.1.4: Validar valores negativos
-- [X] 6.1.5: Adicionar validação de saldo suficiente (opcional)
-- [X] 6.1.6: Testar todas as validações
+- [X] 8.1.1: Validar que não é possível excluir conta com transações
+- [X] 8.1.2: Validar que não é possível excluir categoria com transações
+- [X] 8.1.3: Adicionar validação de data no futuro para transações
+- [X] 8.1.4: Validar valores negativos
+- [X] 8.1.5: Adicionar validação de saldo suficiente (opcional)
+- [X] 8.1.6: Testar todas as validações
 
-#### Tarefa 6.2: Ordenação e Paginação ✅
+#### Tarefa 8.2: Ordenação e Paginação ✅
 **Descrição**: Melhorar ordenação e adicionar paginação onde necessário
 
 **Subtarefas**:
-- [X] 6.2.1: Adicionar ordenação clicável em tabelas
-- [X] 6.2.2: Implementar paginação em lista de contas
-- [X] 6.2.3: Melhorar paginação de transações
-- [X] 6.2.4: Adicionar "Mostrar X por página"
-- [X] 6.2.5: Estilizar componentes de paginação
+- [X] 8.2.1: Adicionar ordenação clicável em tabelas
+- [X] 8.2.2: Implementar paginação em lista de contas
+- [X] 8.2.3: Melhorar paginação de transações
+- [X] 8.2.4: Adicionar "Mostrar X por página"
+- [X] 8.2.5: Estilizar componentes de paginação
 
-#### Tarefa 6.3: Busca e Filtros Avançados ✅
+#### Tarefa 8.3: Busca e Filtros Avançados ✅
 **Descrição**: Implementar funcionalidades de busca
 
 **Subtarefas**:
-- [X] 6.3.1: Adicionar campo de busca em transações (descrição)
-- [X] 6.3.2: Adicionar filtro por status ativo em contas
-- [X] 6.3.3: Implementar busca em categorias
-- [X] 6.3.4: Adicionar filtros rápidos (Este Mês, Último Mês, etc)
-- [X] 6.3.5: Salvar filtros em query string
+- [X] 8.3.1: Adicionar campo de busca em transações (descrição)
+- [X] 8.3.2: Adicionar filtro por status ativo em contas
+- [X] 8.3.3: Implementar busca em categorias
+- [X] 8.3.4: Adicionar filtros rápidos (Este Mês, Último Mês, etc)
+- [X] 8.3.5: Salvar filtros em query string
 
-#### Tarefa 6.4: Gráficos e Visualizações (Opcional) ✅
+#### Tarefa 8.4: Gráficos e Visualizações (Opcional) ✅
 **Descrição**: Adicionar gráficos simples usando Chart.js
 
 **Subtarefas**:
-- [X] 6.4.1: Adicionar Chart.js ao projeto
-- [X] 6.4.2: Criar gráfico de pizza para categorias no dashboard
-- [X] 6.4.3: Criar gráfico de linha para evolução mensal
-- [X] 6.4.4: Estilizar gráficos com tema escuro
-- [X] 6.4.5: Adicionar responsividade aos gráficos
+- [X] 8.4.1: Adicionar Chart.js ao projeto
+- [X] 8.4.2: Criar gráfico de pizza para categorias no dashboard
+- [X] 8.4.3: Criar gráfico de linha para evolução mensal
+- [X] 8.4.4: Estilizar gráficos com tema escuro
+- [X] 8.4.5: Adicionar responsividade aos gráficos
 
-#### Tarefa 6.5: Otimizações de Consultas ✅
+#### Tarefa 8.5: Otimizações de Consultas ✅
 **Descrição**: Otimizar queries do banco de dados
 
 **Subtarefas**:
-- [X] 6.5.1: Adicionar select_related em queries com ForeignKey
-- [X] 6.5.2: Adicionar prefetch_related onde necessário
-- [X] 6.5.3: Revisar N+1 queries nos templates
-- [X] 6.5.4: Adicionar índices no banco (já configurado nos models)
-- [X] 6.5.5: Testar performance com dados de exemplo
+- [X] 8.5.1: Adicionar select_related em queries com ForeignKey
+- [X] 8.5.2: Adicionar prefetch_related onde necessário
+- [X] 8.5.3: Revisar N+1 queries nos templates
+- [X] 8.5.4: Adicionar índices no banco (já configurado nos models)
+- [X] 8.5.5: Testar performance com dados de exemplo
 
-#### Tarefa 6.6: Tratamento de Erros 404 e 500
+#### Tarefa 8.6: Tratamento de Erros 404 e 500
 **Descrição**: Criar páginas de erro personalizadas
 
 **Subtarefas**:
-- [X] 6.6.1: Criar template `templates/404.html`
-- [X] 6.6.2: Estilizar página 404
-- [X] 6.6.3: Adicionar link para voltar ao dashboard
-- [X] 6.6.4: Criar template `templates/500.html`
-- [X] 6.6.5: Estilizar página 500
-- [X] 6.6.6: Configurar DEBUG = False para testar
-- [X] 6.6.7: Testar páginas de erro
+- [X] 8.6.1: Criar template `templates/404.html`
+- [X] 8.6.2: Estilizar página 404
+- [X] 8.6.3: Adicionar link para voltar ao dashboard
+- [X] 8.6.4: Criar template `templates/500.html`
+- [X] 8.6.5: Estilizar página 500
+- [X] 8.6.6: Configurar DEBUG = False para testar
+- [X] 8.6.7: Testar páginas de erro
 
-#### Tarefa 6.7: Documentação do Código ✅
+#### Tarefa 8.7: Documentação do Código ✅
 **Descrição**: Adicionar docstrings e comentários
 
 **Subtarefas**:
-- [X] 6.7.1: Adicionar docstrings em todas as classes
-- [X] 6.7.2: Adicionar docstrings em métodos complexos
-- [X] 6.7.3: Comentar lógica não-óbvia
-- [X] 6.7.4: Atualizar README.md com instruções de setup
-- [X] 6.7.5: Documentar variáveis de ambiente necessárias
+- [X] 8.7.1: Adicionar docstrings em todas as classes
+- [X] 8.7.2: Adicionar docstrings em métodos complexos
+- [X] 8.7.3: Comentar lógica não-óbvia
+- [X] 8.7.4: Atualizar README.md com instruções de setup
+- [X] 8.7.5: Documentar variáveis de ambiente necessárias
 
-#### Tarefa 6.8: Revisão de Código ✅
+#### Tarefa 8.8: Revisão de Código ✅
 **Descrição**: Revisar código seguindo boas práticas
 
 **Subtarefas**:
-- [X] 6.8.1: Verificar conformidade com PEP 8
-- [X] 6.8.2: Executar linter (flake8 ou pylint)
-- [X] 6.8.3: Corrigir warnings
-- [X] 6.8.4: Verificar uso consistente de aspas simples
-- [X] 6.8.5: Remover código comentado não utilizado
-- [X] 6.8.6: Verificar imports não utilizados
-- [X] 6.8.7: Organizar imports (isort)
+- [X] 8.8.1: Verificar conformidade com PEP 8
+- [X] 8.8.2: Executar linter (flake8 ou pylint)
+- [X] 8.8.3: Corrigir warnings
+- [X] 8.8.4: Verificar uso consistente de aspas simples
+- [X] 8.8.5: Remover código comentado não utilizado
+- [X] 8.8.6: Verificar imports não utilizados
+- [X] 8.8.7: Organizar imports (isort)
 
-#### Tarefa 6.9: Segurança ✅
+#### Tarefa 8.9: Segurança ✅
 **Descrição**: Implementar melhorias de segurança
 
 **Subtarefas**:
-- [X] 6.9.1: Configurar SECURE_SSL_REDIRECT para produção
-- [X] 6.9.2: Configurar SESSION_COOKIE_SECURE
-- [X] 6.9.3: Configurar CSRF_COOKIE_SECURE
-- [X] 6.9.4: Adicionar SECURE_HSTS_SECONDS
-- [X] 6.9.5: Revisar permissões de acesso em todas as views
-- [X] 6.9.6: Testar injeção SQL (Django já protege)
-- [X] 6.9.7: Testar XSS (Django já protege)
+- [X] 8.9.1: Configurar SECURE_SSL_REDIRECT para produção
+- [X] 8.9.2: Configurar SESSION_COOKIE_SECURE
+- [X] 8.9.3: Configurar CSRF_COOKIE_SECURE
+- [X] 8.9.4: Adicionar SECURE_HSTS_SECONDS
+- [X] 8.9.5: Revisar permissões de acesso em todas as views
+- [X] 8.9.6: Testar injeção SQL (Django já protege)
+- [X] 8.9.7: Testar XSS (Django já protege)
 
-#### Tarefa 6.10: Testes Finais
+#### Tarefa 8.10: Testes Finais
 **Descrição**: Realizar bateria final de testes
 
 **Subtarefas**:
-- [X] 6.10.1: Testar em Chrome
-- [X] 6.10.2: Testar em Firefox
-- [X] 6.10.3: Testar em Safari
-- [X] 6.10.4: Testar em Edge
-- [X] 6.10.5: Testar em mobile (Chrome mobile)
-- [X] 6.10.6: Testar em mobile (Safari iOS)
-- [X] 6.10.7: Testar com múltiplos usuários simultâneos
-- [X] 6.10.8: Testar com grande volume de dados
-- [X] 6.10.9: Verificar todos os fluxos críticos
-- [X] 6.10.10: Listar bugs encontrados
+- [X] 8.10.1: Testar em Chrome
+- [X] 8.10.2: Testar em Firefox
+- [X] 8.10.3: Testar em Safari
+- [X] 8.10.4: Testar em Edge
+- [X] 8.10.5: Testar em mobile (Chrome mobile)
+- [X] 8.10.6: Testar em mobile (Safari iOS)
+- [X] 8.10.7: Testar com múltiplos usuários simultâneos
+- [X] 8.10.8: Testar com grande volume de dados
+- [X] 8.10.9: Verificar todos os fluxos críticos
+- [X] 8.10.10: Listar bugs encontrados
 
 ---
 
@@ -1197,88 +1197,56 @@
 - [X] 7.1.3: Criar settings/production.py
 - [X] 7.1.4: Configurar variáveis de ambiente
 - [X] 7.1.5: Atualizar manage.py
+### Sprint 9: Agente de IA Financeiro
 
-#### Tarefa 7.2: Configuração de Arquivos Estáticos ✅
-**Descrição**: Configurar coleta de arquivos estáticos
-
-**Subtarefas**:
-- [X] 7.2.1: Configurar STATIC_ROOT
-- [X] 7.2.2: Executar collectstatic
-- [X] 7.2.3: Testar servindo arquivos estáticos
-- [X] 7.2.4: Configurar whitenoise (opcional)
-
-#### Tarefa 7.3: Requirements de Produção ✅
-**Descrição**: Criar arquivo de dependências para produção
-
-**Subtarefas**:
-- [X] 7.3.1: Criar requirements/base.txt
-- [X] 7.3.2: Criar requirements/development.txt
-- [X] 7.3.3: Criar requirements/production.txt
-- [X] 7.3.4: Adicionar gunicorn ao production.txt
-- [X] 7.3.5: Adicionar psycopg2-binary para PostgreSQL (se migrar)
-
-#### Tarefa 7.4: Preparação de Deploy ✅
-**Descrição**: Preparar aplicação para deploy
-
-**Subtarefas**:
-- [X] 7.4.1: Criar Procfile (para Heroku, Railway, etc)
-- [X] 7.4.2: Configurar allowed hosts
-- [X] 7.4.3: Configurar banco de dados de produção (se aplicável)
-- [X] 7.4.4: Testar com gunicorn localmente
-- [X] 7.4.5: Criar checklist de deploy
-
----
-
-### Sprint 8: Agente de IA Financeiro
-
-#### Tarefa 8.1: Criacao do Modelo AIAnalysis
+#### Tarefa 9.1: Criacao do Modelo AIAnalysis
 **Descricao**: Criar model para armazenar analises financeiras geradas pela IA
 
 **Subtarefas**:
-- [ ] 8.1.1: Abrir arquivo `ai/models.py`
-- [ ] 8.1.2: Importar models e get_user_model
-- [ ] 8.1.3: Criar classe AIAnalysis com ForeignKey para User (on_delete=CASCADE)
-- [ ] 8.1.4: Adicionar campo analysis_text (TextField) - texto completo da analise
-- [ ] 8.1.5: Adicionar campo summary (CharField, max_length=255) - resumo para dashboard
-- [ ] 8.1.6: Adicionar campo is_latest (BooleanField, default=True) - indicador de analise mais recente
-- [ ] 8.1.7: Adicionar campos created_at e updated_at
-- [ ] 8.1.8: Adicionar metodo __str__ retornando resumo ou data
-- [ ] 8.1.9: Adicionar Meta com ordering=['-created_at'], verbose_name e indexes
-- [ ] 8.1.10: Configurar Admin para AIAnalysis no `ai/admin.py`
-- [ ] 8.1.11: Executar makemigrations e migrate para criar a tabela
+- [ ] 9.1.1: Abrir arquivo `ai/models.py`
+- [ ] 9.1.2: Importar models e get_user_model
+- [ ] 9.1.3: Criar classe AIAnalysis com ForeignKey para User (on_delete=CASCADE)
+- [ ] 9.1.4: Adicionar campo analysis_text (TextField) - texto completo da analise
+- [ ] 9.1.5: Adicionar campo summary (CharField, max_length=255) - resumo para dashboard
+- [ ] 9.1.6: Adicionar campo is_latest (BooleanField, default=True) - indicador de analise mais recente
+- [ ] 9.1.7: Adicionar campos created_at e updated_at
+- [ ] 9.1.8: Adicionar metodo __str__ retornando resumo ou data
+- [ ] 9.1.9: Adicionar Meta com ordering=['-created_at'], verbose_name e indexes
+- [ ] 9.1.10: Configurar Admin para AIAnalysis no `ai/admin.py`
+- [ ] 9.1.11: Executar makemigrations e migrate para criar a tabela
 
-#### Tarefa 8.2: Criacao da Camada de Servico (analysis_service)
+#### Tarefa 9.2: Criacao da Camada de Servico (analysis_service)
 **Descricao**: Criar service que orquestra a coleta de dados, invocacao do agente e persistencia
 
 **Subtarefas**:
-- [ ] 8.2.1: Criar diretorio `ai/services/`
-- [ ] 8.2.2: Criar arquivo `ai/services/__init__.py`
-- [ ] 8.2.3: Criar arquivo `ai/services/analysis_service.py`
-- [ ] 8.2.4: Implementar funcao `get_user_financial_context(user)` que coleta:
+- [ ] 9.2.1: Criar diretorio `ai/services/`
+- [ ] 9.2.2: Criar arquivo `ai/services/__init__.py`
+- [ ] 9.2.3: Criar arquivo `ai/services/analysis_service.py`
+- [ ] 9.2.4: Implementar funcao `get_user_financial_context(user)` que coleta:
   - Contas do usuario com saldos
   - Categorias e totais por tipo
   - Transacoes recentes (ultimos 30 dias)
   - Agregados: total receitas, total despesas, balanco do periodo
-- [ ] 8.2.5: Implementar funcao `run_analysis_for_user(user)` que:
+- [ ] 9.2.5: Implementar funcao `run_analysis_for_user(user)` que:
   - Coleta contexto financeiro do usuario
   - Invoca o agente de IA com o contexto
   - Persiste resultado no modelo AIAnalysis
   - Marca is_latest=True na nova analise e False nas anteriores
   - Retorna a analise gerada ou None em caso de erro
-- [ ] 8.2.6: Implementar funcao `run_analysis_for_all_users()` que:
+- [ ] 9.2.6: Implementar funcao `run_analysis_for_all_users()` que:
   - Itera sobre todos os usuarios ativos
   - Chama run_analysis_for_user para cada um
   - Retorna resumo: total processados, sucessos, erros
-- [ ] 8.2.7: Adicionar log de progresso e tratamento de erros por usuario
+- [ ] 9.2.7: Adicionar log de progresso e tratamento de erros por usuario
 
-#### Tarefa 8.3: Configuracao do LangChain e Integracao com Groq API
+#### Tarefa 9.3: Configuracao do LangChain e Integracao com Groq API
 **Descricao**: Criar o agente LangChain com tools de consulta ao banco de dados
 
 **Subtarefas**:
-- [ ] 8.3.1: Criar diretorio `ai/agents/`
-- [ ] 8.3.2: Criar arquivo `ai/agents/__init__.py`
-- [ ] 8.3.3: Criar arquivo `ai/agents/finance_insight_agent.py`
-- [ ] 8.3.4: Configurar ChatOpenAI com base_url da Groq e modelo gpt-oss-120b:
+- [ ] 9.3.1: Criar diretorio `ai/agents/`
+- [ ] 9.3.2: Criar arquivo `ai/agents/__init__.py`
+- [ ] 9.3.3: Criar arquivo `ai/agents/finance_insight_agent.py`
+- [ ] 9.3.4: Configurar ChatOpenAI com base_url da Groq e modelo gpt-oss-120b:
   ```python
   from langchain_openai import ChatOpenAI
 
@@ -1290,191 +1258,264 @@
       max_tokens=2000,
   )
   ```
-- [ ] 8.3.5: Criar tool `get_user_transactions(user_id)` - consulta transacoes do usuario
-- [ ] 8.3.6: Criar tool `get_user_accounts(user_id)` - consulta contas e saldos
-- [ ] 8.3.7: Criar tool `get_user_categories(user_id)` - consulta categorias e totais
-- [ ] 8.3.8: Criar tool `get_user_incomes(user_id, period)` - consulta receitas por periodo
-- [ ] 8.3.9: Criar tool `get_user_expenses(user_id, period)` - consulta despesas por periodo
-- [ ] 8.3.10: Definir system prompt do agente financeiro:
+- [ ] 9.3.5: Criar tool `get_user_transactions(user_id)` - consulta transacoes do usuario
+- [ ] 9.3.6: Criar tool `get_user_accounts(user_id)` - consulta contas e saldos
+- [ ] 9.3.7: Criar tool `get_user_categories(user_id)` - consulta categorias e totais
+- [ ] 9.3.8: Criar tool `get_user_incomes(user_id, period)` - consulta receitas por periodo
+- [ ] 9.3.9: Criar tool `get_user_expenses(user_id, period)` - consulta despesas por periodo
+- [ ] 9.3.10: Definir system prompt do agente financeiro:
   - Papel: conselheiro financeiro pessoal especializado
   - Tom: profissional, acolhedor, pratico e direto
   - Idioma: portugues brasileiro
   - Escopo: analise de padroes de gasto, Insights de economia, alertas de risco, sugestoes de melhoria
   - Limitacao: nao dar aconselhamento de investimento ou juridico
-- [ ] 8.3.11: Criar o agente usando `create_react_agent` ou equivalente LangChain 1.0
-- [ ] 8.3.12: Implementar funcao `invoke_agent(user, context)` que orquestra a chamada ao agente
-- [ ] 8.3.13: Adicionar variavel GROQ_API_KEY ao arquivo .env
-- [ ] 8.3.14: Adicionar GROQ_API_KEY e GROQ_BASE_URL ao settings.py via python-decouple
+- [ ] 9.3.11: Criar o agente usando `create_react_agent` ou equivalente LangChain 1.0
+- [ ] 9.3.12: Implementar funcao `invoke_agent(user, context)` que orquestra a chamada ao agente
+- [ ] 9.3.13: Adicionar variavel GROQ_API_KEY ao arquivo .env
+- [ ] 9.3.14: Adicionar GROQ_API_KEY e GROQ_BASE_URL ao settings.py via python-decouple
 
-#### Tarefa 8.4: Criacao do Django Command run_finance_analysis
+#### Tarefa 9.4: Criacao do Django Command run_finance_analysis
 **Descricao**: Criar management command para executar a analise financeira
 
 **Subtarefas**:
-- [ ] 8.4.1: Criar diretorio `ai/management/`
-- [ ] 8.4.2: Criar arquivo `ai/management/__init__.py`
-- [ ] 8.4.3: Criar diretorio `ai/management/commands/`
-- [ ] 8.4.4: Criar arquivo `ai/management/commands/__init__.py`
-- [ ] 8.4.5: Criar arquivo `ai/management/commands/run_finance_analysis.py`
-- [ ] 8.4.6: Criar classe Command herdando de BaseCommand
-- [ ] 8.4.7: Configurar help text descritivo
-- [ ] 8.4.8: Implementar handle() que:
+- [ ] 9.4.1: Criar diretorio `ai/management/`
+- [ ] 9.4.2: Criar arquivo `ai/management/__init__.py`
+- [ ] 9.4.3: Criar diretorio `ai/management/commands/`
+- [ ] 9.4.4: Criar arquivo `ai/management/commands/__init__.py`
+- [ ] 9.4.5: Criar arquivo `ai/management/commands/run_finance_analysis.py`
+- [ ] 9.4.6: Criar classe Command herdando de BaseCommand
+- [ ] 9.4.7: Configurar help text descritivo
+- [ ] 9.4.8: Implementar handle() que:
   - Exibe mensagem de inicio
   - Chama run_analysis_for_all_users() do analysis_service
   - Exibe progresso no console (usuario por usuario)
   - Ao final, exibe resumo: X processados, Y analises geradas, Z erros
-- [ ] 8.4.9: Adicionar opcao --user_id para executar para um usuario especifico (opcional)
-- [ ] 8.4.10: Testar execucao: `python manage.py run_finance_analysis`
+- [ ] 9.4.9: Adicionar opcao --user_id para executar para um usuario especifico (opcional)
+- [ ] 9.4.10: Testar execucao: `python manage.py run_finance_analysis`
 
-#### Tarefa 8.5: Exibicao da Analise no Dashboard
+#### Tarefa 9.5: Exibicao da Analise no Dashboard
 **Descricao**: Atualizar dashboard para exibir a ultima analise do usuario
 
 **Subtarefas**:
-- [ ] 8.5.1: Importar AIAnalysis na view do dashboard
-- [ ] 8.5.2: Buscar ultima analise do usuario: AIAnalysis.objects.filter(user=request.user, is_latest=True).first()
-- [ ] 8.5.3: Adicionar analise ao context do dashboard
-- [ ] 8.5.4: Criar secao "Insights da IA" no template dashboard.html
-- [ ] 8.5.5: Exibir summary em card destacado com icone de IA
-- [ ] 8.5.6: Adicionar botao/link para ver analise completa
-- [ ] 8.5.7: Adicionar mensagem amigavel quando nao ha analise disponivel
+- [ ] 9.5.1: Importar AIAnalysis na view do dashboard
+- [ ] 9.5.2: Buscar ultima analise do usuario: AIAnalysis.objects.filter(user=request.user, is_latest=True).first()
+- [ ] 9.5.3: Adicionar analise ao context do dashboard
+- [ ] 9.5.4: Criar secao "Insights da IA" no template dashboard.html
+- [ ] 9.5.5: Exibir summary em card destacado com icone de IA
+- [ ] 9.5.6: Adicionar botao/link para ver analise completa
+- [ ] 9.5.7: Adicionar mensagem amigavel quando nao ha analise disponivel
 
-#### Tarefa 8.6: Atualizacao da Documentacao
+#### Tarefa 9.6: Atualizacao da Documentacao
 **Descricao**: Documentar a funcionalidade de IA financeira
 
 **Subtarefas**:
-- [ ] 8.6.1: Criar documento `docs/ai-finance-agent.md` com:
+- [ ] 9.6.1: Criar documento `docs/ai-finance-agent.md` com:
   - Funcionamento do agente de IA
   - Fluxo completo de geracao e exibicao
   - Como executar o Django Command
   - Integracao com o sistema
   - Manutencao e expansao futura
-- [ ] 8.6.2: Atualizar `docs/README.md` com link para novo documento
-- [ ] 8.6.3: Atualizar `docs/data-models.md` com modelo AIAnalysis
-- [ ] 8.6.4: Atualizar `docs/architecture.md` com app `ai` na estrutura
+- [ ] 9.6.2: Atualizar `docs/README.md` com link para novo documento
+- [ ] 9.6.3: Atualizar `docs/data-models.md` com modelo AIAnalysis
+- [ ] 9.6.4: Atualizar `docs/architecture.md` com app `ai` na estrutura
 
-#### Tarefa 8.7: Criacao do Agente Especialista de Integracao IA
+#### Tarefa 9.7: Criacao do Agente Especialista de Integracao IA
 **Descricao**: Criar documento de referencia tecnica para futuros agentes de IA
 
 **Subtarefas**:
-- [ ] 8.7.1: Criar arquivo `ai/agents/ai_integration_expert.md`
-- [ ] 8.7.2: Documentar diretrizes para criacao de agentes com LangChain 1.0
-- [ ] 8.7.3: Documentar padroes de integracao com Django
-- [ ] 8.7.4: Documentar modelos de configuracao e boas praticas
-- [ ] 8.7.5: Documentar uso do MCP Server do Context7 para documentacao do LangChain
-- [ ] 8.7.6: Incluir exemplo de fluxo basico de criacao de agente integrado
-- [ ] 8.7.7: Mover/copiar o arquivo para `agents/ai_integration_expert.md` na raiz do diretorio de agentes
-- [ ] 8.7.8: Atualizar `agents/README.md` com entrada para o agente especialista
+- [ ] 9.7.1: Criar arquivo `ai/agents/ai_integration_expert.md`
+- [ ] 9.7.2: Documentar diretrizes para criacao de agentes com LangChain 1.0
+- [ ] 9.7.3: Documentar padroes de integracao com Django
+- [ ] 9.7.4: Documentar modelos de configuracao e boas praticas
+- [ ] 9.7.5: Documentar uso do MCP Server do Context7 para documentacao do LangChain
+- [ ] 9.7.6: Incluir exemplo de fluxo basico de criacao de agente integrado
+- [ ] 9.7.7: Mover/copiar o arquivo para `agents/ai_integration_expert.md` na raiz do diretorio de agentes
+- [ ] 9.7.8: Atualizar `agents/README.md` com entrada para o agente especialista
 
 ---
 
-### Sprint 9: Testes Automatizados
+### Sprint 10: Testes Automatizados
 
-#### Tarefa 9.1: Configuracao de Testes
+#### Tarefa 10.1: Configuracao de Testes
 **Descrição**: Configurar ambiente de testes
 
 **Subtarefas**:
-- [X] 9.1.1: Criar diretório tests em cada app
-- [X] 9.1.2: Configurar pytest-django (opcional)
-- [X] 9.1.3: Criar factories com factory_boy (opcional)
-- [X] 9.1.4: Configurar coverage
+- [X] 10.1.1: Criar diretório tests em cada app
+- [X] 10.1.2: Configurar pytest-django (opcional)
+- [X] 10.1.3: Criar factories com factory_boy (opcional)
+- [X] 10.1.4: Configurar coverage
 
-#### Tarefa 9.2: Testes de Models ✅
+#### Tarefa 10.2: Testes de Models ✅
 **Descrição**: Criar testes para models
 
 **Subtarefas**:
-- [X] 9.2.1: Testes de CustomUser
-- [X] 9.2.2: Testes de Profile
-- [X] 9.2.3: Testes de Account
-- [X] 9.2.4: Testes de Category
-- [X] 9.2.5: Testes de Transaction
-- [X] 9.2.6: Testar métodos __str__
-- [X] 9.2.7: Testar validações
+- [X] 10.2.1: Testes de CustomUser
+- [X] 10.2.2: Testes de Profile
+- [X] 10.2.3: Testes de Account
+- [X] 10.2.4: Testes de Category
+- [X] 10.2.5: Testes de Transaction
+- [X] 10.2.6: Testar métodos __str__
+- [X] 10.2.7: Testar validações
 
-#### Tarefa 9.3: Testes de Views
+#### Tarefa 10.3: Testes de Views
 **Descrição**: Criar testes para views
 
 **Subtarefas**:
-- [ ] 9.3.1: Testes de autenticação (signup, login, logout)
-- [ ] 9.3.2: Testes de CRUD de contas
-- [ ] 9.3.3: Testes de CRUD de categorias
-- [ ] 9.3.4: Testes de CRUD de transações
-- [ ] 9.3.5: Testes de dashboard
-- [ ] 9.3.6: Testes de perfil
-- [ ] 9.3.7: Testar permissões de acesso
+- [ ] 10.3.1: Testes de autenticação (signup, login, logout)
+- [ ] 10.3.2: Testes de CRUD de contas
+- [ ] 10.3.3: Testes de CRUD de categorias
+- [ ] 10.3.4: Testes de CRUD de transações
+- [ ] 10.3.5: Testes de dashboard
+- [ ] 10.3.6: Testes de perfil
+- [ ] 10.3.7: Testar permissões de acesso
 
-#### Tarefa 9.4: Testes de Signals
+#### Tarefa 10.4: Testes de Signals
 **Descrição**: Testar signals e lógica de negócio
 
 **Subtarefas**:
-- [ ] 9.4.1: Testar criação automática de perfil
-- [ ] 9.4.2: Testar criação de categorias padrão
-- [ ] 9.4.3: Testar atualização de saldo ao criar transação
-- [ ] 9.4.4: Testar atualização de saldo ao editar transação
-- [ ] 9.4.5: Testar atualização de saldo ao excluir transação
+- [ ] 10.4.1: Testar criação automática de perfil
+- [ ] 10.4.2: Testar criação de categorias padrão
+- [ ] 10.4.3: Testar atualização de saldo ao criar transação
+- [ ] 10.4.4: Testar atualização de saldo ao editar transação
+- [ ] 10.4.5: Testar atualização de saldo ao excluir transação
 
-#### Tarefa 9.5: Testes de Integração
+#### Tarefa 10.5: Testes de Integração
 **Descrição**: Testar fluxos completos
 
 **Subtarefas**:
-- [ ] 9.5.1: Testar fluxo completo de cadastro e primeira transação
-- [ ] 9.5.2: Testar fluxo de múltiplas transações e saldo
-- [ ] 9.5.3: Testar fluxo de filtros e busca
-- [ ] 9.5.4: Testar isolamento entre usuários
+- [ ] 10.5.1: Testar fluxo completo de cadastro e primeira transação
+- [ ] 10.5.2: Testar fluxo de múltiplas transações e saldo
+- [ ] 10.5.3: Testar fluxo de filtros e busca
+- [ ] 10.5.4: Testar isolamento entre usuários
 
-#### Tarefa 9.6: Executar e Analisar Coverage
+#### Tarefa 10.6: Executar e Analisar Coverage
 **Descrição**: Verificar cobertura de testes
 
 **Subtarefas**:
-- [ ] 9.6.1: Executar todos os testes
-- [ ] 9.6.2: Gerar relatório de coverage
-- [ ] 9.6.3: Identificar áreas sem cobertura
-- [ ] 9.6.4: Adicionar testes faltantes
-- [ ] 9.6.5: Atingir pelo menos 80% de cobertura
+- [ ] 10.6.1: Executar todos os testes
+- [ ] 10.6.2: Gerar relatório de coverage
+- [ ] 10.6.3: Identificar áreas sem cobertura
+- [ ] 10.6.4: Adicionar testes faltantes
+- [ ] 10.6.5: Atingir pelo menos 80% de cobertura
 
 ---
 
-### Sprint 10: Docker e CI/CD (Sprint Final)
+### Sprint 11: Agente de IA Chatbot & Migração para Neon ✅ CONCLUÍDA
 
-#### Tarefa 10.1: Dockerfile
+#### Tarefa 11.1: Migração do Banco de Dados para Neon PostgreSQL ✅
+**Descrição**: Configurar e migrar todos os dados da aplicação para a instância do Neon PostgreSQL
+
+**Subtarefas**:
+- [X] 11.1.1: Gerar backup/dump de dados do banco de dados SQLite local (`python manage.py dumpdata --exclude auth.permission --exclude contenttypes --indent 4 > data_backup.json`)
+- [X] 11.1.2: Configurar dependências de PostgreSQL (`psycopg2-binary` e `dj-database-url`) no arquivo `requirements/production.txt` e `requirements/base.txt`
+- [X] 11.1.3: Modificar `core/settings/base.py`, `core/settings/development.py` e `core/settings/production.py` para apontar exclusivamente para a URL do Neon (`NEON_POSTGRESQL`) usando o parser `dj_database_url`
+- [X] 11.1.4: Rodar migrações do sistema na nova base de dados do Neon (`python manage.py migrate`)
+- [X] 11.1.5: Carregar os dados consolidados do backup no banco do Neon (`python manage.py loaddata data_backup.json`)
+- [X] 11.1.6: Remover o arquivo `db.sqlite3` antigo do workspace e testar a integridade local da aplicação acessando os dados no Neon
+
+#### Tarefa 11.2: Inicialização da App Chatbot ✅
+**Descrição**: Estruturar a nova app Django responsável pela lógica do chatbot e do assistente de IA
+
+**Subtarefas**:
+- [X] 11.2.1: Criar a app Django chatbot via terminal (`python manage.py startapp chatbot`)
+- [X] 11.2.2: Registrar a nova app `chatbot` em `INSTALLED_APPS` no `core/settings/base.py`
+- [X] 11.2.3: Criar arquivo `urls.py` na pasta `chatbot/` e registrá-lo nas rotas globais em `core/urls.py`
+
+#### Tarefa 11.3: Modelo de Armazenamento ChatbotAnalysis ✅
+**Descrição**: Modelar a tabela de armazenamento das análises e dicas da IA financeira no banco de dados
+
+**Subtarefas**:
+- [X] 11.3.1: Criar o modelo `ChatbotAnalysis` em `chatbot/models.py` com chaves estrangeiras, textos da análise, resumo de insights, JSON de snapshot do mercado financeiro e flags de controle
+- [X] 11.3.2: Gerar migrações para a nova tabela no banco (`python manage.py makemigrations` e `python manage.py migrate`)
+- [X] 11.3.3: Registrar a tabela no Django admin (`chatbot/admin.py`) para fiscalização e auditoria das análises geradas
+
+#### Tarefa 11.4: Integração com Langchain 1.0 e Groq ✅
+**Descrição**: Criar a inteligência do chatbot conectada com Groq e modelada com Langchain 1.0
+
+**Subtarefas**:
+- [X] 11.4.1: Adicionar dependências mais recentes de IA (`langchain`, `langchain-openai`, `langchain-core`, `langchain-groq`) nas dependências do projeto
+- [X] 11.4.2: Criar e estruturar o arquivo de orquestração do agente em `chatbot/services/agent.py`
+- [X] 11.4.3: Instanciar a LLM compatível da Groq usando `ChatOpenAI` parametrizada com o modelo `gpt-oss-120b` e `GROQ_API_KEY` do `.env`
+- [X] 11.4.4: Elaborar o System Prompt especializado para o assistente (tom profissional, amigável, focado em finanças, em português do Brasil)
+
+#### Tarefa 11.5: Desenvolvimento das Tools do Agente de IA ✅
+**Descrição**: Implementar ferramentas especializadas para o agente coletar dados e pesquisar o mercado financeiro
+
+**Subtarefas**:
+- [X] 11.5.1: Implementar tool `get_user_financial_data` para expor transações, receitas, despesas, saldo e categorias do usuário autenticado no Django ORM
+- [X] 11.5.2: Implementar tool `get_realtime_market_data` em `chatbot/services/market.py` para consultar cotações de moedas, bolsas de valores e mercado imobiliário em tempo real (utilizando APIs públicas resilientes ou scraping/mock robusto)
+- [X] 11.5.3: Vincular e registrar as ferramentas no fluxo de decisão (`create_react_agent`) do Langchain
+
+#### Tarefa 11.6: Views e Lógica do Chatbot no Django ✅
+**Descrição**: Implementar as views e controladores que integram a interface do chat com o orquestrador do agente
+
+**Subtarefas**:
+- [X] 11.6.1: Implementar view em `chatbot/views.py` para carregar o histórico de conversas do usuário autenticado
+- [X] 11.6.2: Criar rota POST/AJAX para enviar mensagens e processar a resposta do agente em segundo plano sem recarregar a página
+- [X] 11.6.3: Implementar controle lógico para persistir a nova análise no banco e atualizar a flag `is_latest=True` para a análise mais recente daquele usuário
+
+#### Tarefa 11.7: Interface Gráfica do Chatbot (Template chat.html) ✅
+**Descrição**: Construir uma UI incrível, responsiva e alinhada ao design e paleta de cores da Landing Page do sistema
+
+**Subtarefas**:
+- [X] 11.7.1: Criar o template `templates/chatbot/chat.html` herdando de `base.html`
+- [X] 11.7.2: Estilizar a janela de chat com tema escuro, caixas de diálogo adequadas (User: `bg-bg-tertiary`, Bot: `bg-[#0D1A0D]`), bordas finas com gradiente e efeitos de glassmorphism
+- [X] 11.7.3: Criar um painel de destaque que mostre permanentemente o último insight de IA do usuário
+- [X] 11.7.4: Implementar JavaScript para envio assíncrono (Fetch API) de mensagens, rolagem automática e animação visual de digitação ("typing indicator")
+
+#### Tarefa 11.8: Validação e Testes Manuais de Segurança ✅
+**Descrição**: Validar o chatbot contra falhas, vazamento de dados de terceiros e resiliência a quedas de APIs de mercado
+
+**Subtarefas**:
+- [X] 11.8.1: Testar fluxo completo com diferentes perfis e garantir que um usuário nunca veja as dicas ou transações de outro
+- [X] 11.8.2: Testar comportamento em caso de queda na API da Groq ou da API de mercado em tempo real, verificando se o chatbot emite uma resposta amigável e baseada nos dados locais de forma elegante
+
+---
+
+### Sprint 12: Docker e CI/CD (Sprint Final)
+
+#### Tarefa 12.1: Dockerfile
 **Descrição**: Criar Dockerfile para containerização
 
 **Subtarefas**:
-- [ ] 10.1.1: Criar Dockerfile na raiz do projeto
-- [ ] 10.1.2: Usar imagem Python oficial
-- [ ] 10.1.3: Configurar workdir
-- [ ] 10.1.4: Copiar requirements e instalar
-- [ ] 10.1.5: Copiar código da aplicação
-- [ ] 10.1.6: Configurar comando de inicialização
-- [ ] 10.1.7: Testar build da imagem
+- [ ] 12.1.1: Criar Dockerfile na raiz do projeto
+- [ ] 12.1.2: Usar imagem Python oficial
+- [ ] 12.1.3: Configurar workdir
+- [ ] 12.1.4: Copiar requirements e instalar
+- [ ] 12.1.5: Copiar código da aplicação
+- [ ] 12.1.6: Configurar comando de inicialização
+- [ ] 12.1.7: Testar build da imagem
 
-#### Tarefa 10.2: Docker Compose
+#### Tarefa 12.2: Docker Compose
 **Descrição**: Criar docker-compose para ambiente completo
 
 **Subtarefas**:
-- [ ] 10.2.1: Criar docker-compose.yml
-- [ ] 10.2.2: Configurar serviço web
-- [ ] 10.2.3: Configurar serviço de banco (PostgreSQL se migrar)
-- [ ] 10.2.4: Configurar volumes
-- [ ] 10.2.5: Configurar networks
-- [ ] 10.2.6: Testar com docker-compose up
+- [ ] 12.2.1: Criar docker-compose.yml
+- [ ] 12.2.2: Configurar serviço web
+- [ ] 12.2.3: Configurar serviço de banco (PostgreSQL se migrar)
+- [ ] 12.2.4: Configurar volumes
+- [ ] 12.2.5: Configurar networks
+- [ ] 12.2.6: Testar com docker-compose up
 
-#### Tarefa 10.3: CI/CD com GitHub Actions
+#### Tarefa 12.3: CI/CD com GitHub Actions
 **Descrição**: Configurar pipeline de CI/CD
 
 **Subtarefas**:
-- [ ] 10.3.1: Criar .github/workflows/ci.yml
-- [ ] 10.3.2: Configurar job de testes
-- [ ] 10.3.3: Configurar job de linting
-- [ ] 10.3.4: Configurar job de build
-- [ ] 10.3.5: Configurar deploy automático (opcional)
-- [ ] 10.3.6: Testar pipeline
+- [ ] 12.3.1: Criar .github/workflows/ci.yml
+- [ ] 12.3.2: Configurar job de testes
+- [ ] 12.3.3: Configurar job de linting
+- [ ] 12.3.4: Configurar job de build
+- [ ] 12.3.5: Configurar deploy automático (opcional)
+- [ ] 12.3.6: Testar pipeline
 
-#### Tarefa 10.4: Documentação Final
+#### Tarefa 12.4: Documentação Final
 **Descrição**: Finalizar documentação do projeto
 
 **Subtarefas**:
-- [ ] 10.4.1: Atualizar docs/README.md completo
-- [ ] 10.4.2: Documentar variáveis de ambiente
-- [ ] 10.4.3: Documentar comandos úteis
-- [ ] 10.4.4: Criar guia de contribuição (se open source)
-- [ ] 10.4.5: Documentar processo de deploy
-- [ ] 10.4.6: Criar CHANGELOG.md
+- [ ] 12.4.1: Atualizar docs/README.md completo
+- [ ] 12.4.2: Documentar variáveis de ambiente
+- [ ] 12.4.3: Documentar comandos úteis
+- [ ] 12.4.4: Criar guia de contribuição (se open source)
+- [ ] 12.4.5: Documentar processo de deploy
+- [ ] 12.4.6: Criar CHANGELOG.md
+

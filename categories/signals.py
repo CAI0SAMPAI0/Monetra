@@ -8,6 +8,8 @@ User = get_user_model()
 
 @receiver(post_save, sender=User)
 def create_default_categories(sender, instance, created, **kwargs):
+    if kwargs.get('raw'):
+        return
     if created:
         default_categories = [
             # Incomes

@@ -26,6 +26,7 @@ INSTALLED_APPS = [
     'transactions',
     'users',
     'ai',
+    'chatbot',
 ]
 
 TAILWIND_APP_NAME = 'theme'

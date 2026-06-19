@@ -15,8 +15,8 @@ def test_full_flow_signup_to_transaction(client):
     signup_url = reverse('users:signup')
     client.post(signup_url, {
         'email': 'integration@example.com',
-        'password1': 'password123',
-        'password2': 'password123'
+        'password1': 'ComplexPass123!',
+        'password2': 'ComplexPass123!'
     })
     user = User.objects.get(email='integration@example.com')
     client.force_login(user)

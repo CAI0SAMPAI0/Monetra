@@ -10,7 +10,7 @@ ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv())
 # Using dj_database_url to parse the DATABASE_URL environment variable
 DATABASES = {
     'default': dj_database_url.config(
-        default=config('DATABASE_URL', default='sqlite:///' + str(BASE_DIR / 'db.sqlite3')),
+        default=config('DATABASE_URL', default=config('NEON_POSTGRESQL', default='')),
         conn_max_age=600,
         conn_health_checks=True,
     )

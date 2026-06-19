@@ -11,6 +11,7 @@
             <div class='hidden md:flex items-center space-x-6'>
                 {% if user.is_authenticated %}
                     <a href='{% url "users:dashboard" %}' class='text-text-secondary hover:text-text-primary transition-colors duration-200'>Dashboard</a>
+                    <a href='{% url "chatbot:chat" %}' class='text-accent-500 font-bold hover:text-accent-600 transition-colors duration-200'>MonetraBot (IA)</a>
                     <a href='{% url "accounts:account_list" %}' class='text-text-secondary hover:text-text-primary transition-colors duration-200'>Contas</a>
                     <a href='{% url "categories:category_list" %}' class='text-text-secondary hover:text-text-primary transition-colors duration-200'>Categorias</a>
                     <a href='{% url "transactions:transaction_list" %}' class='text-text-secondary hover:text-text-primary transition-colors duration-200'>Transações</a>
@@ -45,6 +46,7 @@
     <div id='mobile-menu' class='hidden md:hidden bg-bg-secondary border-t border-bg-tertiary px-4 pt-2 pb-4 space-y-2'>
         {% if user.is_authenticated %}
             <a href='{% url "users:dashboard" %}' class='block px-4 py-2 text-text-secondary hover:text-text-primary hover:bg-bg-tertiary rounded-lg transition-colors'>Dashboard</a>
+            <a href='{% url "chatbot:chat" %}' class='block px-4 py-2 text-accent-500 font-bold hover:bg-bg-tertiary rounded-lg transition-colors'>MonetraBot (IA)</a>
             <a href='{% url "accounts:account_list" %}' class='block px-4 py-2 text-text-secondary hover:text-text-primary hover:bg-bg-tertiary rounded-lg transition-colors'>Contas</a>
             <a href='{% url "categories:category_list" %}' class='block px-4 py-2 text-text-secondary hover:text-text-primary hover:bg-bg-tertiary rounded-lg transition-colors'>Categorias</a>
             <a href='{% url "transactions:transaction_list" %}' class='block px-4 py-2 text-text-secondary hover:text-text-primary hover:bg-bg-tertiary rounded-lg transition-colors'>Transações</a>

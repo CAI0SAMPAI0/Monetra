@@ -1101,188 +1101,132 @@ rounded-2xl: 1rem      /* 16px */
 
 ---
 
-## 13. Agente de IA Financeiro
+## 13. Agente de IA Chatbot Financeiro & Migração para Neon
 
 ### 13.1 Objetivo e Motivação
 
-Adicionar funcionalidade de **análises financeiras com Inteligência Artificial** ao Finanpy. Um agente de IA especializado em finanças pessoais analisará os dados do usuário (transações, receitas, despesas e categorias) e gerará **insights e dicas personalizadas**, fornecendo orientação proativa para tomadas de decisão financeira mais conscientes.
+Adicionar uma funcionalidade de **assistente/agente de inteligência artificial** interativo e em tempo real na plataforma. O objetivo é fornecer uma interface de chatbot onde o usuário possa interagir com o **MonetraBot**, um assistente de IA especialista em finanças pessoais.
+O assistente trará dicas e insights personalizados com base nos dados do próprio usuário (transações, receitas, despesas e categorias) integrados com dados atuais do **mercado financeiro em tempo real** (cotações de moedas, bolsas de valores, mercado imobiliário, etc.).
 
-**Motivação**: A maioria dos sistemas de finanças pessoais apenas exibe dados bruto. A diferenciação do Finanpy está em transformar dados em **inteligência acionável** por meio de IA, oferecendo análises individuais e contextualizadas sem exigir conhecimento financeiro do usuário.
+Todas as análises e conversas geradas serão armazenadas em uma tabela específica do banco de dados, com isolamento absoluto por usuário (um usuário nunca terá acesso aos dados ou análises de outro). O chatbot exibirá a última análise de IA disponível de forma a dar ao usuário uma visão clara e objetiva de sua saúde financeira.
 
-### 13.2 Fluxo Detalhado
+### 13.2 Arquitetura da IA (Langchain 1.0 & Groq)
 
-```mermaid
-flowchart TD
-    Start([Execucao: python manage.py run_finance_analysis]) --> LoadUsers[Carregar todos os usuarios ativos]
-    LoadUsers --> ForEachUser{Para cada usuario}
-    ForEachUser --> CollectData[Coletar dados financeiros do usuario]
-    CollectData --> GetTransactions[Buscar transacoes, contas e categorias]
-    GetTransactions --> BuildContext[Construir contexto estruturado para o agente]
-    BuildContext --> InvokeAgent[Invocar agente LangChain com tools]
-    InvokeAgent --> AgentTools{Agente usa tools}
-    AgentTools -->|Consultar transacoes| QueryTransactions[Query: Transaction.objects.filter]
-    AgentTools -->|Consultar contas| QueryAccounts[Query: Account.objects.filter]
-    AgentTools -->|Consultar categorias| QueryCategories[Query: Category.objects.filter]
-    AgentTools -->|Consultar receitas| QueryIncomes[Query: Incomes aggregate]
-    AgentTools -->|Consultar despesas| QueryExpenses[Query: Expenses aggregate]
-    QueryTransactions --> GenerateAnalysis
-    QueryAccounts --> GenerateAnalysis
-    QueryCategories --> GenerateAnalysis
-    QueryIncomes --> GenerateAnalysis
-    QueryExpenses --> GenerateAnalysis
-    GenerateAnalysis[Agente gera analise personalizada] --> PersistAnalysis[Persistir analise no modelo AIAnalysis]
-    PersistAnalysis --> MarkLatest[Marcar como analise mais recente is_latest=True]
-    MarkLatest --> ForEachUser
-    ForEachUser -->|Proximo usuario| CollectData
-    ForEachUser -->|Fim| DashboardUpdate[Dashboard le ultima analise do usuario]
-    DashboardUpdate --> DisplayInsight[Exibir card de insight no dashboard]
+- **Framework**: Langchain 1.0 (utilizando padrões modernos de LCEL e `create_react_agent`).
+- **Provedor e Modelo**: API da Groq com o modelo `gpt-oss-120b`.
+- **Camada de Integração**: Toda a lógica de negócio, agentes e views ficará na app `chatbot`.
+- **Tools do Agente**:
+  1. `get_user_financial_data`: Consulta os dados financeiros consolidados do usuário logado (saldo, receitas, despesas, transações recentes) usando o Django ORM com filtro rigoroso de `user_id`.
+  2. `get_realtime_market_data`: Consulta de APIs ou serviços externos para buscar cotações de moedas (USD, EUR para BRL), principais índices da bolsa (Ibovespa, S&P 500) e dados gerais de mercado imobiliário/inflação (IPCA, Selic).
 
-    style Start fill:#2d5a3d
-    style InvokeAgent fill:#1e3a5f
-    style GenerateAnalysis fill:#4a5d23
-    style PersistAnalysis fill:#2d5a3d
-    style DisplayInsight fill:#2d5a3d
-```
+### 13.3 Design e Interface do Chatbot
 
-**Fluxo resumido**:
-1. **Entrada**: Django Command `run_finance_analysis` e executado manualmente
-2. **Coleta**: Para cada usuario ativo, o agente utiliza tools para consultar transacoes, receitas, despesas e categorias via ORM Django
-3. **Analise**: O agente LangChain (modelo `gpt-oss-120b` via Groq API) processa os dados e gera insights personalizados
-4. **Armazenamento**: A analise e persistida no modelo `AIAnalysis` com historico; a analise mais recente e marcada com `is_latest=True`
-5. **Exibicao**: O dashboard do usuario exibe a ultima analise gerada em um card dedicado
+A interface do chatbot seguirá o padrão estético de tema escuro ("dark mode") da Landing Page (`home.html`), com elementos modernos de Glassmorphism, bordas com gradiente em destaque e animações sutis de feedback de digitação da IA.
 
-### 13.3 Estrutura de Dados e Modelo de Banco de Dados
+- **Layout**: Um painel dividido ou chat flutuante premium contendo o histórico de interações e um card fixo com o resumo da **Última Análise de Insights**.
+- **Cores e Estilos**:
+  - Fundo do container: `bg-bg-secondary` com borda `border-bg-tertiary`.
+  - Mensagens do Usuário: Alinhadas à direita com `bg-bg-tertiary` e texto principal.
+  - Mensagens do Bot: Alinhadas à esquerda com fundo verde escuro suave (`bg-[#0D1A0D]`), borda verde (`border-accent-500/15`) e texto secundário.
+  - Avatar do Bot: Ícone de IA com indicador "Online" piscante (animação `animate-pulse` ou `animate-ping`).
 
-#### Modelo AIAnalysis
+### 13.4 Estrutura de Dados (Modelos)
+
+Será criado o modelo `ChatbotAnalysis` na app `chatbot`:
 
 ```mermaid
 erDiagram
-    USER ||--o{ AIANALYSIS : has
-    AIANALYSIS {
+    CustomUser ||--o{ ChatbotAnalysis : possui
+    ChatbotAnalysis {
         int id PK
         int user_id FK
         text analysis_text
         text summary
+        json market_data_snapshot
         boolean is_latest
         datetime created_at
         datetime updated_at
     }
+    }
 ```
 
-**Campos**:
+#### Campos do Modelo `ChatbotAnalysis`
 
-| Campo | Tipo | Descricao | Obrigatorio |
-|-------|------|-----------|-------------|
-| user | ForeignKey(User) | Usuario dono da analise | Sim |
-| analysis_text | TextField | Texto completo da analise gerada pela IA | Sim |
-| summary | CharField(max_length=255) | Resumo curto para exibicao no dashboard | Sim |
-| is_latest | BooleanField | Indica se e a analise mais recente do usuario | Sim (default=True) |
-| created_at | DateTimeField | Data de criacao | Auto |
-| updated_at | DateTimeField | Data de atualizacao | Auto |
+| Campo | Tipo | Descrição |
+| :--- | :--- | :--- |
+| `user` | ForeignKey(CustomUser) | Usuário associado (on_delete=CASCADE) |
+| `analysis_text` | TextField | Texto completo da análise e dicas fornecidas pela IA |
+| `summary` | CharField(max_length=255) | Resumo rápido/título do principal insight |
+| `market_data_snapshot` | JSONField | Snapshot dos dados de mercado usados no momento da análise |
+| `is_latest` | BooleanField | Flag que define se esta é a última análise ativa do usuário |
+| `created_at` | DateTimeField | Data de criação (auto_now_add=True) |
+| `updated_at` | DateTimeField | Data de atualização (auto_now=True) |
 
-**Comportamento**:
-- Ao criar nova analise, `is_latest=True` na nova e `is_latest=False` nas anteriores do mesmo usuario
-- Historico completo preservado para comparacao temporal
-- Deletado automaticamente ao deletar usuario (CASCADE)
+### 13.5 Migração de Banco de Dados: SQLite para Neon (PostgreSQL)
 
-### 13.4 Tecnologias e Dependencias
+Para preparar o sistema para o ambiente de produção, faremos a transição definitiva e exclusiva para o banco de dados **Neon** (PostgreSQL na nuvem).
 
-| Tecnologia | Versao | Funcao |
-|------------|--------|--------|
-| LangChain | 1.0+ | Framework de orquestracao do agente de IA |
-| langchain-openai | Latest | Integracao com API compativel com OpenAI (Groq/OpenAI) |
-| langchain-community | Latest | Tools e integracoes comunitarias |
-| Groq API / OpenAI API | - | Provedores de LLM configuraveis |
-| Modelo Padrao | gpt-oss-120b / GPT-5-mini | Modelos de linguagem para analise de insights |
+#### Processo de Migração
+1. **Configuração do `.env`**: O arquivo `.env` já contém a URI de conexão no campo `NEON_POSTGRESQL`.
+2. **Atualização dos Settings**:
+   - Ajustar `core/settings/base.py` (ou `development.py` e `production.py`) para ler `NEON_POSTGRESQL` usando `dj_database_url` e definir como o banco de dados padrão (`default`).
+3. **Backup dos dados locais**:
+   - Executar `python manage.py dumpdata --exclude auth.permission --exclude contenttypes --indent 4 > data.json` no SQLite local.
+4. **Aplicação de Migrações no Neon**:
+   - Configurar o Django para apontar para o Neon.
+   - Instalar `psycopg2-binary`.
+   - Executar `python manage.py migrate`.
+5. **Carga dos Dados**:
+   - Executar `python manage.py loaddata data.json` para restaurar usuários, contas, categorias e transações existentes no Neon.
+6. **Desativação do SQLite**:
+   - Remover/renomear o arquivo `db.sqlite3` local para garantir que a aplicação utilize apenas o Neon PostgreSQL.
 
-**Configuracao da API**:
-- O sistema e flexivel e permite usar o provedor **Groq** (modelo `gpt-oss-120b`) ou **OpenAI** (modelo `GPT-5-mini` ou similar).
-- **Para Groq**:
-  - `GROQ_API_KEY`: Chave de API no `.env`
-  - `GROQ_BASE_URL`: `https://api.groq.com/openai/v1` (endpoint compativel com OpenAI)
-- **Para OpenAI**:
-  - `OPENAI_API_KEY`: Chave de API no `.env`
-- A integracao e feita via classe `ChatOpenAI` do `langchain_openai` parametrizada pelas variaveis do `.env`.
+### 13.6 Estrutura de Arquivos e Responsabilidades
 
-### 13.5 Estrutura de Arquivos e Responsabilidades
+A estrutura da nova app `chatbot` será organizada da seguinte forma:
 
 ```
-ai/
+chatbot/
 ├── __init__.py
-├── agents/
-│   ├── __init__.py
-│   ├── finance_insight_agent.py      # Agente LangChain que faz as analises financeiras
-│   └── ai_integration_expert.md      # Documento de referencia tecnica para criacao de agentes de IA
-├── models.py                         # Modelo AIAnalysis
-├── services/
-│   ├── __init__.py
-│   └── analysis_service.py           # Orquestra analise: coleta dados, invoca agente, persiste resultado
-├── management/
-│   ├── __init__.py
-│   └── commands/
-│       ├── __init__.py
-│       └── run_finance_analysis.py   # Django Command para executar a analise
-├── admin.py
-├── apps.py
-└── views.py
+├── admin.py                           # Registro do ChatbotAnalysis no admin
+├── apps.py                            # Configuração do chatbot app
+├── models.py                          # Definição do modelo ChatbotAnalysis
+├── urls.py                            # URLs do chat (/chatbot/)
+├── views.py                           # Exibição do chat e chamadas AJAX/POST
+├── templates/
+│   └── chatbot/
+│       └── chat.html                  # Template do chat (Tailwind + Design da Landing Page)
+└── services/
+    ├── __init__.py
+    ├── agent.py                       # Orquestração do agente Langchain 1.0 e Groq
+    ├── tools.py                       # Ferramentas ORM e de dados de mercado (real-time)
+    └── market.py                      # Integração com APIs financeiras externas
 ```
 
-**Responsabilidades por modulo**:
+### 13.7 Requisitos Funcionais (Chatbot IA)
 
-| Modulo | Responsabilidade |
-|--------|-----------------|
-| `models.py` | Definicao do modelo `AIAnalysis` com campos de analise e controle de historico |
-| `agents/finance_insight_agent.py` | Definicao do agente LangChain com system prompt, tools de consulta ao banco e logica de invocacao |
-| `services/analysis_service.py` | Camada de servico que orquestra: coleta dados do usuario, invoca o agente, persiste resultado |
-| `management/commands/run_finance_analysis.py` | Command Django que itera sobre usuarios e dispara a analise via service |
+- **RF043**: O sistema deve fornecer uma página de chatbot acessível apenas a usuários autenticados.
+- **RF044**: O chatbot deve utilizar Langchain 1.0 com Groq e modelo `gpt-oss-120b`.
+- **RF045**: O agente deve ter acesso a tools de leitura do banco do usuário logado (transações, saldo, categorias).
+- **RF046**: O agente deve ter acesso a uma tool para buscar cotações de câmbio, bolsa de valores e mercado imobiliário em tempo real.
+- **RF047**: Cada resposta contendo uma nova análise financeira do usuário deve ser armazenada no banco na tabela `ChatbotAnalysis`.
+- **RF048**: A interface do chatbot deve renderizar a última análise (`is_latest=True`) em uma área destacada para acesso rápido.
+- **RF049**: O histórico de interações do chatbot deve estar isolado por usuário.
+- **RF050**: O banco de dados do sistema deve ser migrado integralmente de SQLite para Neon PostgreSQL.
 
-### 13.6 Execucao via Django Command
+### 13.8 Requisitos Não-Funcionais
 
-**Comando**:
-```bash
-python manage.py run_finance_analysis
-```
-
-**Comportamento**:
-1. Carrega todos os usuarios ativos do sistema
-2. Para cada usuario, chama o `analysis_service` para gerar a analise
-3. O service coleta dados, invoca o agente de IA e persiste o resultado
-4. Exibe progresso no console (log por usuario)
-5. Ao final, exibe resumo: X usuarios processados, Y analises geradas, Z erros
-
-**Opcoes futuras** (nao implementadas nesta sprint):
-- `--user_id`: Executar analise para um usuario especifico
-- `--force`: Re-gerar analise mesmo se ja existir uma recente
-
-### 13.7 Requisitos Funcionais - IA Financeira
-
-- RF043: Sistema deve gerar analises financeiras personalizadas por usuario via agente de IA
-- RF044: Sistema deve armazenar historico de analises no modelo AIAnalysis
-- RF045: Sistema deve marcar a analise mais recente com `is_latest=True`
-- RF046: Sistema deve exibir a ultima analise no dashboard do usuario
-- RF047: Agente de IA deve ter tools para consultar transacoes, receitas, despesas e categorias do usuario
-- RF048: Execucao do agente deve ser feita via Django Command `run_finance_analysis`
-
-### 13.8 Requisitos Nao-Funcionais - IA Financeira
-
-- RNF021: Analise deve ser gerada em ate 30 segundos por usuario
-- RNF022: Dados de um usuario nao devem ser expostos na analise de outro
-- RNF023: Chave de API Groq deve ser armazenada exclusivamente em variavel de ambiente
-- RNF024: Falhas na API da Groq nao devem interromper o processo para os demais usuarios
-
-### 13.9 Limitacoes desta Sprint
-
-- Nenhum endpoint HTTP sera criado
-- Nenhum teste automatizado sera criado para a app `ai`
-- Nenhum agendamento automatico (celery, cron) sera implementado
-- A execucao e exclusivamente manual via Django Command
+- **RNF021**: Isolamento absoluto de dados: um usuário nunca deve conseguir consultar informações financeiras de outros através do chatbot.
+- **RNF022**: Tempo máximo de resposta do chatbot de 15 segundos (mesmo com múltiplas tools).
+- **RNF023**: Chaves de API externas (Groq e APIs financeiras) devem ser mantidas de forma segura no `.env`.
+- **RNF024**: Resiliência: falhas na busca de dados de mercado externos não devem quebrar o chatbot, que deve responder usando apenas os dados locais do usuário com uma mensagem de aviso.
 
 ---
 
 ## Conclusão
 
-Este PRD fornece uma estrutura completa e detalhada para o desenvolvimento do Finanpy. As sprints estão organizadas de forma lógica, começando pela infraestrutura básica e autenticação, passando pelas funcionalidades core (contas, categorias, transações), e finalizando com dashboard, refinamentos e preparação para produção.
+Este PRD fornece uma estrutura completa e detalhada para o desenvolvimento do Finanpy. As sprints estão organizadas de forma lógica, começando pela infraestrutura básica e autenticação, passando pelas funcionalidades core (contas, categorias, transações), e finalizando com dashboard, chatbot de IA integrado com o mercado financeiro em tempo real e preparação para produção com migração definitiva para o Neon PostgreSQL.
 
 Cada tarefa está quebrada em subtarefas específicas e granulares, facilitando o acompanhamento do progresso e a implementação incremental do sistema. A arquitetura proposta é simples, mantém as responsabilidades bem separadas, e segue as melhores práticas do Django.
 
-O design system com TailwindCSS garante uma interface moderna, responsiva e consistente em todo o sistema, enquanto o foco em simplicidade evita over-engineering e mantém o código manutenível.
+O design system com TailwindCSS garante uma interface moderna, responsiva e consistente em todo o sistema, enquanto o foco em simplicidade evita over-engineering e mantém o código manutenível. O MonetraBot adiciona uma camada inteligente e moderna, elevando o patamar do Finanpy.
