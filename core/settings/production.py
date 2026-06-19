@@ -18,6 +18,17 @@ if 'RENDER_EXTERNAL_HOSTNAME' in os.environ:
     if render_host not in ALLOWED_HOSTS:
         ALLOWED_HOSTS.append(render_host)
 
+# Configure CSRF trusted origins for production (needed for form submissions)
+CSRF_TRUSTED_ORIGINS = config('CSRF_TRUSTED_ORIGINS', cast=Csv(), default='')
+if isinstance(CSRF_TRUSTED_ORIGINS, str):
+    CSRF_TRUSTED_ORIGINS = [CSRF_TRUSTED_ORIGINS] if CSRF_TRUSTED_ORIGINS else []
+else:
+    CSRF_TRUSTED_ORIGINS = list(CSRF_TRUSTED_ORIGINS)
+
+# Automatically trust Hugging Face subdomains
+if 'https://*.hf.space' not in CSRF_TRUSTED_ORIGINS:
+    CSRF_TRUSTED_ORIGINS.append('https://*.hf.space')
+
 # Database configuration for production
 # Using dj_database_url to parse the DATABASE_URL environment variable
 DATABASES = {
@@ -29,6 +40,7 @@ DATABASES = {
 }
 
 # Security settings
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
 SECURE_SSL_REDIRECT = config('SECURE_SSL_REDIRECT', default=True, cast=bool)
