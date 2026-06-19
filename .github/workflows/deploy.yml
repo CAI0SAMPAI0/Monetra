@@ -19,8 +19,8 @@ jobs:
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
           # Defina aqui o seu usuário e o nome do seu Space no Hugging Face
-          HF_USERNAME: "CAI0SAMPAI0"
-          HF_SPACE_NAME: "Monetra"
+          HF_USERNAME: "caio007"
+          HF_SPACE_NAME: "monetra"
         run: |
           # Empurra o commit atual (HEAD) diretamente para a branch main do Hugging Face
           git push --force https://$HF_USERNAME:$HF_TOKEN@huggingface.co/spaces/$HF_USERNAME/$HF_SPACE_NAME HEAD:main
