@@ -23,6 +23,13 @@ def run_chatbot_agent(user_id: int, user_input: str) -> str:
         """
         return get_user_financial_data(user_id)
 
+    @tool(name="get_my_financial_data()")
+    def get_my_financial_data_alias() -> str:
+        """
+        Alias para get_my_financial_data. Use esta ferramenta se preferir o formato com parênteses.
+        """
+        return get_user_financial_data(user_id)
+
     @tool
     def get_financial_market_data(query: str = None) -> str:
         """
@@ -33,7 +40,19 @@ def run_chatbot_agent(user_id: int, user_input: str) -> str:
         """
         return get_market_data_summary(query)
 
-    tools = [get_my_financial_data, get_financial_market_data]
+    @tool(name="get_financial_market_data()")
+    def get_financial_market_data_alias(query: str = None) -> str:
+        """
+        Alias para get_financial_market_data. Use esta ferramenta se preferir o formato com parênteses.
+        """
+        return get_market_data_summary(query)
+
+    tools = [
+        get_my_financial_data,
+        get_my_financial_data_alias,
+        get_financial_market_data,
+        get_financial_market_data_alias
+    ]
 
     # Groq API configuration using ChatOpenAI
     api_key = config('GROQ_API_KEY', default='')
@@ -72,6 +91,7 @@ Instruções cruciais de formatação:
 1. Sempre use uma das ferramentas acima para coletar dados reais antes de dar a resposta final se o usuário perguntar sobre o saldo dele, transações, contas ou cotações de mercado.
 2. Cada linha com "Thought:" deve ser seguida imediatamente por uma "Action:" e "Action Input:", OU por uma "Thought: Eu agora sei a resposta final" e depois "Final Answer:". Nunca pule passos.
 3. Nunca retorne termos técnicos como "Thought:", "Action:", "Action Input:" ou "Observation:" na resposta final (Final Answer). A resposta final deve ser um texto limpo, empático e amigável direcionado ao usuário em Português (Brasil).
+4. Ao preencher o campo "Action:", use exatamente o nome da ferramenta (ex: "get_my_financial_data"), NUNCA adicione parênteses "()" (ex: NÃO use "get_my_financial_data()").
 
 Inicie!
 
