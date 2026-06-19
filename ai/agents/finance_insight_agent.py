@@ -22,7 +22,7 @@ def run_financial_agent(user_id: int, prompt_input: str) -> str:
         """
         return get_user_financial_data(user_id)
 
-    @tool(name="get_my_financial_data()")
+    @tool("get_my_financial_data()")
     def get_my_financial_data_alias() -> str:
         """
         Alias para get_my_financial_data. Use esta ferramenta se preferir o formato com parênteses.
@@ -39,7 +39,7 @@ def run_financial_agent(user_id: int, prompt_input: str) -> str:
         """
         return get_market_data_summary(query)
 
-    @tool(name="get_financial_market_data()")
+    @tool("get_financial_market_data()")
     def get_financial_market_data_alias(query: str = None) -> str:
         """
         Alias para get_financial_market_data. Use esta ferramenta se preferir o formato com parênteses.
