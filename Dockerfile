@@ -43,7 +43,7 @@ RUN SECRET_KEY=dummy_secret_key_for_collectstatic \
     python manage.py collectstatic --noinput
 
 # Run the app under a non-privileged user for security
-RUN useradd -U appuser && chown -R appuser:appuser /app
+RUN useradd -m -U appuser && chown -R appuser:appuser /app
 USER appuser
 
 # Expose Django port
