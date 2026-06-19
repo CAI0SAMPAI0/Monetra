@@ -51,5 +51,5 @@ USER appuser
 # Expose Django port
 EXPOSE 8000
 
-# Start application with gunicorn
-CMD ["gunicorn", "core.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "3"]
+# Start application with gunicorn after running migrations
+CMD ["sh", "-c", "python manage.py migrate && gunicorn core.wsgi:application --bind 0.0.0.0:8000 --workers 3"]

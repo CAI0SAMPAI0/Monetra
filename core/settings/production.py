@@ -18,6 +18,16 @@ if 'RENDER_EXTERNAL_HOSTNAME' in os.environ:
     if render_host not in ALLOWED_HOSTS:
         ALLOWED_HOSTS.append(render_host)
 
+# Auto-add Hugging Face host if running on Hugging Face Spaces
+if 'SPACE_HOST' in os.environ:
+    space_host = os.environ['SPACE_HOST']
+    if isinstance(ALLOWED_HOSTS, str):
+        ALLOWED_HOSTS = [ALLOWED_HOSTS] if ALLOWED_HOSTS else []
+    elif not isinstance(ALLOWED_HOSTS, list):
+        ALLOWED_HOSTS = list(ALLOWED_HOSTS)
+    if space_host not in ALLOWED_HOSTS:
+        ALLOWED_HOSTS.append(space_host)
+
 # Configure CSRF trusted origins for production (needed for form submissions)
 CSRF_TRUSTED_ORIGINS = config('CSRF_TRUSTED_ORIGINS', cast=Csv(), default='')
 if isinstance(CSRF_TRUSTED_ORIGINS, str):
