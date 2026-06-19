@@ -7,10 +7,10 @@ from langchain_core.prompts import PromptTemplate
 logger = logging.getLogger(__name__)
 
 
-def run_chatbot_agent(user_id: int, user_input: str) -> str:
+def run_financial_agent(user_id: int, prompt_input: str) -> str:
     """
-    Executa o agente financeiro do chatbot com Langchain 1.0 e Groq (llama-3.3-70b-versatile).
-    Usa tools closure-bound para garantir isolamento absoluto do usuário.
+    Executa o agente financeiro do Langchain para análises em lote/dashboard.
+    Usa o modelo llama-3.3-70b-versatile na API da Groq.
     """
     from chatbot.services.tools import get_user_financial_data, get_market_data_summary
     from langchain_core.tools import tool
@@ -19,7 +19,6 @@ def run_chatbot_agent(user_id: int, user_input: str) -> str:
     def get_my_financial_data() -> str:
         """
         Use esta ferramenta para obter todas as informações sobre as suas contas, saldos, categorias e histórico de transações recentes.
-        Não requer parâmetros.
         """
         return get_user_financial_data(user_id)
 
@@ -50,28 +49,28 @@ def run_chatbot_agent(user_id: int, user_input: str) -> str:
         max_tokens=1500,
     )
 
-    template = """Você é o MonetraBot, um assistente financeiro pessoal de inteligência artificial do sistema Monetra/Finanpy.
+    template = """Você é o FynanBot, um consultor financeiro pessoal de inteligência artificial especializado do sistema Finanpy.
 Você é extremamente amigável, prestativo, educado e profissional. Suas análises devem ser baseadas nos dados do usuário e do mercado.
 
 Você tem acesso às seguintes ferramentas (tools):
 
 {tools}
 
-Use o seguinte formato de raciocínio estrito:
+Use o seguinte formato de raciocínio:
 
 Question: a pergunta ou solicitação que você deve responder
-Thought: você deve sempre pensar sobre o que fazer e quais ferramentas usar. Sempre escreva "Thought:" no início de cada linha de pensamento.
+Thought: você deve sempre pensar sobre o que fazer e quais ferramentas usar
 Action: a ação a tomar, deve ser uma de [{tool_names}]
 Action Input: a entrada para a ação
 Observation: o resultado da ação
-... (este raciocínio de Thought/Action/Action Input/Observation pode se repetir no máximo 3 vezes)
+... (este pensamento/ação/entrada/observação pode se repetir conforme necessário)
 Thought: Eu agora sei a resposta final
-Final Answer: a resposta final e detalhada em Português do Brasil para o usuário, contendo dicas e insights úteis baseados nos dados.
+Final Answer: a resposta final e detalhada em Português do Brasil para o usuário, incluindo dicas e insights de forma empática e prática.
 
-Instruções cruciais de formatação:
-1. Sempre use uma das ferramentas acima para coletar dados reais antes de dar a resposta final se o usuário perguntar sobre o saldo dele, transações, contas ou cotações de mercado.
-2. Cada linha com "Thought:" deve ser seguida imediatamente por uma "Action:" e "Action Input:", OU por uma "Thought: Eu agora sei a resposta final" e depois "Final Answer:". Nunca pule passos.
-3. Nunca retorne termos técnicos como "Thought:", "Action:", "Action Input:" ou "Observation:" na resposta final (Final Answer). A resposta final deve ser um texto limpo, empático e amigável direcionado ao usuário em Português (Brasil).
+Atenção:
+- Forneça dicas e insights práticos baseados estritamente nos dados de transação ou saldo do usuário, cruzando com cotações ou indicadores se relevante.
+- Seja empático e encorajador.
+- Nunca exponha termos técnicos de Thought/Action/Observation na resposta final.
 
 Inicie!
 
@@ -86,15 +85,14 @@ Thought:{agent_scratchpad}"""
 
     try:
         response = executor.invoke({
-            'input': user_input,
+            'input': prompt_input,
             'agent_scratchpad': []
         })
-        return response.get('output', 'Não foi possível obter uma resposta do assistente.')
+        return response.get('output', 'Não foi possível obter uma análise do assistente.')
     except Exception as e:
         logger.error(f'Error executing agent: {e}')
-        # Fallback response complying with RNF024
         return (
-            'Olá! Tive uma instabilidade temporária ao me conectar ao meu cérebro de IA (Groq). '
-            'No entanto, analisando os dados locais do seu perfil, lembre-se de manter o controle '
-            'das suas contas e registrar todas as suas receitas e despesas!'
+            'Olá! Identifiquei uma instabilidade ao conectar com meu cérebro de IA da Groq. '
+            'Com base em seus registros locais de contas e transações, recomendamos continuar '
+            'gerenciando seu saldo com disciplina e evitar despesas não-essenciais.'
         )

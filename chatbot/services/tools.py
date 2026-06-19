@@ -71,10 +71,31 @@ def get_user_financial_data(user_id: int) -> str:
         return f"Erro ao coletar dados financeiros locais: {str(e)}"
 
 
-def get_market_data_summary() -> str:
+def get_market_data_summary(query: str = None) -> str:
     """
     Recupera e formata dados de mercado em tempo real.
+    Se 'query' for fornecido, busca especificamente os dados da criptomoeda, moeda ou ação pesquisada.
     """
+    from chatbot.services.market import search_market_asset
+    
+    if query:
+        try:
+            asset_info = search_market_asset(query)
+            if asset_info and asset_info.get('price') != 'Indisponível':
+                return (
+                    f"=== COTAÇÃO E ANÁLISE DE ATIVO EM TEMPO REAL ===\n"
+                    f"Ativo: {asset_info.get('name')} ({asset_info.get('symbol')})\n"
+                    f"Preço Atual: {asset_info.get('price')}\n"
+                    f"Variação de Hoje: {asset_info.get('variation')}\n"
+                    f"Máxima do Dia: {asset_info.get('high')}\n"
+                    f"Mínima do Dia: {asset_info.get('low')}\n"
+                    f"Fonte de Dados: {asset_info.get('source')}\n"
+                )
+            else:
+                return f"Não foi possível encontrar a cotação em tempo real para o ativo '{query}'. Verifique o símbolo/nome."
+        except Exception as e:
+            return f"Erro ao pesquisar ativo específico '{query}': {str(e)}"
+
     try:
         data = fetch_realtime_market_data()
         
@@ -91,3 +112,4 @@ def get_market_data_summary() -> str:
         return summary
     except Exception as e:
         return f"Erro ao coletar dados de mercado: {str(e)}"
+

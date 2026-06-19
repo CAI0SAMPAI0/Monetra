@@ -87,6 +87,7 @@ def send_message(request):
         'analysis': {
             'summary': analysis.summary,
             'analysis_text': analysis.analysis_text,
-            'created_at': analysis.created_at.strftime('%d/%m/%Y %H:%M')
+            'created_at': analysis.created_at.strftime('%d/%m/%Y %H:%M'),
+            'market_data_snapshot': analysis.market_data_snapshot
         }
     })

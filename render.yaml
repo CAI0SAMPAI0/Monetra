@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: monetra
+    env: docker
+    plan: free
+    dockerfilePath: Dockerfile
+    # Runs database migrations automatically on every release before spinning up the container
+    releaseCommand: python manage.py migrate --noinput
+    envVars:
+      - key: DEBUG
+        value: "False"
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        sync: false # Set this to your Neon PostgreSQL connection string in the Render Dashboard
+      - key: SECURE_SSL_REDIRECT
+        value: "True"
+      - key: GROQ_API_KEY
+        sync: false # Set this to your Groq API key in the Render Dashboard

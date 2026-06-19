@@ -1113,7 +1113,7 @@ Todas as análises e conversas geradas serão armazenadas em uma tabela específ
 ### 13.2 Arquitetura da IA (Langchain 1.0 & Groq)
 
 - **Framework**: Langchain 1.0 (utilizando padrões modernos de LCEL e `create_react_agent`).
-- **Provedor e Modelo**: API da Groq com o modelo `gpt-oss-120b`.
+- **Provedor e Modelo**: API da Groq com o modelo `llama-3.3-70b-versatile`.
 - **Camada de Integração**: Toda a lógica de negócio, agentes e views ficará na app `chatbot`.
 - **Tools do Agente**:
   1. `get_user_financial_data`: Consulta os dados financeiros consolidados do usuário logado (saldo, receitas, despesas, transações recentes) usando o Django ORM com filtro rigoroso de `user_id`.
@@ -1206,7 +1206,7 @@ chatbot/
 ### 13.7 Requisitos Funcionais (Chatbot IA)
 
 - **RF043**: O sistema deve fornecer uma página de chatbot acessível apenas a usuários autenticados.
-- **RF044**: O chatbot deve utilizar Langchain 1.0 com Groq e modelo `gpt-oss-120b`.
+- **RF044**: O chatbot deve utilizar Langchain 1.0 com Groq e modelo `llama-3.3-70b-versatile`.
 - **RF045**: O agente deve ter acesso a tools de leitura do banco do usuário logado (transações, saldo, categorias).
 - **RF046**: O agente deve ter acesso a uma tool para buscar cotações de câmbio, bolsa de valores e mercado imobiliário em tempo real.
 - **RF047**: Cada resposta contendo uma nova análise financeira do usuário deve ser armazenada no banco na tabela `ChatbotAnalysis`.

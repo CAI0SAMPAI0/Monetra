@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: fynanpy_db
+    restart: always
+    environment:
+      POSTGRES_DB: fynanpy
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - fynanpy_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d fynanpy"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: fynanpy_web
+    restart: always
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    environment:
+      - DATABASE_URL=${DATABASE_URL:-postgres://postgres:postgres@db:5432/fynanpy}
+      - SECRET_KEY=${SECRET_KEY:-default_insecure_secret_key_for_docker_compose}
+      - DEBUG=${DEBUG:-True}
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - fynanpy_network
+
+volumes:
+  postgres_data:
+
+networks:
+  fynanpy_network:
+    driver: bridge

@@ -4,7 +4,19 @@ import dj_database_url
 
 DEBUG = False
 
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv())
+import os
+
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv(), default='')
+
+# Auto-add Render external hostname if running on Render
+if 'RENDER_EXTERNAL_HOSTNAME' in os.environ:
+    render_host = os.environ['RENDER_EXTERNAL_HOSTNAME']
+    if isinstance(ALLOWED_HOSTS, str):
+        ALLOWED_HOSTS = [ALLOWED_HOSTS] if ALLOWED_HOSTS else []
+    elif not isinstance(ALLOWED_HOSTS, list):
+        ALLOWED_HOSTS = list(ALLOWED_HOSTS)
+    if render_host not in ALLOWED_HOSTS:
+        ALLOWED_HOSTS.append(render_host)
 
 # Database configuration for production
 # Using dj_database_url to parse the DATABASE_URL environment variable

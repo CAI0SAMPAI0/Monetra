@@ -74,7 +74,7 @@ A integração com a Inteligência Artificial utiliza a biblioteca **LangChain 1
 
 ### Configuração do LLM (Groq / OpenAI)
 
-O agente utiliza a classe `ChatOpenAI` do pacote `langchain_openai`. Isso permite que possamos apontar o agente tanto para a **Groq API** (usando o modelo `gpt-oss-120b` ou similar de baixíssima latência) quanto para a própria **OpenAI** (usando o `GPT-5-mini` ou similar).
+O agente utiliza a classe `ChatOpenAI` do pacote `langchain_openai`. Isso permite que possamos apontar o agente tanto para a **Groq API** (usando o modelo `llama-3.3-70b-versatile` ou similar de baixíssima latência) quanto para a própria **OpenAI** (usando o `GPT-5-mini` ou similar).
 
 As chaves e variáveis de ambiente necessárias no `.env` são:
 

@@ -114,7 +114,7 @@ def get_llm():
     # Detecta qual provedor está configurado
     if config('GROQ_API_KEY', default=''):
         return ChatOpenAI(
-            model='gpt-oss-120b',
+            model='llama-3.3-70b-versatile',
             base_url=config('GROQ_BASE_URL', default='https://api.groq.com/openai/v1'),
             api_key=config('GROQ_API_KEY'),
             temperature=0.7,

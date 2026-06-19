@@ -25,6 +25,12 @@ Instruções de segurança da aplicação.
 ### 7. [Agente de IA Financeiro](./ai-finance-agent.md)
 Funcionamento do agente de IA financeiro, fluxo de análise, integração e comandos.
 
+### 8. [Guia de Deploy](./DEPLOY.md)
+Instruções para implantar a aplicação em produção.
+
+### 9. [Setup de Desenvolvimento](./setup.md)
+Guia passo a passo para configuração local nativa e via Docker.
+
 ---
 
 ## Visão Geral do Projeto
@@ -33,14 +39,17 @@ O Finanpy é um sistema de gestão de finanças pessoais que permite:
 - Gerenciar múltiplas contas bancárias
 - Categorizar transações financeiras
 - Visualizar entradas e saídas
-- Acompanhar saldo e balanço através de dashboard
+- Acompanhar saldo e balanço através de um dashboard interativo
+- Obter insights gerados por IA e conversar com o MonetraBot
 
 ### Stack Tecnológica
 
-- **Backend**: Python 3.13+ e Django 5+
+- **Backend**: Python 3.12+ e Django 6+
 - **Frontend**: Django Template Language + TailwindCSS
-- **Banco de Dados**: SQLite3
+- **Banco de Dados**: Neon PostgreSQL
+- **Integração de IA**: Langchain 1.0 e Groq API
 - **Autenticação**: Django Auth (nativo)
+- **Containerização**: Docker & Docker Compose
 
 ### Princípios do Projeto
 

@@ -1,9 +1,11 @@
+{% load static %}
 <nav class='bg-bg-secondary border-b border-bg-tertiary shadow-lg sticky top-0 z-50'>
     <div class='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
         <div class='flex items-center justify-between h-16'>
             <div class='flex items-center'>
-                <a href='{% url "users:home" %}' class='text-2xl font-bold text-accent-500 tracking-tight'>
-                    Monetra
+                <a href='{% url "users:home" %}' class='flex items-center space-x-2 text-2xl font-bold text-accent-500 tracking-tight'>
+                    <img src="{% static 'images/logo.png' %}" alt="Monetra" class="h-8 w-auto">
+                    <span>Monetra</span>
                 </a>
             </div>
             
