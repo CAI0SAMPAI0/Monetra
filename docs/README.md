@@ -22,6 +22,9 @@ Instruções para configurar o ambiente e iniciar o desenvolvimento.
 ### 6. [Segurança](./security.md)
 Instruções de segurança da aplicação.
 
+### 7. [Agente de IA Financeiro](./ai-finance-agent.md)
+Funcionamento do agente de IA financeiro, fluxo de análise, integração e comandos.
+
 ---
 
 ## Visão Geral do Projeto

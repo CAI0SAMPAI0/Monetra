@@ -197,3 +197,5 @@ Thumbs.db
 ### Frontend / Node ###
 node_modules/
 .npm/
+
+design_system/

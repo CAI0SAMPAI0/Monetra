@@ -1101,6 +1101,184 @@ rounded-2xl: 1rem      /* 16px */
 
 ---
 
+## 13. Agente de IA Financeiro
+
+### 13.1 Objetivo e Motivação
+
+Adicionar funcionalidade de **análises financeiras com Inteligência Artificial** ao Finanpy. Um agente de IA especializado em finanças pessoais analisará os dados do usuário (transações, receitas, despesas e categorias) e gerará **insights e dicas personalizadas**, fornecendo orientação proativa para tomadas de decisão financeira mais conscientes.
+
+**Motivação**: A maioria dos sistemas de finanças pessoais apenas exibe dados bruto. A diferenciação do Finanpy está em transformar dados em **inteligência acionável** por meio de IA, oferecendo análises individuais e contextualizadas sem exigir conhecimento financeiro do usuário.
+
+### 13.2 Fluxo Detalhado
+
+```mermaid
+flowchart TD
+    Start([Execucao: python manage.py run_finance_analysis]) --> LoadUsers[Carregar todos os usuarios ativos]
+    LoadUsers --> ForEachUser{Para cada usuario}
+    ForEachUser --> CollectData[Coletar dados financeiros do usuario]
+    CollectData --> GetTransactions[Buscar transacoes, contas e categorias]
+    GetTransactions --> BuildContext[Construir contexto estruturado para o agente]
+    BuildContext --> InvokeAgent[Invocar agente LangChain com tools]
+    InvokeAgent --> AgentTools{Agente usa tools}
+    AgentTools -->|Consultar transacoes| QueryTransactions[Query: Transaction.objects.filter]
+    AgentTools -->|Consultar contas| QueryAccounts[Query: Account.objects.filter]
+    AgentTools -->|Consultar categorias| QueryCategories[Query: Category.objects.filter]
+    AgentTools -->|Consultar receitas| QueryIncomes[Query: Incomes aggregate]
+    AgentTools -->|Consultar despesas| QueryExpenses[Query: Expenses aggregate]
+    QueryTransactions --> GenerateAnalysis
+    QueryAccounts --> GenerateAnalysis
+    QueryCategories --> GenerateAnalysis
+    QueryIncomes --> GenerateAnalysis
+    QueryExpenses --> GenerateAnalysis
+    GenerateAnalysis[Agente gera analise personalizada] --> PersistAnalysis[Persistir analise no modelo AIAnalysis]
+    PersistAnalysis --> MarkLatest[Marcar como analise mais recente is_latest=True]
+    MarkLatest --> ForEachUser
+    ForEachUser -->|Proximo usuario| CollectData
+    ForEachUser -->|Fim| DashboardUpdate[Dashboard le ultima analise do usuario]
+    DashboardUpdate --> DisplayInsight[Exibir card de insight no dashboard]
+
+    style Start fill:#2d5a3d
+    style InvokeAgent fill:#1e3a5f
+    style GenerateAnalysis fill:#4a5d23
+    style PersistAnalysis fill:#2d5a3d
+    style DisplayInsight fill:#2d5a3d
+```
+
+**Fluxo resumido**:
+1. **Entrada**: Django Command `run_finance_analysis` e executado manualmente
+2. **Coleta**: Para cada usuario ativo, o agente utiliza tools para consultar transacoes, receitas, despesas e categorias via ORM Django
+3. **Analise**: O agente LangChain (modelo `gpt-oss-120b` via Groq API) processa os dados e gera insights personalizados
+4. **Armazenamento**: A analise e persistida no modelo `AIAnalysis` com historico; a analise mais recente e marcada com `is_latest=True`
+5. **Exibicao**: O dashboard do usuario exibe a ultima analise gerada em um card dedicado
+
+### 13.3 Estrutura de Dados e Modelo de Banco de Dados
+
+#### Modelo AIAnalysis
+
+```mermaid
+erDiagram
+    USER ||--o{ AIANALYSIS : has
+    AIANALYSIS {
+        int id PK
+        int user_id FK
+        text analysis_text
+        text summary
+        boolean is_latest
+        datetime created_at
+        datetime updated_at
+    }
+```
+
+**Campos**:
+
+| Campo | Tipo | Descricao | Obrigatorio |
+|-------|------|-----------|-------------|
+| user | ForeignKey(User) | Usuario dono da analise | Sim |
+| analysis_text | TextField | Texto completo da analise gerada pela IA | Sim |
+| summary | CharField(max_length=255) | Resumo curto para exibicao no dashboard | Sim |
+| is_latest | BooleanField | Indica se e a analise mais recente do usuario | Sim (default=True) |
+| created_at | DateTimeField | Data de criacao | Auto |
+| updated_at | DateTimeField | Data de atualizacao | Auto |
+
+**Comportamento**:
+- Ao criar nova analise, `is_latest=True` na nova e `is_latest=False` nas anteriores do mesmo usuario
+- Historico completo preservado para comparacao temporal
+- Deletado automaticamente ao deletar usuario (CASCADE)
+
+### 13.4 Tecnologias e Dependencias
+
+| Tecnologia | Versao | Funcao |
+|------------|--------|--------|
+| LangChain | 1.0+ | Framework de orquestracao do agente de IA |
+| langchain-openai | Latest | Integracao com API compativel com OpenAI (Groq/OpenAI) |
+| langchain-community | Latest | Tools e integracoes comunitarias |
+| Groq API / OpenAI API | - | Provedores de LLM configuraveis |
+| Modelo Padrao | gpt-oss-120b / GPT-5-mini | Modelos de linguagem para analise de insights |
+
+**Configuracao da API**:
+- O sistema e flexivel e permite usar o provedor **Groq** (modelo `gpt-oss-120b`) ou **OpenAI** (modelo `GPT-5-mini` ou similar).
+- **Para Groq**:
+  - `GROQ_API_KEY`: Chave de API no `.env`
+  - `GROQ_BASE_URL`: `https://api.groq.com/openai/v1` (endpoint compativel com OpenAI)
+- **Para OpenAI**:
+  - `OPENAI_API_KEY`: Chave de API no `.env`
+- A integracao e feita via classe `ChatOpenAI` do `langchain_openai` parametrizada pelas variaveis do `.env`.
+
+### 13.5 Estrutura de Arquivos e Responsabilidades
+
+```
+ai/
+├── __init__.py
+├── agents/
+│   ├── __init__.py
+│   ├── finance_insight_agent.py      # Agente LangChain que faz as analises financeiras
+│   └── ai_integration_expert.md      # Documento de referencia tecnica para criacao de agentes de IA
+├── models.py                         # Modelo AIAnalysis
+├── services/
+│   ├── __init__.py
+│   └── analysis_service.py           # Orquestra analise: coleta dados, invoca agente, persiste resultado
+├── management/
+│   ├── __init__.py
+│   └── commands/
+│       ├── __init__.py
+│       └── run_finance_analysis.py   # Django Command para executar a analise
+├── admin.py
+├── apps.py
+└── views.py
+```
+
+**Responsabilidades por modulo**:
+
+| Modulo | Responsabilidade |
+|--------|-----------------|
+| `models.py` | Definicao do modelo `AIAnalysis` com campos de analise e controle de historico |
+| `agents/finance_insight_agent.py` | Definicao do agente LangChain com system prompt, tools de consulta ao banco e logica de invocacao |
+| `services/analysis_service.py` | Camada de servico que orquestra: coleta dados do usuario, invoca o agente, persiste resultado |
+| `management/commands/run_finance_analysis.py` | Command Django que itera sobre usuarios e dispara a analise via service |
+
+### 13.6 Execucao via Django Command
+
+**Comando**:
+```bash
+python manage.py run_finance_analysis
+```
+
+**Comportamento**:
+1. Carrega todos os usuarios ativos do sistema
+2. Para cada usuario, chama o `analysis_service` para gerar a analise
+3. O service coleta dados, invoca o agente de IA e persiste o resultado
+4. Exibe progresso no console (log por usuario)
+5. Ao final, exibe resumo: X usuarios processados, Y analises geradas, Z erros
+
+**Opcoes futuras** (nao implementadas nesta sprint):
+- `--user_id`: Executar analise para um usuario especifico
+- `--force`: Re-gerar analise mesmo se ja existir uma recente
+
+### 13.7 Requisitos Funcionais - IA Financeira
+
+- RF043: Sistema deve gerar analises financeiras personalizadas por usuario via agente de IA
+- RF044: Sistema deve armazenar historico de analises no modelo AIAnalysis
+- RF045: Sistema deve marcar a analise mais recente com `is_latest=True`
+- RF046: Sistema deve exibir a ultima analise no dashboard do usuario
+- RF047: Agente de IA deve ter tools para consultar transacoes, receitas, despesas e categorias do usuario
+- RF048: Execucao do agente deve ser feita via Django Command `run_finance_analysis`
+
+### 13.8 Requisitos Nao-Funcionais - IA Financeira
+
+- RNF021: Analise deve ser gerada em ate 30 segundos por usuario
+- RNF022: Dados de um usuario nao devem ser expostos na analise de outro
+- RNF023: Chave de API Groq deve ser armazenada exclusivamente em variavel de ambiente
+- RNF024: Falhas na API da Groq nao devem interromper o processo para os demais usuarios
+
+### 13.9 Limitacoes desta Sprint
+
+- Nenhum endpoint HTTP sera criado
+- Nenhum teste automatizado sera criado para a app `ai`
+- Nenhum agendamento automatico (celery, cron) sera implementado
+- A execucao e exclusivamente manual via Django Command
+
+---
+
 ## Conclusão
 
 Este PRD fornece uma estrutura completa e detalhada para o desenvolvimento do Finanpy. As sprints estão organizadas de forma lógica, começando pela infraestrutura básica e autenticação, passando pelas funcionalidades core (contas, categorias, transações), e finalizando com dashboard, refinamentos e preparação para produção.

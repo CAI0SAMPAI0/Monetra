@@ -10,6 +10,7 @@ finanpy/
 ├── accounts/          # Contas bancárias
 ├── categories/        # Categorias de transações
 ├── transactions/      # Transações financeiras
+├── ai/                # Agente de insights financeiros (LangChain 1.0) e histórico de análises
 ├── docs/              # Documentação do projeto
 ├── manage.py          # Script de gerenciamento Django
 ├── requirements.txt   # Dependências do projeto
@@ -113,6 +114,23 @@ Registro de transações financeiras.
 - `created_at`: Data de criação
 - `updated_at`: Data de atualização
 
+### ai/
+Módulo de Inteligência Artificial e insights financeiros.
+
+**Responsabilidades**:
+- Execução do agente de IA financeiro (LangChain 1.0)
+- Consulta de dados financeiros do usuário através de tools dedicadas
+- Armazenamento de análises financeiras e manutenção do histórico
+- Comando administrativo para execução em lote ou individual
+
+**Fields esperados** (`AIAnalysis`):
+- `user`: ForeignKey para User
+- `analysis_text`: Texto da análise
+- `summary`: Resumo curto
+- `is_latest`: Status da análise
+- `created_at`: Data de criação
+- `updated_at`: Data de atualização
+
 ## Arquitetura de Dados
 
 ### Relacionamentos
@@ -131,6 +149,10 @@ Transaction
 Category
   ↓ ManyToOne
 User
+
+User
+  ↓ OneToMany
+AIAnalysis
 ```
 
 ### Fluxo de Dados

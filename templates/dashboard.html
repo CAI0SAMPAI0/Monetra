@@ -3,15 +3,26 @@
 
 {% block title %}Dashboard{% endblock %}
 
+{% block extra_head %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
+
 {% block content %}
+<!-- Welcome & Action Buttons -->
 <div class='mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4'>
     <div>
         <h1 class='text-3xl font-bold text-white'>Olá, {{ user.get_full_name|default:user.email }}!</h1>
-        <p class='text-text-secondary'>Aqui está o resumo das suas finanças este mês.</p>
+        <p class='text-text-secondary font-medium'>Aqui está o panorama geral das suas finanças.</p>
     </div>
     <div class='flex flex-wrap gap-3'>
-        <a href='{% url "transactions:transaction_create" %}' class='px-4 py-2 bg-gradient-to-r from-primary-500 to-accent-500 text-white rounded-lg font-medium hover:opacity-90 transition-all duration-200 shadow-lg flex items-center gap-2'>
+        <button id="btn-ai-summary" class='px-4 py-2 bg-accent-500 text-[#2F160E] hover:bg-accent-600 rounded-lg font-bold transition-all duration-200 shadow-lg flex items-center gap-2'>
             <svg class='w-5 h-5' fill='none' viewBox='0 0 24 24' stroke='currentColor'>
+                <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z'></path>
+            </svg>
+            Gerar Resumo com IA
+        </button>
+        <a href='{% url "transactions:transaction_create" %}' class='px-4 py-2 bg-bg-secondary text-text-primary hover:bg-bg-tertiary border border-bg-tertiary rounded-lg font-bold transition-all duration-200 shadow-md flex items-center gap-2'>
+            <svg class='w-5 h-5 text-accent-500' fill='none' viewBox='0 0 24 24' stroke='currentColor'>
                 <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M12 4v16m8-8H4'></path>
             </svg>
             Nova Transação
@@ -19,106 +30,388 @@
     </div>
 </div>
 
-<!-- Stats Grid -->
-<div class='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8'>
-    <!-- Total Balance -->
-    <div class='bg-gradient-to-br from-primary-500 to-accent-500 rounded-xl p-6 shadow-xl'>
-        <span class='text-white/80 text-sm font-medium'>Saldo Total</span>
-        <p class='text-3xl font-bold text-white mt-1'>{{ total_balance|currency }}</p>
-    </div>
-
-    <!-- Monthly Income -->
-    <div class='bg-bg-secondary rounded-xl p-6 shadow-lg border border-bg-tertiary'>
-        <div class='flex items-center justify-between mb-2'>
-            <span class='text-text-secondary text-sm font-medium'>Entradas (Mês)</span>
-            <span class='text-success text-sm font-bold'>↑</span>
-        </div>
-        <p class='text-2xl font-bold text-text-primary'>{{ monthly_income|currency }}</p>
-    </div>
-
-    <!-- Monthly Expenses -->
-    <div class='bg-bg-secondary rounded-xl p-6 shadow-lg border border-bg-tertiary'>
-        <div class='flex items-center justify-between mb-2'>
-            <span class='text-text-secondary text-sm font-medium'>Saídas (Mês)</span>
-            <span class='text-error text-sm font-bold'>↓</span>
-        </div>
-        <p class='text-2xl font-bold text-text-primary'>{{ monthly_expense|currency }}</p>
-    </div>
-
-    <!-- Monthly Balance -->
-    <div class='bg-bg-secondary rounded-xl p-6 shadow-lg border border-bg-tertiary'>
-        <div class='flex items-center justify-between mb-2'>
-            <span class='text-text-secondary text-sm font-medium'>Balanço (Mês)</span>
-            <span class='{% if monthly_balance >= 0 %}text-success{% else %}text-error{% endif %} text-sm font-bold'>
-                {% if monthly_balance >= 0 %}↑{% else %}↓{% endif %}
-            </span>
-        </div>
-        <p class='text-2xl font-bold text-text-primary'>{{ monthly_balance|currency }}</p>
-    </div>
-</div>
-
-<div class='grid grid-cols-1 lg:grid-cols-3 gap-8'>
-    <!-- Recent Transactions -->
-    <div class='lg:col-span-2'>
-        <div class='flex items-center justify-between mb-4'>
-            <h2 class='text-xl font-bold text-white'>Transações Recentes</h2>
-            <a href='{% url "transactions:transaction_list" %}' class='text-accent-500 hover:text-accent-600 text-sm font-medium'>Ver Todas</a>
-        </div>
-        <div class='bg-bg-secondary rounded-xl shadow-lg border border-bg-tertiary overflow-hidden'>
-            <table class='w-full'>
-                <thead>
-                    <tr class='bg-bg-tertiary'>
-                        <th class='px-6 py-4 text-left text-text-secondary text-sm font-semibold'>Data</th>
-                        <th class='px-6 py-4 text-left text-text-secondary text-sm font-semibold'>Descrição</th>
-                        <th class='px-6 py-4 text-left text-text-secondary text-sm font-semibold'>Valor</th>
-                    </tr>
-                </thead>
-                <tbody class='divide-y divide-bg-tertiary'>
-                    {% for transaction in recent_transactions %}
-                    <tr class='hover:bg-bg-tertiary transition-all duration-150'>
-                        <td class='px-6 py-4 text-text-primary text-sm'>{{ transaction.transaction_date|date:"d/m/Y" }}</td>
-                        <td class='px-6 py-4'>
-                            <div class='text-text-primary font-medium text-sm'>{{ transaction.description|default:"Sem descrição" }}</div>
-                            <div class='text-text-muted text-xs'>{{ transaction.category.name }} • {{ transaction.account.name }}</div>
-                        </td>
-                        <td class='px-6 py-4 font-bold text-sm {% if transaction.transaction_type == "INCOME" %}text-success{% else %}text-error{% endif %}'>
-                            {% if transaction.transaction_type == "INCOME" %}+{% else %}-{% endif %} {{ transaction.amount|currency }}
-                        </td>
-                    </tr>
-                    {% empty %}
-                    <tr>
-                        <td colspan='3' class='px-6 py-12 text-center text-text-muted'>
-                            Nenhuma transação registrada ainda.
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    <!-- Category Summary Placeholder -->
-    <div>
-        <h2 class='text-xl font-bold text-white mb-4'>Resumo por Categoria</h2>
-        <div class='bg-bg-secondary rounded-xl p-6 shadow-lg border border-bg-tertiary'>
-            <div class='space-y-4'>
-                {% if category_summary %}
-                    {% for item in category_summary %}
-                    <div>
-                        <div class='flex justify-between text-sm mb-1'>
-                            <span class='text-text-secondary'>{{ item.category__name }}</span>
-                            <span class='text-text-primary font-medium'>{{ item.total|currency }}</span>
-                        </div>
-                        <div class='w-full bg-bg-tertiary rounded-full h-2'>
-                            <div class='bg-primary-500 h-2 rounded-full' style='width: {{ item.percentage }}%'></div>
-                        </div>
-                    </div>
-                    {% endfor %}
-                {% else %}
-                    <p class='text-text-muted text-center py-4'>Resumo por categorias indisponível no momento.</p>
-                {% endif %}
+<!-- AI Summary Box -->
+<div id="ai-summary-container" class="mb-8 hidden transition-all duration-300">
+    <div class="bg-accent-500/5 border border-accent-500/30 rounded-2xl p-6 shadow-xl relative overflow-hidden">
+        <div class="flex items-start gap-4">
+            <div class="w-12 h-12 rounded-xl bg-accent-500/10 flex items-center justify-center text-accent-500 shrink-0">
+                <svg class="w-6 h-6 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                </svg>
+            </div>
+            <div class="space-y-2 w-full">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-lg font-bold text-accent-500">Análise Financeira Inteligente (IA)</h3>
+                    <span class="text-xs bg-accent-500 text-[#2F160E] px-2 py-0.5 rounded font-extrabold uppercase tracking-wider">LangChain 1.0</span>
+                </div>
+                <div id="ai-summary-text" class="text-text-secondary text-sm leading-relaxed whitespace-pre-line">
+                    Gerando análise...
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+<!-- Numerical Indicators Grid -->
+<div class='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8'>
+    <!-- Total Balance -->
+    <div class='bg-bg-secondary rounded-xl p-6 shadow-lg border border-bg-tertiary hover:border-accent-500/30 transition-all duration-300'>
+        <span class='text-text-muted text-sm font-semibold uppercase tracking-wider block mb-1'>Saldo Total</span>
+        <h3 class='text-3xl font-bold text-accent-500'>{{ total_balance|currency }}</h3>
+        <p class='text-xs text-text-muted mt-2'>Consolidado de {{ active_accounts_count }} conta{{ active_accounts_count|pluralize }} ativa{{ active_accounts_count|pluralize }}</p>
+    </div>
+
+    <!-- Monthly Income -->
+    <div class='bg-bg-secondary rounded-xl p-6 shadow-lg border border-bg-tertiary hover:border-success/30 transition-all duration-300'>
+        <div class='flex items-center justify-between mb-1'>
+            <span class='text-text-muted text-sm font-semibold uppercase tracking-wider'>Entradas (Mês)</span>
+            <span class='w-6 h-6 rounded-full bg-success/10 text-success flex items-center justify-center font-bold text-xs'>↑</span>
+        </div>
+        <h3 class='text-3xl font-bold text-success'>{{ monthly_income|currency }}</h3>
+        <p class='text-xs text-text-muted mt-2'>Receitas registradas este mês</p>
+    </div>
+
+    <!-- Monthly Expenses -->
+    <div class='bg-bg-secondary rounded-xl p-6 shadow-lg border border-bg-tertiary hover:border-error/30 transition-all duration-300'>
+        <div class='flex items-center justify-between mb-1'>
+            <span class='text-text-muted text-sm font-semibold uppercase tracking-wider'>Saídas (Mês)</span>
+            <span class='w-6 h-6 rounded-full bg-error/10 text-error flex items-center justify-center font-bold text-xs'>↓</span>
+        </div>
+        <h3 class='text-3xl font-bold text-error'>{{ monthly_expense|currency }}</h3>
+        <p class='text-xs text-text-muted mt-2'>Despesas registradas este mês</p>
+    </div>
+
+    <!-- Monthly Balance -->
+    <div class='bg-bg-secondary rounded-xl p-6 shadow-lg border border-bg-tertiary hover:border-accent-500/30 transition-all duration-300'>
+        <div class='flex items-center justify-between mb-1'>
+            <span class='text-text-muted text-sm font-semibold uppercase tracking-wider'>Balanço (Mês)</span>
+            <span class='w-6 h-6 rounded-full {% if monthly_balance >= 0 %}bg-success/10 text-success{% else %}bg-error/10 text-error{% endif %} flex items-center justify-center font-bold text-xs'>
+                {% if monthly_balance >= 0 %}✓{% else %}!{% endif %}
+            </span>
+        </div>
+        <h3 class='text-3xl font-bold {% if monthly_balance >= 0 %}text-success{% else %}text-error{% endif %}'>
+            {{ monthly_balance|currency }}
+        </h3>
+        <p class='text-xs text-text-muted mt-2'>Saldo líquido do período</p>
+    </div>
+</div>
+
+<!-- Charts Row -->
+<div class='grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8'>
+    <!-- Daily Evolution Line Chart -->
+    <div class='bg-bg-secondary p-6 rounded-xl border border-bg-tertiary shadow-lg lg:col-span-2'>
+        <h2 class='text-lg font-bold text-white mb-4'>Evolução do Saldo Diário</h2>
+        <div class='h-64'>
+            <canvas id="chart-line-evolution"></canvas>
+        </div>
+    </div>
+
+    <!-- Expense Categories Pie Chart -->
+    <div class='bg-bg-secondary p-6 rounded-xl border border-bg-tertiary shadow-lg'>
+        <h2 class='text-lg font-bold text-white mb-4'>Distribuição de Gastos</h2>
+        <div class='h-64 flex items-center justify-center'>
+            <canvas id="chart-pie-expenses"></canvas>
+        </div>
+    </div>
+</div>
+
+<div class='grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8'>
+    <!-- Monthly Columns Chart -->
+    <div class='bg-bg-secondary p-6 rounded-xl border border-bg-tertiary shadow-lg lg:col-span-2'>
+        <h2 class='text-lg font-bold text-white mb-4'>Entradas vs Saídas Mensais</h2>
+        <div class='h-64'>
+            <canvas id="chart-column-history"></canvas>
+        </div>
+    </div>
+
+    <!-- Category Progress Summary -->
+    <div class='bg-bg-secondary p-6 rounded-xl border border-bg-tertiary shadow-lg'>
+        <h2 class='text-lg font-bold text-white mb-4'>Resumo por Categoria</h2>
+        <div class='space-y-4 max-h-64 overflow-y-auto pr-2'>
+            {% for item in category_summary %}
+            <div>
+                <div class='flex justify-between text-sm mb-1'>
+                    <span class='text-text-secondary'>{{ item.category__name }}</span>
+                    <span class='text-text-primary font-bold'>{{ item.total|currency }}</span>
+                </div>
+                <div class='w-full bg-bg-tertiary rounded-full h-2'>
+                    <div class='h-2 rounded-full' style='width: {{ item.percentage }}%; background-color: {{ item.category__color|default:"#D4AF37" }};'></div>
+                </div>
+            </div>
+            {% empty %}
+            <p class='text-text-muted text-center py-12'>Sem despesas registradas.</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<!-- Recent Transactions -->
+<div class='bg-bg-secondary rounded-xl shadow-lg border border-bg-tertiary overflow-hidden'>
+    <div class='px-6 py-4 border-b border-bg-tertiary flex items-center justify-between'>
+        <h2 class='text-lg font-bold text-white'>Últimas Transações</h2>
+        <a href='{% url "transactions:transaction_list" %}' class='text-accent-500 hover:text-accent-600 text-sm font-semibold transition-colors'>Ver Todas</a>
+    </div>
+    <table class='w-full'>
+        <thead>
+            <tr class='bg-bg-tertiary/50'>
+                <th class='px-6 py-4 text-left text-text-secondary text-sm font-semibold'>Data</th>
+                <th class='px-6 py-4 text-left text-text-secondary text-sm font-semibold'>Descrição</th>
+                <th class='px-6 py-4 text-left text-text-secondary text-sm font-semibold'>Valor</th>
+            </tr>
+        </thead>
+        <tbody class='divide-y divide-bg-tertiary'>
+            {% for transaction in recent_transactions %}
+            <tr class='hover:bg-bg-tertiary/30 transition-all duration-150'>
+                <td class='px-6 py-4 text-text-primary text-sm'>{{ transaction.transaction_date|date:"d/m/Y" }}</td>
+                <td class='px-6 py-4'>
+                    <div class='text-text-primary font-medium text-sm'>{{ transaction.description|default:"Sem descrição" }}</div>
+                    <div class='text-text-muted text-xs'>{{ transaction.category.name }} • {{ transaction.account.name }}</div>
+                </td>
+                <td class='px-6 py-4 font-bold text-sm {% if transaction.transaction_type == "INCOME" %}text-success{% else %}text-error{% endif %}'>
+                    {% if transaction.transaction_type == "INCOME" %}+{% else %}-{% endif %} {{ transaction.amount|currency }}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan='3' class='px-6 py-12 text-center text-text-muted'>
+                    Nenhuma transação registrada.
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+{% load l10n %}
+{% localize off %}
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        
+        // -------------------------
+        // 1. Chart.js Configs
+        // -------------------------
+        
+        // Dark theme colors for Charts
+        const accentColor = '#D4AF37'; // Gold
+        const textMuted = '#9A8176';
+        const gridBorder = '#2b130c';
+        
+        // Line Chart (Daily Evolution)
+        const lineCtx = document.getElementById('chart-line-evolution').getContext('2d');
+        const lineData = [
+            {% for pt in daily_evolution %}
+                { x: '{{ pt.day }}', y: {{ pt.balance }} },
+            {% endfor %}
+        ];
+        
+        new Chart(lineCtx, {
+            type: 'line',
+            data: {
+                labels: lineData.map(d => d.x),
+                datasets: [{
+                    label: 'Saldo Acumulado',
+                    data: lineData.map(d => d.y),
+                    borderColor: accentColor,
+                    backgroundColor: 'rgba(212, 175, 55, 0.1)',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.3,
+                    pointBackgroundColor: accentColor
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    x: {
+                        grid: { color: gridBorder },
+                        ticks: { color: textMuted }
+                    },
+                    y: {
+                        grid: { color: gridBorder },
+                        ticks: { color: textMuted }
+                    }
+                }
+            }
+        });
+
+        // Pie Chart (Expenses by Category)
+        const pieCtx = document.getElementById('chart-pie-expenses').getContext('2d');
+        const pieLabels = [];
+        const pieValues = [];
+        const pieColors = [];
+        
+        {% for cat in category_summary %}
+            pieLabels.push('{{ cat.category__name }}');
+            pieValues.push({{ cat.total }});
+            pieColors.push('{{ cat.category__color|default:"#D4AF37" }}');
+        {% endfor %}
+        
+        new Chart(pieCtx, {
+            type: 'doughnut',
+            data: {
+                labels: pieLabels,
+                datasets: [{
+                    data: pieValues,
+                    backgroundColor: pieColors,
+                    borderWidth: 2,
+                    borderColor: '#2B130C' // Match Card backdrop
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: { color: '#f1f5f9' }
+                    }
+                }
+            }
+        });
+
+        // Column Chart (Monthly Incomes vs Expenses)
+        const columnCtx = document.getElementById('chart-column-history').getContext('2d');
+        const colLabels = [];
+        const colIncomes = [];
+        const colExpenses = [];
+        
+        {% for m in monthly_history %}
+            colLabels.push('{{ m.month }}');
+            colIncomes.push({{ m.income }});
+            colExpenses.push({{ m.expense }});
+        {% endfor %}
+
+        new Chart(columnCtx, {
+            type: 'bar',
+            data: {
+                labels: colLabels,
+                datasets: [
+                    {
+                        label: 'Entradas',
+                        data: colIncomes,
+                        backgroundColor: '#2EC47D',
+                        borderRadius: 6
+                    },
+                    {
+                        label: 'Saídas',
+                        data: colExpenses,
+                        backgroundColor: '#EF3823',
+                        borderRadius: 6
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        labels: { color: '#f1f5f9' }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: { color: gridBorder },
+                        ticks: { color: textMuted }
+                    },
+                    y: {
+                        grid: { color: gridBorder },
+                        ticks: { color: textMuted }
+                    }
+                }
+            }
+        });
+
+        // -------------------------
+        // 2. AI Summary AJAX Task
+        // -------------------------
+        const btnAI = document.getElementById("btn-ai-summary");
+        const containerAI = document.getElementById("ai-summary-container");
+        const textAI = document.getElementById("ai-summary-text");
+
+        btnAI.addEventListener("click", function () {
+            // Toastify info notification that analysis started
+            const loadingToast = Toastify({
+                text: "Processando dados financeiros com Inteligência Artificial...",
+                duration: -1, // Permanent until closed manually or via logic
+                close: false,
+                gravity: "top",
+                position: "right",
+                style: {
+                    background: "rgba(212, 175, 55, 0.9)",
+                    color: "#2F160E",
+                    fontWeight: "bold",
+                }
+            });
+            loadingToast.showToast();
+
+            // Disable button during task execution
+            btnAI.disabled = true;
+            btnAI.classList.add("opacity-50", "cursor-not-allowed");
+
+            // Display analysis card structure with loading placeholder
+            containerAI.classList.remove("hidden");
+            textAI.innerHTML = `<span class="animate-pulse">Calculando métricas da carteira e conectando com o agente financeiro LangChain...</span>`;
+
+            // AJAX call to background simulation endpoint
+            fetch("{% url 'ai:generate_summary' %}")
+                .then(response => response.json())
+                .then(data => {
+                    // Hide loading toast
+                    loadingToast.hideToast();
+                    
+                    if (data.status === 'success') {
+                        // Display AI summary result text
+                        textAI.innerHTML = data.summary;
+                        
+                        // Fire success toast notification
+                        Toastify({
+                            text: "Resumo com Inteligência Artificial concluído!",
+                            duration: 5000,
+                            close: true,
+                            gravity: "top",
+                            position: "right",
+                            style: {
+                                background: "#2EC47D",
+                                color: "#white",
+                                fontWeight: "bold",
+                            }
+                        }).showToast();
+                    } else {
+                        textAI.textContent = "Não foi possível gerar o resumo de IA no momento.";
+                    }
+                })
+                .catch(err => {
+                    loadingToast.hideToast();
+                    textAI.textContent = "Erro ao processar requisição.";
+                    console.error("Erro no resumo:", err);
+                    
+                    Toastify({
+                        text: "Erro ao conectar com o servidor.",
+                        duration: 4000,
+                        close: true,
+                        gravity: "top",
+                        position: "right",
+                        style: {
+                            background: "#EF3823",
+                            color: "white"
+                        }
+                    }).showToast();
+                })
+                .finally(() => {
+                    // Re-enable button
+                    btnAI.disabled = false;
+                    btnAI.classList.remove("opacity-50", "cursor-not-allowed");
+                });
+        });
+
+    });
+</script>
+{% endlocalize %}
 {% endblock %}

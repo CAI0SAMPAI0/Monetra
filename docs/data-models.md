@@ -18,6 +18,10 @@ Transaction
 Category
   ↓ ManyToOne
 User
+
+User
+  ↓ OneToMany
+AIAnalysis
 ```
 
 ## Models
@@ -36,6 +40,7 @@ Utiliza o model padrão do Django (`django.contrib.auth.models.User`).
 - OneToOne com `Profile`
 - OneToMany com `Account`
 - OneToMany com `Category`
+- OneToMany com `AIAnalysis`
 
 ---
 
@@ -258,6 +263,56 @@ class Transaction(models.Model):
 
 ---
 
+### AIAnalysis
+Análises e insights financeiros gerados por IA para o usuário.
+
+**App**: `ai`
+
+**Campos**:
+
+| Campo          | Tipo            | Descrição                                 | Obrigatório |
+|----------------|-----------------|-------------------------------------------|-------------|
+| user           | ForeignKey      | Relação com o User (on_delete=CASCADE)    | Sim         |
+| analysis_text  | TextField       | Conteúdo detalhado da análise/insight     | Sim         |
+| summary        | CharField       | Resumo curto para exibição no dashboard    | Sim         |
+| is_latest      | BooleanField    | Indica se é a análise mais recente        | Sim         |
+| created_at     | DateTimeField   | Data de criação                           | Auto        |
+| updated_at     | DateTimeField   | Data de última atualização                | Auto        |
+
+**Constraints**:
+- `user`: on_delete=CASCADE
+- `is_latest`: default=True
+
+**Comportamento**:
+- Sempre associado a um usuário específico.
+- Apenas uma análise por usuário deve ter `is_latest=True` de cada vez (o service cuida de atualizar os registros anteriores).
+- Histórico de análises é mantido para fins de auditoria e evolução temporal.
+
+**Exemplo**:
+```python
+class AIAnalysis(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    analysis_text = models.TextField()
+    summary = models.CharField(max_length=255)
+    is_latest = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-created_at']
+        verbose_name = 'AI Analysis'
+        verbose_name_plural = 'AI Analyses'
+        indexes = [
+            models.Index(fields=['user', 'is_latest']),
+            models.Index(fields=['user', '-created_at']),
+        ]
+
+    def __str__(self):
+        return f'Análise de {self.user.email} em {self.created_at.strftime("%d/%m/%Y")}'
+```
+
+---
+
 ## Relacionamentos Detalhados
 
 ### User → Profile (OneToOne)
@@ -274,6 +329,11 @@ class Transaction(models.Model):
 - Um usuário pode ter várias categorias
 - Uma categoria pertence a um único usuário
 - Deletar usuário deleta todas as categorias (CASCADE)
+
+### User → AIAnalysis (OneToMany)
+- Um usuário pode ter várias análises/insights da IA (histórico)
+- Cada análise pertence a um único usuário
+- Deletar usuário deleta todas as suas análises (CASCADE)
 
 ### Account → Transaction (OneToMany)
 - Uma conta pode ter várias transações
@@ -319,6 +379,12 @@ accounts = Account.objects.all()
 - `account` deve pertencer ao usuário logado
 - `category` deve pertencer ao usuário logado
 - `transaction_date` não pode ser futura (recomendado)
+
+#### AIAnalysis
+- `analysis_text` e `summary` não podem ser vazios
+- `user` deve corresponder ao usuário ativo analisado
+- Apenas um registro por usuário deve estar marcado com `is_latest=True` simultaneamente
+- Usuário não pode ver análises de outros usuários
 
 ### Cálculos
 

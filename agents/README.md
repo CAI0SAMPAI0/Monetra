@@ -9,6 +9,7 @@ Este diretório contém as definições e instruções para os agentes de IA esp
 | [**Backend Specialist**](backend.md) | Django, Python, SQLite | Criação de modelos, views, lógica de negócio e APIs. |
 | [**Frontend Specialist**](frontend.md) | DTL, TailwindCSS, UX/UI | Criação de templates, estilização, responsividade e interface. |
 | [**QA Specialist**](qa.md) | Playwright, Django Tests | Automação de testes, verificação de fluxos e validação de UI. |
+| [**AI Integration Expert**](ai_integration_expert.md) | LangChain 1.0, LLMs, MCP | Diretrizes, ferramentas e padrões para integração de agentes de IA no Django. |
 
 ## Como Trabalhar com os Agentes
 
