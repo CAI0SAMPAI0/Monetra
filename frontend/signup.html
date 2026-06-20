@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastrar - Monetra</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <link rel="stylesheet" href="static/css/styles.css">
+    <style>
+        body {
+            background-color: #080808;
+            color: #F1F5F9;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col font-sans">
+    
+    <!-- Navbar Placeholder -->
+    <div id="navbar-placeholder"></div>
+
+    <main class="flex-grow flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-md w-full space-y-8 bg-bg-secondary border border-bg-tertiary p-8 rounded-2xl shadow-xl">
+            <div class="text-center">
+                <h2 class="text-3xl font-extrabold text-white">Criar nova conta</h2>
+                <p class="mt-2 text-sm text-text-secondary">
+                    Ou <a href="login.html" class="font-medium text-accent-500 hover:text-accent-600">entre na sua conta existente</a>
+                </p>
+            </div>
+            <form id="signup-form" class="mt-8 space-y-6">
+                <div class="space-y-4">
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-text-secondary mb-1">E-mail</label>
+                        <input id="email" name="email" type="email" autocomplete="email" required 
+                            class="w-full px-4 py-3 bg-bg-secondary border border-bg-tertiary rounded-lg text-text-primary focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200" 
+                            placeholder="seuemail@exemplo.com">
+                    </div>
+                    <div>
+                        <label for="password" class="block text-sm font-medium text-text-secondary mb-1">Senha</label>
+                        <input id="password" name="password" type="password" required 
+                            class="w-full px-4 py-3 bg-bg-secondary border border-bg-tertiary rounded-lg text-text-primary focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200" 
+                            placeholder="Escolha uma senha forte">
+                    </div>
+                    <div>
+                        <label for="confirm-password" class="block text-sm font-medium text-text-secondary mb-1">Confirmar Senha</label>
+                        <input id="confirm-password" name="confirm-password" type="password" required 
+                            class="w-full px-4 py-3 bg-bg-secondary border border-bg-tertiary rounded-lg text-text-primary focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200" 
+                            placeholder="Repita a senha">
+                    </div>
+                </div>
+
+                <div id="error-message" class="text-error text-sm font-bold hidden"></div>
+
+                <div>
+                    <button type="submit" 
+                        class="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-bold rounded-lg text-[#080808] bg-accent-500 hover:bg-accent-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent-500 transition-all duration-200">
+                        Criar Conta
+                    </button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <!-- Footer Placeholder -->
+    <div id="footer-placeholder"></div>
+
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script src="static/js/common.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            await checkAuthAndSetup(false);
+
+            const signupForm = document.getElementById('signup-form');
+            const errorDiv = document.getElementById('error-message');
+
+            signupForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                errorDiv.classList.add('hidden');
+
+                const email = document.getElementById('email').value.trim();
+                const password = document.getElementById('password').value;
+                const confirmPassword = document.getElementById('confirm-password').value;
+
+                if (password !== confirmPassword) {
+                    errorDiv.textContent = 'As senhas não coincidem.';
+                    errorDiv.classList.remove('hidden');
+                    return;
+                }
+
+                try {
+                    const response = await fetch(`${BACKEND_URL}/api/auth/signup/`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ email, password }),
+                        credentials: 'include'
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        showToast('Conta criada com sucesso!');
+                        setTimeout(() => {
+                            window.location.href = 'dashboard.html';
+                        }, 1000);
+                    } else {
+                        errorDiv.textContent = data.error || 'Falha ao criar conta.';
+                        errorDiv.classList.remove('hidden');
+                    }
+                } catch (err) {
+                    console.error('Signup error:', err);
+                    errorDiv.textContent = 'Erro ao se conectar ao servidor backend.';
+                    errorDiv.classList.remove('hidden');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

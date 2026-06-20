@@ -10,32 +10,13 @@ logger = logging.getLogger(__name__)
 def run_financial_agent(user_id: int, prompt_input: str) -> str:
     """
     Executa o agente financeiro do Langchain para análises em lote/dashboard.
-    Usa o modelo llama-3.1-8b-instant na API da Groq.
+    Usa um único prompt estruturado com contexto pré-carregado para evitar limites de taxa (429) e timeouts.
     """
     from chatbot.services.tools import get_user_financial_data, get_market_data_summary
-    from langchain_core.tools import tool
 
-    @tool
-    def get_my_financial_data() -> str:
-        """
-        Use esta ferramenta para obter todas as informações sobre as suas contas, saldos, categorias e histórico de transações recentes.
-        """
-        return get_user_financial_data(user_id)
-
-    @tool
-    def get_financial_market_data(query: str = None) -> str:
-        """
-        Use esta ferramenta para obter cotações do mercado financeiro em tempo real.
-        Se nenhum parâmetro 'query' for fornecido, retorna o resumo geral do mercado (câmbio e índices).
-        Se um parâmetro 'query' for fornecido (ex: 'Bitcoin', 'BTC', 'PETR4', 'AAPL', 'USD'),
-        pesquisa especificamente o preço atual, variação e estatísticas desse ativo em tempo real.
-        """
-        return get_market_data_summary(query)
-
-    tools = [
-        get_my_financial_data,
-        get_financial_market_data
-    ]
+    # Coleta dados locais
+    financial_data = get_user_financial_data(user_id)
+    market_data = get_market_data_summary()
 
     # Groq API configuration using ChatOpenAI
     api_key = config('GROQ_API_KEY', default='')
@@ -53,47 +34,24 @@ def run_financial_agent(user_id: int, prompt_input: str) -> str:
         max_retries=2,
     )
 
-    template = """Você é o FynanBot, um consultor financeiro pessoal de inteligência artificial especializado do sistema Finanpy.
-Você é extremamente amigável, prestativo, educado e profissional. Suas análises devem ser baseadas nos dados do usuário e do mercado.
-
-Você tem acesso às seguintes ferramentas (tools):
-
-{tools}
-
-Use o seguinte formato de raciocínio:
-
-Question: a pergunta ou solicitação que você deve responder
-Thought: você deve sempre pensar sobre o que fazer e quais ferramentas usar
-Action: a ação a tomar, deve ser uma de [{tool_names}]
-Action Input: a entrada para a ação
-Observation: o resultado da ação
-... (este pensamento/ação/entrada/observação pode se repetir conforme necessário)
-Thought: Eu agora sei a resposta final
-Final Answer: a resposta final e detalhada em Português do Brasil para o usuário, incluindo dicas e insights de forma empática e prática.
-
-Atenção:
-- Ao escrever o campo "Action:", use exatamente o nome da ferramenta (ex: "get_my_financial_data"), sem adicionar parênteses "()" (ex: NÃO use "get_my_financial_data()").
-- Forneça dicas e insights práticos baseados estritamente nos dados de transação ou saldo do usuário, cruzando com cotações ou indicadores se relevante.
-- Seja empático e encorajador.
-- Nunca exponha termos técnicos de Thought/Action/Observation na resposta final.
-
-Inicie!
-
-Question: {input}
-Thought:{agent_scratchpad}"""
-
-    prompt = PromptTemplate.from_template(template)
-
-    # Build the ReAct agent
-    agent = create_react_agent(llm, tools, prompt)
-    executor = AgentExecutor(agent=agent, tools=tools, verbose=True, handle_parsing_errors=True)
+    system_instruction = (
+        "Você é o FynanBot, um consultor financeiro pessoal de inteligência artificial especializado do sistema Finanpy.\n"
+        "Você é extremamente amigável, prestativo, educado e profissional. Sua tarefa é fazer uma análise da saúde financeira do usuário baseando-se nos dados fornecidos.\n\n"
+        f"=== DADOS FINANCEIROS DO USUÁRIO ===\n{financial_data}\n\n"
+        f"=== DADOS DE MERCADO ATUAIS ===\n{market_data}\n\n"
+        "Instruções:\n"
+        "- Identifique padrões de consumo, áreas de desperdício e forneça 3 dicas práticas e empáticas em Português do Brasil.\n"
+        "- Seja empático e encorajador.\n"
+        "- Não invente dados."
+    )
 
     try:
-        response = executor.invoke({
-            'input': prompt_input,
-            'agent_scratchpad': []
-        })
-        return response.get('output', 'Não foi possível obter uma análise do assistente.')
+        messages = [
+            {"role": "system", "content": system_instruction},
+            {"role": "user", "content": prompt_input}
+        ]
+        response = llm.invoke(messages)
+        return response.content
     except Exception as e:
         logger.error(f'Error executing agent: {e}')
         return (
@@ -101,3 +59,4 @@ Thought:{agent_scratchpad}"""
             'Com base em seus registros locais de contas e transações, recomendamos continuar '
             'gerenciando seu saldo com disciplina e evitar despesas não-essenciais.'
         )
+

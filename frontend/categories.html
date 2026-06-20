@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciar Categorias - Monetra</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <link rel="stylesheet" href="static/css/styles.css">
+    <style>
+        body {
+            background-color: #080808;
+            color: #F1F5F9;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col font-sans">
+    
+    <!-- Navbar Placeholder -->
+    <div id="navbar-placeholder"></div>
+
+    <main class="flex-grow">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            
+            <!-- Header -->
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8 gap-4">
+                <div>
+                    <h1 class="text-3xl font-extrabold text-white tracking-tight">Suas Categorias</h1>
+                    <p class="text-text-secondary text-sm">Organize suas despesas e receitas em categorias coloridas.</p>
+                </div>
+                <div>
+                    <button id="open-add-modal-btn" class="px-4 py-2.5 bg-accent-500 hover:bg-accent-600 text-[#080808] font-bold rounded-lg transition-all shadow-lg flex items-center gap-2">
+                        <span>+ Nova Categoria</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Categories List Container -->
+            <div id="categories-container" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Categories load here -->
+                <div class="text-center text-text-muted text-sm py-8 col-span-3">Carregando categorias...</div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Modal Form (Add / Edit) -->
+    <div id="category-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-black/60 backdrop-blur-sm p-4">
+        <div class="bg-bg-secondary border border-bg-tertiary rounded-2xl w-full max-w-md p-6 space-y-6 shadow-2xl relative">
+            <div class="flex justify-between items-center border-b border-bg-tertiary pb-3">
+                <h3 id="modal-title" class="text-lg font-bold text-white">Nova Categoria</h3>
+                <button id="close-modal-btn" class="text-text-secondary hover:text-text-primary text-xl font-bold">&times;</button>
+            </div>
+            
+            <form id="category-form" class="space-y-4">
+                <input type="hidden" id="category-id">
+                
+                <div>
+                    <label for="name" class="block text-sm font-medium text-text-secondary mb-1">Nome da Categoria</label>
+                    <input id="name" type="text" required class="w-full px-4 py-2 bg-bg-secondary border border-bg-tertiary rounded-lg text-text-primary focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all" placeholder="Ex: Alimentação, Salário">
+                </div>
+                
+                <div>
+                    <label for="category_type" class="block text-sm font-medium text-text-secondary mb-1">Tipo</label>
+                    <select id="category_type" required class="w-full px-4 py-2 bg-bg-secondary border border-bg-tertiary rounded-lg text-text-primary focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all">
+                        <option value="EXPENSE">Saída (Despesa)</option>
+                        <option value="INCOME">Entrada (Receita)</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="color" class="block text-sm font-medium text-text-secondary mb-1">Cor Representativa</label>
+                    <div class="flex gap-3 items-center">
+                        <input id="color" type="color" required class="w-12 h-10 bg-transparent border-0 cursor-pointer rounded-lg" value="#667eea">
+                        <span class="text-xs text-text-secondary">Escolha uma cor para os gráficos</span>
+                    </div>
+                </div>
+
+                <div class="flex gap-3 pt-4 justify-end">
+                    <button type="button" id="cancel-modal-btn" class="px-4 py-2 bg-bg-tertiary border border-bg-tertiary text-white rounded-lg text-sm font-bold hover:bg-bg-tertiary/80 transition-all">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="px-4 py-2 bg-accent-500 hover:bg-accent-600 text-[#080808] rounded-lg text-sm font-bold transition-all shadow-md">
+                        Salvar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer Placeholder -->
+    <div id="footer-placeholder"></div>
+
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script src="static/js/common.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const user = await checkAuthAndSetup(true);
+            if (!user) return;
+
+            const container = document.getElementById('categories-container');
+            const modal = document.getElementById('category-modal');
+            const categoryForm = document.getElementById('category-form');
+            const modalTitle = document.getElementById('modal-title');
+            
+            const nameInput = document.getElementById('name');
+            const typeSelect = document.getElementById('category_type');
+            const colorInput = document.getElementById('color');
+            const categoryIdInput = document.getElementById('category-id');
+
+            // Load all categories
+            async function loadCategories() {
+                try {
+                    const res = await fetch(`${BACKEND_URL}/api/categories/`, { credentials: 'include' });
+                    if (!res.ok) throw new Error();
+                    const categories = await res.json();
+
+                    if (categories.length === 0) {
+                        container.innerHTML = `
+                            <div class="text-center text-text-muted text-sm py-12 col-span-3 border border-dashed border-bg-tertiary rounded-2xl">
+                                Nenhuma categoria cadastrada ainda. Clique em "+ Nova Categoria" para começar.
+                            </div>
+                        `;
+                    } else {
+                        container.innerHTML = categories.map(cat => `
+                            <div class="bg-bg-secondary border border-bg-tertiary rounded-2xl p-6 flex flex-col justify-between shadow-md space-y-4">
+                                <div class="space-y-1">
+                                    <div class="flex justify-between items-center">
+                                        <h3 class="text-lg font-bold text-white">${escapeHTML(cat.name)}</h3>
+                                        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded text-xs font-bold" style="background-color: ${cat.color}22; color: ${cat.color}">
+                                            <span class="w-1.5 h-1.5 rounded-full" style="background-color: ${cat.color}"></span>
+                                            ${cat.category_type_display}
+                                        </span>
+                                    </div>
+                                    <p class="text-xs text-text-secondary">Cor: <span class="font-mono uppercase">${cat.color}</span></p>
+                                </div>
+                                <div class="flex gap-2 pt-2 justify-end">
+                                    <button class="edit-btn px-3 py-1.5 bg-bg-tertiary hover:bg-bg-tertiary/70 rounded-lg text-xs font-bold text-white transition-all" data-id="${cat.id}">
+                                        Editar
+                                    </button>
+                                    <button class="delete-btn px-3 py-1.5 bg-error/10 hover:bg-error hover:text-white rounded-lg text-xs font-bold text-error transition-all border border-error/15" data-id="${cat.id}">
+                                        Excluir
+                                    </button>
+                                </div>
+                            </div>
+                        `).join('');
+
+                        // Attach listeners to buttons
+                        document.querySelectorAll('.edit-btn').forEach(btn => {
+                            btn.addEventListener('click', () => openEditModal(btn.dataset.id));
+                        });
+                        document.querySelectorAll('.delete-btn').forEach(btn => {
+                            btn.addEventListener('click', () => deleteCategory(btn.dataset.id));
+                        });
+                    }
+                } catch (e) {
+                    showToast('Erro ao carregar categorias.', 'error');
+                }
+            }
+
+            function escapeHTML(str) {
+                return str.replace(/[&<>'"]/g, tag => ({
+                    '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
+                }[tag] || tag));
+            }
+
+            // Modal Handlers
+            function openAddModal() {
+                modalTitle.textContent = 'Nova Categoria';
+                categoryIdInput.value = '';
+                categoryForm.reset();
+                modal.classList.remove('hidden');
+            }
+
+            async function openEditModal(id) {
+                try {
+                    const res = await fetch(`${BACKEND_URL}/api/categories/${id}/`, { credentials: 'include' });
+                    if (!res.ok) throw new Error();
+                    const cat = await res.json();
+
+                    modalTitle.textContent = 'Editar Categoria';
+                    categoryIdInput.value = cat.id;
+                    nameInput.value = cat.name;
+                    typeSelect.value = cat.category_type;
+                    colorInput.value = cat.color;
+
+                    modal.classList.remove('hidden');
+                } catch (e) {
+                    showToast('Erro ao buscar dados da categoria.', 'error');
+                }
+            }
+
+            function closeModal() {
+                modal.classList.add('hidden');
+            }
+
+            document.getElementById('open-add-modal-btn').addEventListener('click', openAddModal);
+            document.getElementById('close-modal-btn').addEventListener('click', closeModal);
+            document.getElementById('cancel-modal-btn').addEventListener('click', closeModal);
+
+            // Form Submit handler (Create / Update)
+            categoryForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const id = categoryIdInput.value;
+                const bodyData = {
+                    name: nameInput.value.trim(),
+                    category_type: typeSelect.value,
+                    color: colorInput.value
+                };
+
+                const url = id ? `${BACKEND_URL}/api/categories/${id}/` : `${BACKEND_URL}/api/categories/`;
+                const method = id ? 'PUT' : 'POST';
+
+                try {
+                    const csrfToken = await fetchCSRFToken();
+                    const res = await fetch(url, {
+                        method: method,
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': csrfToken
+                        },
+                        body: JSON.stringify(bodyData),
+                        credentials: 'include'
+                    });
+
+                    if (res.ok) {
+                        showToast(id ? 'Categoria atualizada com sucesso!' : 'Categoria criada com sucesso!');
+                        closeModal();
+                        await loadCategories();
+                    } else {
+                        const error = await res.json();
+                        showToast(error.error || 'Erro ao salvar categoria.', 'error');
+                    }
+                } catch (err) {
+                    showToast('Erro ao salvar categoria.', 'error');
+                }
+            });
+
+            // Delete handler
+            async function deleteCategory(id) {
+                if (!confirm('Deseja realmente excluir esta categoria? Isso afetará transações vinculadas a ela.')) return;
+                try {
+                    const csrfToken = await fetchCSRFToken();
+                    const res = await fetch(`${BACKEND_URL}/api/categories/${id}/`, {
+                        method: 'DELETE',
+                        headers: {
+                            'X-CSRFToken': csrfToken
+                        },
+                        credentials: 'include'
+                    });
+
+                    if (res.ok) {
+                        showToast('Categoria excluída com sucesso!');
+                        await loadCategories();
+                    } else {
+                        const error = await res.json();
+                        showToast(error.error || 'Erro ao excluir categoria.', 'error');
+                    }
+                } catch (e) {
+                    showToast('Erro ao excluir categoria.', 'error');
+                }
+            }
+
+            await loadCategories();
+        });
+    </script>
+</body>
+</html>

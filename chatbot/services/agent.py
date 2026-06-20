@@ -9,34 +9,25 @@ logger = logging.getLogger(__name__)
 
 def run_chatbot_agent(user_id: int, user_input: str) -> str:
     """
-    Executa o agente financeiro do chatbot com Langchain 1.0 e Groq (llama-3.1-8b-instant).
-    Usa tools closure-bound para garantir isolamento absoluto do usuário.
+    Executa o agente financeiro do chatbot com Groq (llama-3.1-8b-instant).
+    Usa um único prompt estruturado com contexto pré-carregado para evitar limites de taxa (429) e timeouts.
     """
     from chatbot.services.tools import get_user_financial_data, get_market_data_summary
-    from langchain_core.tools import tool
 
-    @tool
-    def get_my_financial_data() -> str:
-        """
-        Use esta ferramenta para obter todas as informações sobre as suas contas, saldos, categorias e histórico de transações recentes.
-        Não requer parâmetros.
-        """
-        return get_user_financial_data(user_id)
-
-    @tool
-    def get_financial_market_data(query: str = None) -> str:
-        """
-        Use esta ferramenta para obter cotações do mercado financeiro em tempo real.
-        Se nenhum parâmetro 'query' for fornecido, retorna o resumo geral do mercado (câmbio e índices).
-        Se um parâmetro 'query' for fornecido (ex: 'Bitcoin', 'BTC', 'PETR4', 'AAPL', 'USD'),
-        pesquisa especificamente o preço atual, variação e estatísticas desse ativo em tempo real.
-        """
-        return get_market_data_summary(query)
-
-    tools = [
-        get_my_financial_data,
-        get_financial_market_data
-    ]
+    # 1. Coleta dados locais do usuário e mercado upfront
+    financial_data = get_user_financial_data(user_id)
+    
+    # Tenta identificar se o usuário perguntou sobre um ativo específico
+    asset_query = None
+    user_words = user_input.lower().split()
+    keywords = ['petr4', 'vale3', 'itub4', 'bbas3', 'mglu3', 'wege3', 'btc', 'bitcoin', 'eth', 'ethereum', 'usd', 'dolar', 'dólar', 'eur', 'euro']
+    for word in user_words:
+        word_clean = ''.join(c for c in word if c.isalnum())
+        if word_clean in keywords:
+            asset_query = word_clean
+            break
+            
+    market_data = get_market_data_summary(asset_query)
 
     # Groq API configuration using ChatOpenAI
     api_key = config('GROQ_API_KEY', default='')
@@ -54,47 +45,24 @@ def run_chatbot_agent(user_id: int, user_input: str) -> str:
         max_retries=2,
     )
 
-    template = """Você é o MonetraBot, um assistente financeiro pessoal de inteligência artificial do sistema Monetra/Finanpy.
-Você é extremamente amigável, prestativo, educado e profissional. Suas análises devem ser baseadas nos dados do usuário e do mercado.
-
-Você tem acesso às seguintes ferramentas (tools):
-
-{tools}
-
-Use o seguinte formato de raciocínio estrito:
-
-Question: a pergunta ou solicitação que você deve responder
-Thought: você deve sempre pensar sobre o que fazer e quais ferramentas usar. Sempre escreva "Thought:" no início de cada linha de pensamento.
-Action: a ação a tomar, deve ser uma de [{tool_names}]
-Action Input: a entrada para a ação
-Observation: o resultado da ação
-... (este raciocínio de Thought/Action/Action Input/Observation pode se repetir no máximo 3 vezes)
-Thought: Eu agora sei a resposta final
-Final Answer: a resposta final e detalhada em Português do Brasil para o usuário, contendo dicas e insights úteis baseados nos dados.
-
-Instruções cruciais de formatação:
-1. Sempre use uma das ferramentas acima para coletar dados reais antes de dar a resposta final se o usuário perguntar sobre o saldo dele, transações, contas ou cotações de mercado.
-2. Cada linha com "Thought:" deve ser seguida imediatamente por uma "Action:" e "Action Input:", OU por uma "Thought: Eu agora sei a resposta final" e depois "Final Answer:". Nunca pule passos.
-3. Nunca retorne termos técnicos como "Thought:", "Action:", "Action Input:" ou "Observation:" na resposta final (Final Answer). A resposta final deve ser um texto limpo, empático e amigável direcionado ao usuário em Português (Brasil).
-4. Ao preencher o campo "Action:", use exatamente o nome da ferramenta (ex: "get_my_financial_data"), NUNCA adicione parênteses "()" (ex: NÃO use "get_my_financial_data()").
-
-Inicie!
-
-Question: {input}
-Thought:{agent_scratchpad}"""
-
-    prompt = PromptTemplate.from_template(template)
-
-    # Build the ReAct agent
-    agent = create_react_agent(llm, tools, prompt)
-    executor = AgentExecutor(agent=agent, tools=tools, verbose=True, handle_parsing_errors=True)
+    system_instruction = (
+        "Você é o MonetraBot, um assistente financeiro pessoal de inteligência artificial do sistema Monetra/Finanpy.\n"
+        "Você é extremamente amigável, prestativo, educado e profissional. Suas análises devem ser baseadas nos dados do usuário e do mercado fornecidos abaixo.\n\n"
+        f"=== DADOS FINANCEIROS DO USUÁRIO ===\n{financial_data}\n\n"
+        f"=== DADOS DE MERCADO ATUAIS ===\n{market_data}\n\n"
+        "Instruções cruciais:\n"
+        "1. Dê dicas e insights práticos e empáticos baseados diretamente nos dados do usuário.\n"
+        "2. Responda em Português do Brasil de forma limpa e objetiva, sem expor termos técnicos do prompt interno.\n"
+        "3. Não invente dados que não estão presentes no contexto."
+    )
 
     try:
-        response = executor.invoke({
-            'input': user_input,
-            'agent_scratchpad': []
-        })
-        return response.get('output', 'Não foi possível obter uma resposta do assistente.')
+        messages = [
+            {"role": "system", "content": system_instruction},
+            {"role": "user", "content": user_input}
+        ]
+        response = llm.invoke(messages)
+        return response.content
     except Exception as e:
         logger.error(f'Error executing agent: {e}')
         # Fallback response complying with RNF024
@@ -103,3 +71,4 @@ Thought:{agent_scratchpad}"""
             'No entanto, analisando os dados locais do seu perfil, lembre-se de manter o controle '
             'das suas contas e registrar todas as suas receitas e despesas!'
         )
+

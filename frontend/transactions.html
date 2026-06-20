@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciar Transações - Monetra</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <link rel="stylesheet" href="static/css/styles.css">
+    <style>
+        body {
+            background-color: #080808;
+            color: #F1F5F9;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col font-sans">
+    
+    <!-- Navbar Placeholder -->
+    <div id="navbar-placeholder"></div>
+
+    <main class="flex-grow">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            
+            <!-- Header -->
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8 gap-4">
+                <div>
+                    <h1 class="text-3xl font-extrabold text-white tracking-tight">Suas Transações</h1>
+                    <p class="text-text-secondary text-sm">Histórico completo de suas receitas e despesas.</p>
+                </div>
+                <div>
+                    <button id="open-add-modal-btn" class="px-4 py-2.5 bg-accent-500 hover:bg-accent-600 text-[#080808] font-bold rounded-lg transition-all shadow-lg flex items-center gap-2">
+                        <span>+ Nova Transação</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Transactions Table Card -->
+            <div class="bg-bg-secondary border border-bg-tertiary rounded-2xl p-6 overflow-hidden shadow-md">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="text-xs font-semibold text-text-secondary uppercase border-b border-bg-tertiary pb-3">
+                                <th class="py-3">Data</th>
+                                <th>Descrição</th>
+                                <th>Categoria</th>
+                                <th>Conta</th>
+                                <th>Tipo</th>
+                                <th class="text-right">Valor</th>
+                                <th class="text-center">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="transactions-table-body" class="divide-y divide-bg-tertiary/50 text-sm">
+                            <tr>
+                                <td colspan="7" class="py-8 text-center text-text-muted">Carregando transações...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Modal Form (Add / Edit) -->
+    <div id="transaction-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-black/60 backdrop-blur-sm p-4">
+        <div class="bg-bg-secondary border border-bg-tertiary rounded-2xl w-full max-w-md p-6 space-y-6 shadow-2xl relative">
+            <div class="flex justify-between items-center border-b border-bg-tertiary pb-3">
+                <h3 id="modal-title" class="text-lg font-bold text-white">Nova Transação</h3>
+                <button id="close-modal-btn" class="text-text-secondary hover:text-text-primary text-xl font-bold">&times;</button>
+            </div>
+            
+            <form id="transaction-form" class="space-y-4">
+                <input type="hidden" id="transaction-id">
+                
+                <div>
+                    <label for="description" class="block text-sm font-medium text-text-secondary mb-1">Descrição</label>
+                    <input id="description" type="text" required class="w-full px-4 py-2 bg-bg-secondary border border-bg-tertiary rounded-lg text-text-primary focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all" placeholder="Ex: Mercado, Assinatura Netflix">
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label for="transaction_type" class="block text-sm font-medium text-text-secondary mb-1">Tipo</label>
+                        <select id="transaction_type" required class="w-full px-4 py-2 bg-bg-secondary border border-bg-tertiary rounded-lg text-text-primary focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all">
+                            <option value="EXPENSE">Saída (Despesa)</option>
+                            <option value="INCOME">Entrada (Receita)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="amount" class="block text-sm font-medium text-text-secondary mb-1">Valor (R$)</label>
+                        <input id="amount" type="number" step="0.01" required class="w-full px-4 py-2 bg-bg-secondary border border-bg-tertiary rounded-lg text-text-primary focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all" placeholder="0,00">
+                    </div>
+                </div>
+
+                <div>
+                    <label for="transaction_date" class="block text-sm font-medium text-text-secondary mb-1">Data da Transação</label>
+                    <input id="transaction_date" type="date" required class="w-full px-4 py-2 bg-bg-secondary border border-bg-tertiary rounded-lg text-text-primary focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all">
+                </div>
+
+                <div>
+                    <label for="account" class="block text-sm font-medium text-text-secondary mb-1">Conta Vinculada</label>
+                    <select id="account" required class="w-full px-4 py-2 bg-bg-secondary border border-bg-tertiary rounded-lg text-text-primary focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all">
+                        <option value="">Carregando contas...</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="category" class="block text-sm font-medium text-text-secondary mb-1">Categoria</label>
+                    <select id="category" required class="w-full px-4 py-2 bg-bg-secondary border border-bg-tertiary rounded-lg text-text-primary focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all">
+                        <option value="">Carregando categorias...</option>
+                    </select>
+                </div>
+
+                <div class="flex gap-3 pt-4 justify-end">
+                    <button type="button" id="cancel-modal-btn" class="px-4 py-2 bg-bg-tertiary border border-bg-tertiary text-white rounded-lg text-sm font-bold hover:bg-bg-tertiary/80 transition-all">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="px-4 py-2 bg-accent-500 hover:bg-accent-600 text-[#080808] rounded-lg text-sm font-bold transition-all shadow-md">
+                        Salvar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer Placeholder -->
+    <div id="footer-placeholder"></div>
+
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script src="static/js/common.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const user = await checkAuthAndSetup(true);
+            if (!user) return;
+
+            const tbody = document.getElementById('transactions-table-body');
+            const modal = document.getElementById('transaction-modal');
+            const transactionForm = document.getElementById('transaction-form');
+            const modalTitle = document.getElementById('modal-title');
+            
+            const descriptionInput = document.getElementById('description');
+            const typeSelect = document.getElementById('transaction_type');
+            const amountInput = document.getElementById('amount');
+            const dateInput = document.getElementById('transaction_date');
+            const accountSelect = document.getElementById('account');
+            const categorySelect = document.getElementById('category');
+            const transactionIdInput = document.getElementById('transaction-id');
+
+            let accountsCached = [];
+            let categoriesCached = [];
+
+            // Helper format date
+            function formatDate(dateStr) {
+                const date = new Date(dateStr + 'T00:00:00');
+                return date.toLocaleDateString('pt-BR');
+            }
+
+            // Load selectors options (Accounts and Categories)
+            async function loadFormSelectors() {
+                try {
+                    const [accRes, catRes] = await Promise.all([
+                        fetch(`${BACKEND_URL}/api/accounts/`, { credentials: 'include' }),
+                        fetch(`${BACKEND_URL}/api/categories/`, { credentials: 'include' })
+                    ]);
+
+                    accountsCached = await accRes.json();
+                    categoriesCached = await catRes.json();
+
+                    accountSelect.innerHTML = '<option value="">Selecione uma conta</option>' + accountsCached.map(acc => `
+                        <option value="${acc.id}">${escapeHTML(acc.name)} (R$ ${acc.balance.toLocaleString('pt-BR', { minimumFractionDigits: 2 })})</option>
+                    `).join('');
+
+                    categorySelect.innerHTML = '<option value="">Selecione uma categoria</option>' + categoriesCached.map(cat => `
+                        <option value="${cat.id}">${escapeHTML(cat.name)} (${cat.category_type_display})</option>
+                    `).join('');
+
+                } catch (e) {
+                    console.error('Error loading form selectors:', e);
+                }
+            }
+
+            // Load transactions history
+            async function loadTransactions() {
+                try {
+                    const res = await fetch(`${BACKEND_URL}/api/transactions/`, { credentials: 'include' });
+                    if (!res.ok) throw new Error();
+                    const transactions = await res.json();
+
+                    if (transactions.length === 0) {
+                        tbody.innerHTML = `
+                            <tr>
+                                <td colspan="7" class="py-8 text-center text-text-muted">
+                                    Nenhuma transação registrada ainda.
+                                </td>
+                            </tr>
+                        `;
+                    } else {
+                        tbody.innerHTML = transactions.map(t => {
+                            const valueClass = t.transaction_type === 'INCOME' ? 'text-success' : 'text-error';
+                            const valuePrefix = t.transaction_type === 'INCOME' ? '+' : '-';
+                            return `
+                                <tr class="hover:bg-bg-tertiary/20">
+                                    <td class="py-4 text-text-secondary">${formatDate(t.transaction_date)}</td>
+                                    <td class="font-medium text-white">${escapeHTML(t.description || 'Sem descrição')}</td>
+                                    <td>
+                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold" style="background-color: ${t.category.color}22; color: ${t.category.color}">
+                                            <span class="w-1.5 h-1.5 rounded-full" style="background-color: ${t.category.color}"></span>
+                                            ${escapeHTML(t.category.name)}
+                                        </span>
+                                    </td>
+                                    <td class="text-text-secondary">${escapeHTML(t.account.name)}</td>
+                                    <td class="text-text-secondary">${t.transaction_type_display}</td>
+                                    <td class="text-right font-bold ${valueClass}">${valuePrefix} R$ ${t.amount.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</td>
+                                    <td class="text-center">
+                                        <div class="flex gap-2 justify-center">
+                                            <button class="edit-btn text-accent-500 hover:text-accent-600 font-bold text-xs" data-id="${t.id}">Editar</button>
+                                            <span class="text-bg-tertiary">|</span>
+                                            <button class="delete-btn text-error hover:text-red-400 font-bold text-xs" data-id="${t.id}">Excluir</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            `;
+                        }).join('');
+
+                        // Attach button listeners
+                        document.querySelectorAll('.edit-btn').forEach(btn => {
+                            btn.addEventListener('click', () => openEditModal(btn.dataset.id));
+                        });
+                        document.querySelectorAll('.delete-btn').forEach(btn => {
+                            btn.addEventListener('click', () => deleteTransaction(btn.dataset.id));
+                        });
+                    }
+                } catch (e) {
+                    showToast('Erro ao carregar histórico de transações.', 'error');
+                }
+            }
+
+            function escapeHTML(str) {
+                return str.replace(/[&<>'"]/g, tag => ({
+                    '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
+                }[tag] || tag));
+            }
+
+            // Modal Handlers
+            async function openAddModal() {
+                modalTitle.textContent = 'Nova Transação';
+                transactionIdInput.value = '';
+                transactionForm.reset();
+                // Set default date to today
+                dateInput.value = new Date().toISOString().split('T')[0];
+                await loadFormSelectors();
+                modal.classList.remove('hidden');
+            }
+
+            async function openEditModal(id) {
+                try {
+                    await loadFormSelectors();
+                    const res = await fetch(`${BACKEND_URL}/api/transactions/${id}/`, { credentials: 'include' });
+                    if (!res.ok) throw new Error();
+                    const t = await res.json();
+
+                    modalTitle.textContent = 'Editar Transação';
+                    transactionIdInput.value = t.id;
+                    descriptionInput.value = t.description;
+                    typeSelect.value = t.transaction_type;
+                    amountInput.value = t.amount;
+                    dateInput.value = t.transaction_date;
+                    accountSelect.value = t.account_id;
+                    categorySelect.value = t.category_id;
+
+                    modal.classList.remove('hidden');
+                } catch (e) {
+                    showToast('Erro ao carregar dados da transação.', 'error');
+                }
+            }
+
+            function closeModal() {
+                modal.classList.add('hidden');
+            }
+
+            document.getElementById('open-add-modal-btn').addEventListener('click', openAddModal);
+            document.getElementById('close-modal-btn').addEventListener('click', closeModal);
+            document.getElementById('cancel-modal-btn').addEventListener('click', closeModal);
+
+            // Form Submit handler
+            transactionForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const id = transactionIdInput.value;
+                const bodyData = {
+                    description: descriptionInput.value.trim(),
+                    transaction_type: typeSelect.value,
+                    amount: parseFloat(amountInput.value),
+                    transaction_date: dateInput.value,
+                    account: parseInt(accountSelect.value),
+                    category: parseInt(categorySelect.value)
+                };
+
+                const url = id ? `${BACKEND_URL}/api/transactions/${id}/` : `${BACKEND_URL}/api/transactions/`;
+                const method = id ? 'PUT' : 'POST';
+
+                try {
+                    const csrfToken = await fetchCSRFToken();
+                    const res = await fetch(url, {
+                        method: method,
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': csrfToken
+                        },
+                        body: JSON.stringify(bodyData),
+                        credentials: 'include'
+                    });
+
+                    if (res.ok) {
+                        showToast(id ? 'Transação atualizada com sucesso!' : 'Transação registrada com sucesso!');
+                        closeModal();
+                        await loadTransactions();
+                    } else {
+                        const error = await res.json();
+                        showToast(error.error || 'Erro ao registrar transação.', 'error');
+                    }
+                } catch (err) {
+                    showToast('Erro ao salvar transação.', 'error');
+                }
+            });
+
+            // Delete handler
+            async function deleteTransaction(id) {
+                if (!confirm('Deseja realmente excluir esta transação? Seu saldo da conta vinculada será reajustado automaticamente.')) return;
+                try {
+                    const csrfToken = await fetchCSRFToken();
+                    const res = await fetch(`${BACKEND_URL}/api/transactions/${id}/`, {
+                        method: 'DELETE',
+                        headers: {
+                            'X-CSRFToken': csrfToken
+                        },
+                        credentials: 'include'
+                    });
+
+                    if (res.ok) {
+                        showToast('Transação excluída com sucesso!');
+                        await loadTransactions();
+                    } else {
+                        const error = await res.json();
+                        showToast(error.error || 'Erro ao excluir transação.', 'error');
+                    }
+                } catch (e) {
+                    showToast('Erro ao excluir transação.', 'error');
+                }
+            }
+
+            await loadTransactions();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MonetraBot - Monetra</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <link rel="stylesheet" href="static/css/styles.css">
+    <style>
+        body {
+            background-color: #080808;
+            color: #F1F5F9;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col font-sans">
+    
+    <!-- Navbar Placeholder -->
+    <div id="navbar-placeholder"></div>
+
+    <main class="flex-grow">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 h-[calc(100vh-4rem)] flex flex-col">
+            
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-8 flex-grow h-full overflow-hidden">
+                <!-- Chat Window (Col-span 3) -->
+                <div class="lg:col-span-3 bg-bg-secondary border border-bg-tertiary rounded-2xl flex flex-col h-full overflow-hidden">
+                    <!-- Chat Header -->
+                    <div class="px-6 py-4 border-b border-bg-tertiary flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 bg-accent-500/10 text-accent-500 rounded-xl flex items-center justify-center font-bold text-xl">
+                                🤖
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-white leading-tight">MonetraBot</h3>
+                                <span class="text-xs text-accent-500 font-semibold flex items-center gap-1.5">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-accent-500 animate-pulse"></span>
+                                    Online e Pronto
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Messages Box -->
+                    <div id="chat-messages-container" class="flex-grow p-6 overflow-y-auto space-y-4">
+                        <!-- Messages will load dynamically here -->
+                        <div class="text-center text-text-muted text-sm py-4">Carregando conversa...</div>
+                    </div>
+
+                    <!-- Typing Indicator -->
+                    <div id="typing-indicator" class="px-6 py-2 text-text-secondary text-xs font-semibold animate-pulse hidden">
+                        MonetraBot está pensando...
+                    </div>
+
+                    <!-- Message Form -->
+                    <form id="chat-form" class="p-4 border-t border-bg-tertiary bg-bg-secondary flex gap-3">
+                        <input id="chat-input" type="text" autocomplete="off" required
+                            class="flex-grow px-4 py-3 bg-bg-secondary border border-bg-tertiary rounded-xl text-text-primary placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
+                            placeholder="Pergunte sobre seu saldo, últimas transações ou dicas de economia...">
+                        <button type="submit"
+                            class="px-6 py-3 bg-accent-500 hover:bg-accent-600 text-[#080808] font-bold rounded-xl transition-all shadow-lg flex items-center justify-center">
+                            Enviar
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Right Side AI Analysis Snapshot -->
+                <div class="bg-bg-secondary border border-bg-tertiary rounded-2xl p-6 flex flex-col h-full overflow-hidden">
+                    <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                        <span>🎯 Último Insight de IA</span>
+                    </h3>
+                    <div id="insight-card-body" class="flex-grow overflow-y-auto space-y-4 pr-1 text-sm">
+                        <div class="text-text-muted">Nenhuma análise registrada no chat ainda.</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer Placeholder -->
+    <div id="footer-placeholder"></div>
+
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script src="static/js/common.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const user = await checkAuthAndSetup(true);
+            if (!user) return;
+
+            const chatMessagesContainer = document.getElementById('chat-messages-container');
+            const chatForm = document.getElementById('chat-form');
+            const chatInput = document.getElementById('chat-input');
+            const typingIndicator = document.getElementById('typing-indicator');
+            const insightCardBody = document.getElementById('insight-card-body');
+
+            function escapeHTML(str) {
+                return str.replace(/[&<>'"]/g, 
+                    tag => ({
+                        '&': '&amp;',
+                        '<': '&lt;',
+                        '>': '&gt;',
+                        "'": '&#39;',
+                        '"': '&quot;'
+                    }[tag] || tag)
+                );
+            }
+
+            function scrollToBottom() {
+                chatMessagesContainer.scrollTop = chatMessagesContainer.scrollHeight;
+            }
+
+            function appendMessage(text, isFromBot) {
+                const msgDiv = document.createElement('div');
+                msgDiv.className = isFromBot ? 'flex justify-start' : 'flex justify-end';
+
+                const innerDivClass = isFromBot 
+                    ? 'bg-bg-secondary border border-bg-tertiary text-text-primary rounded-2xl p-4 max-w-[85%] text-sm'
+                    : 'bg-bg-tertiary border border-bg-tertiary text-text-primary rounded-2xl p-4 max-w-[85%] text-sm';
+
+                msgDiv.innerHTML = `
+                    <div class="${innerDivClass}">
+                        <p class="whitespace-pre-line">${isFromBot ? text : escapeHTML(text)}</p>
+                    </div>
+                `;
+                chatMessagesContainer.appendChild(msgDiv);
+            }
+
+            function updateInsightCard(analysis) {
+                if (!analysis) {
+                    insightCardBody.innerHTML = `<div class="text-text-muted">Nenhuma análise gerada recentemente.</div>`;
+                    return;
+                }
+
+                let marketSnapshotHTML = '';
+                if (analysis.market_data_snapshot && analysis.market_data_snapshot.currencies) {
+                    const currencies = analysis.market_data_snapshot.currencies;
+                    marketSnapshotHTML = `
+                        <div class="mt-4 pt-4 border-t border-bg-tertiary">
+                            <h4 class="font-bold text-white text-xs uppercase mb-2">Cotações salvas na análise</h4>
+                            <ul class="space-y-1 text-xs text-text-secondary">
+                                <li>USD/BRL: ${currencies.USD_BRL || 'N/A'}</li>
+                                <li>EUR/BRL: ${currencies.EUR_BRL || 'N/A'}</li>
+                            </ul>
+                        </div>
+                    `;
+                }
+
+                insightCardBody.innerHTML = `
+                    <div class="space-y-4">
+                        <div>
+                            <span class="text-xs text-text-secondary">Gerado em ${analysis.created_at}</span>
+                            <h4 class="font-bold text-accent-500 text-sm mt-1 mb-2">${escapeHTML(analysis.summary)}</h4>
+                            <p class="text-text-secondary text-xs leading-relaxed whitespace-pre-line">${analysis.analysis_text}</p>
+                        </div>
+                        ${marketSnapshotHTML}
+                    </div>
+                `;
+            }
+
+            // Load chat history
+            async function loadChatHistory() {
+                try {
+                    const response = await fetch(`${BACKEND_URL}/api/chatbot/history/`, {
+                        credentials: 'include'
+                    });
+                    if (!response.ok) throw new Error('Failed to load chat history');
+
+                    const data = await response.json();
+
+                    // Render messages
+                    chatMessagesContainer.innerHTML = '';
+                    if (data.messages.length === 0) {
+                        chatMessagesContainer.innerHTML = `
+                            <div class="text-center text-text-muted text-sm py-4">
+                                Olá! Eu sou o MonetraBot. Como posso ajudar com suas finanças hoje?
+                            </div>
+                        `;
+                    } else {
+                        data.messages.forEach(msg => {
+                            appendMessage(msg.message_text, msg.is_from_bot);
+                        });
+                    }
+                    scrollToBottom();
+
+                    // Render latest analysis insight card
+                    updateInsightCard(data.latest_analysis);
+
+                } catch (err) {
+                    console.error('Error loading chat history:', err);
+                    chatMessagesContainer.innerHTML = `<div class="text-center text-error text-sm py-4">Erro ao carregar mensagens anteriores.</div>`;
+                }
+            }
+
+            await loadChatHistory();
+
+            // Submit message form handler
+            chatForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const message = chatInput.value.trim();
+                if (!message) return;
+
+                chatInput.value = '';
+                appendMessage(message, false);
+                scrollToBottom();
+
+                typingIndicator.classList.remove('hidden');
+                scrollToBottom();
+
+                try {
+                    const csrfToken = await fetchCSRFToken();
+                    const response = await fetch(`${BACKEND_URL}/chatbot/send/`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': csrfToken
+                        },
+                        body: JSON.stringify({ message }),
+                        credentials: 'include'
+                    });
+
+                    typingIndicator.classList.add('hidden');
+
+                    if (!response.ok) {
+                        throw new Error('Falha ao obter resposta do bot');
+                    }
+
+                    const data = await response.json();
+                    appendMessage(data.response, true);
+                    updateInsightCard(data.analysis);
+                    scrollToBottom();
+
+                } catch (error) {
+                    console.error('Error sending message:', error);
+                    typingIndicator.classList.add('hidden');
+                    appendMessage('Erro ao obter resposta do MonetraBot. Verifique se o servidor está ativo.', true);
+                    scrollToBottom();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
