@@ -42,6 +42,108 @@
             40% { opacity: .2; transform: translateY(0); }
             100% { opacity: .2; transform: translateY(0); }
         }
+
+        /* Sidebar layout override for native responsiveness regardless of Tailwind compiler */
+        #chat-sidebar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 40;
+            height: 100%;
+            width: 288px;
+            background-color: #0B0B0B;
+            border-right: 1px solid #1A1A1A;
+            transition: transform 0.3s ease;
+            transform: translateX(-100%);
+        }
+        @media (min-width: 768px) {
+            #chat-sidebar {
+                position: static;
+                transform: translateX(0);
+                height: 100%;
+            }
+        }
+        #chat-sidebar.active {
+            transform: translateX(0);
+        }
+
+        /* Insight sidebar override */
+        #insight-sidebar {
+            position: absolute;
+            top: 0;
+            right: 0;
+            z-index: 40;
+            height: 100%;
+            width: 320px;
+            background-color: #0B0B0B;
+            border-left: 1px solid #1A1A1A;
+            transition: transform 0.3s ease;
+            transform: translateX(100%);
+        }
+        @media (min-width: 1024px) {
+            #insight-sidebar {
+                position: static;
+                transform: translateX(0);
+                height: 100%;
+            }
+        }
+        #insight-sidebar.active {
+            transform: translateX(0);
+        }
+
+        /* Input form container custom override */
+        #chat-form {
+            background-color: #0F0F0F !important;
+            border: 1px solid #1A1A1A !important;
+            border-radius: 9999px !important;
+        }
+        #chat-form:focus-within {
+            border-color: #00e676 !important;
+        }
+
+        /* Message input styling override for the forms theme integration */
+        #chat-input {
+            background-color: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+            outline: none !important;
+            color: #F1F5F9 !important;
+        }
+        #chat-input:focus {
+            ring: 0 !important;
+            box-shadow: none !important;
+            outline: none !important;
+            border: none !important;
+        }
+
+        /* Sidebar search styling override */
+        #chat-search {
+            background-color: #0F0F0F !important;
+            border: 1px solid #1A1A1A !important;
+            color: #F1F5F9 !important;
+        }
+        #chat-search:focus {
+            border-color: #00e676 !important;
+            box-shadow: none !important;
+            outline: none !important;
+        }
+
+        /* Suggestion chips hover styling override */
+        .suggestion-chips-container button {
+            background-color: #0F0F0F !important;
+            color: #94A3B8 !important;
+            border: 1px solid #1A1A1A !important;
+            border-radius: 9999px !important;
+            padding: 6px 12px !important;
+            font-size: 12px !important;
+            transition: all 0.2s ease !important;
+            cursor: pointer;
+        }
+        .suggestion-chips-container button:hover {
+            background-color: #1A1A1A !important;
+            color: #FFFFFF !important;
+            border-color: #262626 !important;
+        }
     </style>
 </head>
 <body class="h-screen overflow-hidden flex flex-col font-sans bg-[#080808]">
@@ -52,7 +154,7 @@
     <div class="flex-grow flex overflow-hidden relative">
         
         <!-- Left Sidebar: Chat history & Search -->
-        <div id="chat-sidebar" class="w-72 shrink-0 bg-[#0B0B0B] border-r border-bg-tertiary flex flex-col h-full transition-transform duration-300 md:translate-x-0 md:static fixed top-16 left-0 z-40 h-[calc(100vh-4rem)] -translate-x-full">
+        <div id="chat-sidebar" class="flex flex-col h-full shrink-0">
             <div class="p-4 border-b border-bg-tertiary flex flex-col gap-3">
                 <button id="clear-chat-btn" class="w-full py-2.5 bg-error/10 hover:bg-error hover:text-white text-error font-bold rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all duration-200 border border-error/20">
                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -60,7 +162,7 @@
                     </svg>
                     + Nova Conversa
                 </button>
-                <input type="text" id="chat-search" placeholder="Buscar nas conversas..." class="w-full px-3 py-2.5 bg-bg-secondary border border-bg-tertiary rounded-xl text-xs text-text-primary placeholder-text-muted outline-none focus:border-accent-500 transition-colors">
+                <input type="text" id="chat-search" placeholder="Buscar nas conversas..." style="background-color: #0F0F0F !important; border: 1px solid #1A1A1A !important; color: #F1F5F9 !important;" class="w-full px-3 py-2.5 rounded-xl text-xs placeholder-text-muted outline-none transition-colors">
             </div>
             
             <div id="sidebar-queries-list" class="flex-grow overflow-y-auto p-3 space-y-1 chat-scrollbar">
@@ -69,7 +171,7 @@
         </div>
 
         <!-- Center: Chat Box -->
-        <div class="flex-grow flex flex-col h-full bg-[#080808] relative">
+        <div class="flex-grow flex flex-col h-full bg-[#080808] relative overflow-hidden">
             <!-- Header bar for control toggles -->
             <div class="flex items-center gap-3 p-4 border-b border-bg-tertiary bg-bg-secondary/40 backdrop-blur-md shrink-0">
                 <button id="sidebar-toggle-btn" class="md:hidden p-2 text-text-secondary hover:text-white rounded-xl bg-bg-tertiary/50">
@@ -163,7 +265,7 @@
             <div class="p-4 border-t border-bg-tertiary bg-[#0B0B0B] shrink-0">
                 
                 <!-- Dynamic suggestion chips -->
-                <div class="max-w-3xl mx-auto mb-4 flex flex-wrap gap-2 justify-center">
+                <div class="suggestion-chips-container max-w-3xl mx-auto mb-4 flex flex-wrap gap-2 justify-center">
                     <button onclick="fillAndSend('Onde gastei mais no mês atual?')" class="px-3 py-1.5 bg-bg-secondary hover:bg-bg-tertiary hover:text-white text-text-secondary text-xs rounded-full border border-bg-tertiary transition-all duration-200">
                         Onde gastei mais?
                     </button>
@@ -186,7 +288,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path>
                         </svg>
                     </button>
-                    <input type="text" id="chat-input" placeholder="Digite sua dúvida ou selecione uma sugestão..." autocomplete="off" class="flex-grow bg-transparent border-none outline-none focus:ring-0 text-sm text-text-primary placeholder-text-muted px-2">
+                    <input type="text" id="chat-input" placeholder="Digite sua dúvida ou selecione uma sugestão..." autocomplete="off" style="background-color: transparent !important; border: none !important; box-shadow: none !important; outline: none !important; color: #F1F5F9 !important;" class="flex-grow text-sm placeholder-text-muted px-2">
                     <button type="submit" class="p-2 bg-accent-500 hover:bg-accent-600 text-[#080808] rounded-full transition-all duration-200 flex items-center justify-center shrink-0 shadow">
                         <svg class="w-4 h-4 transform rotate-90" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
@@ -197,7 +299,7 @@
         </div>
 
         <!-- Right Side Panel: AI Insight & Market Data -->
-        <div id="insight-sidebar" class="w-80 shrink-0 bg-[#0B0B0B] border-l border-bg-tertiary flex flex-col h-full transition-transform duration-300 lg:translate-x-0 lg:static fixed top-16 right-0 z-40 h-[calc(100vh-4rem)] translate-x-full">
+        <div id="insight-sidebar" class="w-80 shrink-0 bg-[#0B0B0B] border-l border-bg-tertiary flex flex-col h-full transition-transform duration-300">
             <div class="p-4 border-b border-bg-tertiary flex items-center gap-3">
                 <div class="w-8 h-8 rounded-full bg-accent-500/10 flex items-center justify-center text-accent-500">
                     <svg class="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -271,12 +373,12 @@
         if (sidebarToggleBtn && chatSidebar) {
             sidebarToggleBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
-                chatSidebar.classList.toggle('-translate-x-full');
+                chatSidebar.classList.toggle('active');
             });
             // Close sidebar when clicking outside on mobile
             document.addEventListener('click', (e) => {
                 if (window.innerWidth < 768 && !chatSidebar.contains(e.target) && !sidebarToggleBtn.contains(e.target)) {
-                    chatSidebar.classList.add('-translate-x-full');
+                    chatSidebar.classList.remove('active');
                 }
             });
         }
@@ -284,18 +386,18 @@
         if (insightToggleBtn && insightSidebar) {
             insightToggleBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
-                insightSidebar.classList.toggle('translate-x-full');
+                insightSidebar.classList.toggle('active');
             });
             // Close panel when clicking outside on mobile
             document.addEventListener('click', (e) => {
                 if (window.innerWidth < 1024 && !insightSidebar.contains(e.target) && !insightToggleBtn.contains(e.target)) {
-                    insightSidebar.classList.add('translate-x-full');
+                    insightSidebar.classList.remove('active');
                 }
             });
         }
         if (insightCloseBtn && insightSidebar) {
             insightCloseBtn.addEventListener('click', () => {
-                insightSidebar.classList.add('translate-x-full');
+                insightSidebar.classList.remove('active');
             });
         }
 
@@ -334,65 +436,6 @@
             `;
             chatMessagesContainer.insertBefore(msgDiv, typingIndicator);
             updateSidebarFromChat();
-        }
-
-        function appendBotMessage(text) {
-            const msgDiv = document.createElement('div');
-            msgDiv.className = 'flex gap-3 items-start';
-            msgDiv.innerHTML = `
-                <div class="w-8 h-8 rounded-full bg-accent-500/10 flex items-center justify-center text-accent-500 shrink-0">
-                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
-                    </svg>
-                </div>
-                <div class="bg-[#0D1A0D] border border-accent-500/15 rounded-2xl p-3 max-w-[85%] text-text-secondary text-sm space-y-2 leading-relaxed">
-                    <p class="whitespace-pre-line">${escapeHTML(text)}</p>
-                </div>
-            `;
-            chatMessagesContainer.insertBefore(msgDiv, typingIndicator);
-        }
-
-        function updateInsightCard(analysis) {
-            if (!analysis) {
-                latestInsightContainer.innerHTML = `
-                    <div id="insight-empty" class="text-center py-12 bg-bg-tertiary/30 border border-dashed border-bg-tertiary rounded-xl">
-                        <svg class="w-8 h-8 mx-auto text-text-muted mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
-                        </svg>
-                        <p class="text-xs text-text-muted">Nenhum insight gerado ainda.</p>
-                        <p class="text-[10px] text-text-muted mt-1 px-4">Envie uma mensagem no chat para que o MonetraBot gere sua primeira análise financeira!</p>
-                    </div>
-                `;
-                return;
-            }
-
-            let currenciesHTML = '';
-            if (analysis.market_data_snapshot && analysis.market_data_snapshot.currencies) {
-                currenciesHTML = `
-                    <div class="mt-4 pt-4 border-t border-bg-tertiary/60 space-y-2">
-                        <h5 class="text-xs font-bold text-white uppercase tracking-wider">Câmbio e Mercado (no momento da análise)</h5>
-                        <div class="grid grid-cols-2 gap-2 text-xs">
-                            <div class="bg-bg-tertiary/30 p-2 rounded border border-bg-tertiary/40">
-                                <span class="text-text-muted block text-[10px]">Câmbio Dólar</span>
-                                <strong class="text-white">${analysis.market_data_snapshot.currencies.USD_BRL || 'N/A'}</strong>
-                            </div>
-                            <div class="bg-bg-tertiary/30 p-2 rounded border border-bg-tertiary/40">
-                                <span class="text-text-muted block text-[10px]">Ibovespa</span>
-                                <strong class="text-white">${analysis.market_data_snapshot.stocks.Ibovespa || 'N/A'}</strong>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            }
-
-            latestInsightContainer.innerHTML = `
-                <div class="bg-bg-tertiary/40 border border-bg-tertiary/60 rounded-xl p-4">
-                    <h4 id="insight-summary" class="font-bold text-white text-sm mb-2">${escapeHTML(analysis.summary)}</h4>
-                    <p id="insight-text" class="text-xs text-text-secondary whitespace-pre-line">${escapeHTML(analysis.analysis_text)}</p>
-                    <span id="insight-date" class="block text-[10px] text-text-muted mt-3 text-right">Atualizado em: ${analysis.created_at}</span>
-                </div>
-                ${currenciesHTML}
-            `;
         }
 
         // Dynamically pull user questions from the DOM to render in the left sidebar
@@ -435,7 +478,7 @@
                         setTimeout(() => targetElement.classList.remove('ring-2', 'ring-accent-500/50'), 2000);
                         // Close sidebar on mobile
                         if (window.innerWidth < 768) {
-                            chatSidebar.classList.add('-translate-x-full');
+                            chatSidebar.classList.remove('active');
                         }
                     }
                 });
@@ -496,7 +539,21 @@
                 }
 
                 const data = await response.json();
-                appendBotMessage(data.response);
+                
+                // Append Bot message
+                const msgDiv = document.createElement('div');
+                msgDiv.className = 'flex gap-3 items-start';
+                msgDiv.innerHTML = `
+                    <div class="w-8 h-8 rounded-full bg-accent-500/10 flex items-center justify-center text-accent-500 shrink-0">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                        </svg>
+                    </div>
+                    <div class="bg-[#0D1A0D] border border-accent-500/15 rounded-2xl p-3 max-w-[85%] text-text-secondary text-sm space-y-2 leading-relaxed">
+                        <p class="whitespace-pre-line">${escapeHTML(data.response)}</p>
+                    </div>
+                `;
+                chatMessagesContainer.insertBefore(msgDiv, typingIndicator);
                 updateInsightCard(data.analysis);
                 
                 // Set the real ID to the temp element
@@ -510,7 +567,20 @@
             } catch (error) {
                 console.error('Error sending message:', error);
                 typingIndicator.classList.add('hidden');
-                appendBotMessage('Erro ao obter resposta do MonetraBot. Verifique se o servidor está ativo.');
+                
+                const msgDiv = document.createElement('div');
+                msgDiv.className = 'flex gap-3 items-start';
+                msgDiv.innerHTML = `
+                    <div class="w-8 h-8 rounded-full bg-accent-500/10 flex items-center justify-center text-accent-500 shrink-0">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                        </svg>
+                    </div>
+                    <div class="bg-[#0D1A0D] border border-accent-500/15 rounded-2xl p-3 max-w-[85%] text-text-secondary text-sm space-y-2 leading-relaxed">
+                        <p class="whitespace-pre-line">Erro ao obter resposta do MonetraBot. Verifique se o servidor está ativo.</p>
+                    </div>
+                `;
+                chatMessagesContainer.insertBefore(msgDiv, typingIndicator);
                 scrollToBottom();
             }
         });
@@ -536,7 +606,6 @@
                         updateInsightCard(null);
                         updateSidebarFromChat();
                         
-                        // Show toast logic or standard alert
                         if (window.showToast) {
                             showToast('Histórico da conversa reiniciado com sucesso!');
                         } else {
