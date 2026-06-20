@@ -51,6 +51,7 @@ def run_chatbot_agent(user_id: int, user_input: str) -> str:
         api_key=api_key,
         temperature=0.4,
         max_tokens=1500,
+        max_retries=2,
     )
 
     template = """Você é o MonetraBot, um assistente financeiro pessoal de inteligência artificial do sistema Monetra/Finanpy.

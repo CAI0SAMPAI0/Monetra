@@ -50,6 +50,7 @@ def run_financial_agent(user_id: int, prompt_input: str) -> str:
         api_key=api_key,
         temperature=0.4,
         max_tokens=1500,
+        max_retries=2,
     )
 
     template = """Você é o FynanBot, um consultor financeiro pessoal de inteligência artificial especializado do sistema Finanpy.
