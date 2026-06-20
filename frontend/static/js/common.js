@@ -277,7 +277,6 @@ function renderNavbar(authenticated, email = '') {
     if (logoutBtn) logoutBtn.addEventListener('click', handleLogout);
     if (logoutBtnMobile) logoutBtnMobile.addEventListener('click', handleLogout);
 }
-}
 
 // Render Footer HTML
 function renderFooter() {

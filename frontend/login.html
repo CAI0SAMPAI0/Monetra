@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Entrar - Monetra</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
     <link rel="stylesheet" href="static/css/styles.css">
     <style>
@@ -14,8 +16,9 @@
         }
     </style>
 </head>
+
 <body class="min-h-screen flex flex-col font-sans">
-    
+
     <!-- Navbar Placeholder -->
     <div id="navbar-placeholder"></div>
 
@@ -24,21 +27,22 @@
             <div class="text-center">
                 <h2 class="text-3xl font-extrabold text-white">Acesse sua conta</h2>
                 <p class="mt-2 text-sm text-text-secondary">
-                    Ou <a href="signup.html" class="font-medium text-accent-500 hover:text-accent-600">crie uma nova conta gratuitamente</a>
+                    Ou <a href="signup.html" class="font-medium text-accent-500 hover:text-accent-600">crie uma nova
+                        conta gratuitamente</a>
                 </p>
             </div>
-            <form id="login-form" class="mt-8 space-y-6">
+            <form id="login-form" method="POST" class="mt-8 space-y-6">
                 <div class="space-y-4">
                     <div>
                         <label for="email" class="block text-sm font-medium text-text-secondary mb-1">E-mail</label>
-                        <input id="email" name="email" type="email" autocomplete="email" required 
-                            class="w-full px-4 py-3 bg-bg-secondary border border-bg-tertiary rounded-lg text-text-primary focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200" 
+                        <input id="email" name="email" type="email" autocomplete="email" required
+                            class="w-full px-4 py-3 bg-bg-secondary border border-bg-tertiary rounded-lg text-text-primary focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
                             placeholder="seuemail@exemplo.com">
                     </div>
                     <div>
                         <label for="password" class="block text-sm font-medium text-text-secondary mb-1">Senha</label>
-                        <input id="password" name="password" type="password" autocomplete="current-password" required 
-                            class="w-full px-4 py-3 bg-bg-secondary border border-bg-tertiary rounded-lg text-text-primary focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200" 
+                        <input id="password" name="password" type="password" autocomplete="current-password" required
+                            class="w-full px-4 py-3 bg-bg-secondary border border-bg-tertiary rounded-lg text-text-primary focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
                             placeholder="Sua senha">
                     </div>
                 </div>
@@ -46,7 +50,7 @@
                 <div id="error-message" class="text-error text-sm font-bold hidden"></div>
 
                 <div>
-                    <button type="submit" 
+                    <button type="submit"
                         class="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-bold rounded-lg text-[#080808] bg-accent-500 hover:bg-accent-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent-500 transition-all duration-200">
                         Entrar
                     </button>
@@ -105,4 +109,5 @@
         });
     </script>
 </body>
+
 </html>
