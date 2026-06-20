@@ -31,7 +31,7 @@ Monetra (Finanpy) é um sistema completo e moderno de gestão de finanças pesso
 - **Backend**: Python 3.12+ | Django 6+ | Gunicorn (Servidor WSGI)
 - **Frontend**: Django Template Language | Tailwind CSS (Compilado nativamente com Node.js)
 - **Banco de Dados**: Neon PostgreSQL (produção e desenvolvimento local)
-- **Integração de IA**: Langchain 1.0 (via `langchain_classic`) | Groq API (`llama-3.3-70b-versatile`)
+- **Integração de IA**: Langchain 1.0 (via `langchain_classic`) | Groq API (`llama-3.1-8b-instant`)
 - **Containerização**: Docker & Docker Compose
 - **Integração Contínua**: GitHub Actions (Linting, Pytest com DB real Postgres, Docker Build validation)
 

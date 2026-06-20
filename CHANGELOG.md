@@ -26,7 +26,7 @@ Todos os marcos importantes e alterações do projeto Monetra (Finanpy) serão d
 ## [1.1.0] - 2026-06-19
 ### Adicionado
 - **Migração Neon PostgreSQL**: Migração completa de todos os dados do banco local SQLite para a nuvem através da integração do Neon PostgreSQL com o parsing dinâmico de `dj-database-url`.
-- **MonetraBot (Chatbot de Finanças)**: Criação da app `chatbot` que disponibiliza um assistente em tempo real usando Langchain 1.0 e Groq API (`llama-3.3-70b-versatile`).
+- **MonetraBot (Chatbot de Finanças)**: Criação da app `chatbot` que disponibiliza um assistente em tempo real usando Langchain 1.0 e Groq API (`llama-3.1-8b-instant`).
   - **Tools Dinâmicas**: Criação de ferramentas com isolamento de contexto do usuário (`get_my_financial_data`) para segurança total de dados.
   - **Cotações em Tempo Real**: Tool `get_financial_market_data` buscando moedas em tempo real pela AwesomeAPI.
   - **Interface Glassmorphism**: Chat de conversação com estilização escura sofisticada combinando com a identidade visual da Landing Page.

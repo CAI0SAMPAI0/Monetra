@@ -1246,12 +1246,12 @@
 - [X] 9.3.1: Criar diretorio `ai/agents/`
 - [X] 9.3.2: Criar arquivo `ai/agents/__init__.py`
 - [X] 9.3.3: Criar arquivo `ai/agents/finance_insight_agent.py`
-- [X] 9.3.4: Configurar ChatOpenAI com base_url da Groq e modelo llama-3.3-70b-versatile:
+- [X] 9.3.4: Configurar ChatOpenAI com base_url da Groq e modelo llama-3.1-8b-instant:
   ```python
   from langchain_openai import ChatOpenAI
 
   llm = ChatOpenAI(
-      model='llama-3.3-70b-versatile',
+      model='llama-3.1-8b-instant',
       base_url='https://api.groq.com/openai/v1',
       api_key=config('GROQ_API_KEY'),
       temperature=0.7,
@@ -1436,7 +1436,7 @@
 **Subtarefas**:
 - [X] 11.4.1: Adicionar dependências mais recentes de IA (`langchain`, `langchain-openai`, `langchain-core`, `langchain-groq`) nas dependências do projeto
 - [X] 11.4.2: Criar e estruturar o arquivo de orquestração do agente em `chatbot/services/agent.py`
-- [X] 11.4.3: Instanciar a LLM compatível da Groq usando `ChatOpenAI` parametrizada com o modelo `llama-3.3-70b-versatile` e `GROQ_API_KEY` do `.env`
+- [X] 11.4.3: Instanciar a LLM compatível da Groq usando `ChatOpenAI` parametrizada com o modelo `llama-3.1-8b-instant` e `GROQ_API_KEY` do `.env`
 - [X] 11.4.4: Elaborar o System Prompt especializado para o assistente (tom profissional, amigável, focado em finanças, em português do Brasil)
 
 #### Tarefa 11.5: Desenvolvimento das Tools do Agente de IA ✅

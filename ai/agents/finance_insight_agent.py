@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 def run_financial_agent(user_id: int, prompt_input: str) -> str:
     """
     Executa o agente financeiro do Langchain para análises em lote/dashboard.
-    Usa o modelo llama-3.3-70b-versatile na API da Groq.
+    Usa o modelo llama-3.1-8b-instant na API da Groq.
     """
     from chatbot.services.tools import get_user_financial_data, get_market_data_summary
     from langchain_core.tools import tool
@@ -61,7 +61,7 @@ def run_financial_agent(user_id: int, prompt_input: str) -> str:
 
     # ChatOpenAI configuration pointing to Groq's endpoint
     llm = ChatOpenAI(
-        model='llama-3.3-70b-versatile',
+        model='llama-3.1-8b-instant',
         base_url='https://api.groq.com/openai/v1',
         api_key=api_key,
         temperature=0.4,
