@@ -34,10 +34,10 @@ def generate_summary_api(request):
             return JsonResponse({
                 'status': 'error',
                 'message': 'Não foi possível conectar com o agente de IA para gerar o resumo. Verifique seus dados.'
-            }, status=500)
+            }, status=400)
     except Exception as e:
         logger.error(f"Erro no endpoint de geração de resumo de IA: {e}")
         return JsonResponse({
             'status': 'error',
             'message': f"Erro ao processar requisição: {str(e)}"
-        }, status=500)
+        }, status=400)

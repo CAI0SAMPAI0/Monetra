@@ -22,13 +22,6 @@ def run_financial_agent(user_id: int, prompt_input: str) -> str:
         """
         return get_user_financial_data(user_id)
 
-    @tool("get_my_financial_data()")
-    def get_my_financial_data_alias() -> str:
-        """
-        Alias para get_my_financial_data. Use esta ferramenta se preferir o formato com parênteses.
-        """
-        return get_user_financial_data(user_id)
-
     @tool
     def get_financial_market_data(query: str = None) -> str:
         """
@@ -39,18 +32,9 @@ def run_financial_agent(user_id: int, prompt_input: str) -> str:
         """
         return get_market_data_summary(query)
 
-    @tool("get_financial_market_data()")
-    def get_financial_market_data_alias(query: str = None) -> str:
-        """
-        Alias para get_financial_market_data. Use esta ferramenta se preferir o formato com parênteses.
-        """
-        return get_market_data_summary(query)
-
     tools = [
         get_my_financial_data,
-        get_my_financial_data_alias,
-        get_financial_market_data,
-        get_financial_market_data_alias
+        get_financial_market_data
     ]
 
     # Groq API configuration using ChatOpenAI
