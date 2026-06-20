@@ -40,38 +40,29 @@ function showToast(text, type = 'success') {
 
 async function checkAuthAndSetup(isProtectedRoute = false) {
     if (!BACKEND_URL) {
-        // Try to load config.json first
-        let url = await loadConfig();
-        if (!url) {
-            // Check global configs
-            if (window.MONETRA_CONFIG && window.MONETRA_CONFIG.BACKEND_URL) {
-                url = window.MONETRA_CONFIG.BACKEND_URL;
-            } else if (window.BACKEND_URL) {
-                url = window.BACKEND_URL;
-            } else {
-                // Check process.env (in case of bundler replacement)
-                try {
-                    if (typeof process !== 'undefined' && process.env && process.env.BACKEND_URL) {
-                        url = process.env.BACKEND_URL;
-                    }
-                } catch (e) {}
-
-                if (!url) {
+        // Default to localhost if applicable first to avoid 404 on config.json
+        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.port === '5500' || window.location.port === '8080') {
+            BACKEND_URL = 'http://127.0.0.1:8000';
+        } else {
+            // Try to load config.json
+            let url = await loadConfig();
+            if (!url) {
+                // Check global configs
+                if (window.MONETRA_CONFIG && window.MONETRA_CONFIG.BACKEND_URL) {
+                    url = window.MONETRA_CONFIG.BACKEND_URL;
+                } else if (window.BACKEND_URL) {
+                    url = window.BACKEND_URL;
+                } else {
                     // Check localStorage
                     url = localStorage.getItem('BACKEND_URL') || '';
                 }
             }
-        }
-        if (!url) {
-            // Default to localhost if applicable
-            url = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname === '5500' || window.location.port === '8000' || window.location.port === '5500'
-                ? 'http://127.0.0.1:8000'
-                : '';
+            if (url) {
+                BACKEND_URL = url.trim().replace(/\/$/, "");
+            }
         }
 
-        if (url) {
-            BACKEND_URL = url.trim().replace(/\/$/, "");
-        } else {
+        if (!BACKEND_URL) {
             console.error("Erro: A variável BACKEND_URL não está configurada.");
             showToast("A URL do backend não está configurada.", "error");
             return null;

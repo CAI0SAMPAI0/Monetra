@@ -8,6 +8,7 @@ class ChatbotAnalysis(models.Model):
         on_delete=models.CASCADE,
         related_name='chatbot_analyses'
     )
+    session_id = models.CharField(max_length=100, default='default')
     analysis_text = models.TextField()
     summary = models.CharField(max_length=255)
     market_data_snapshot = models.JSONField(null=True, blank=True)
@@ -31,6 +32,7 @@ class ChatMessage(models.Model):
         on_delete=models.CASCADE,
         related_name='chatbot_messages'
     )
+    session_id = models.CharField(max_length=100, default='default')
     message_text = models.TextField()
     is_from_bot = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -41,3 +43,4 @@ class ChatMessage(models.Model):
     def __str__(self):
         sender = 'Bot' if self.is_from_bot else 'User'
         return f'{sender}: {self.message_text[:30]}'
+
