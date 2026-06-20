@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Monetra</title>
+    <link rel="shortcut icon" href="static/images/logo1.png" type="image/png">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
     <link rel="stylesheet" href="static/css/styles.css">
@@ -13,6 +14,7 @@
             color: #F1F5F9;
         }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body class="min-h-screen flex flex-col font-sans">
     
@@ -22,95 +24,150 @@
     <main class="flex-grow">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             
-            <!-- Welcome Header -->
-            <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4">
+            <!-- Welcome & Action Buttons -->
+            <div class='mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4'>
                 <div>
-                    <h1 class="text-3xl font-extrabold text-white tracking-tight">Painel Financeiro</h1>
-                    <p class="text-text-secondary text-sm">Monitore suas contas, transações e obtenha insights de IA.</p>
+                    <h1 class='text-3xl font-bold text-white' id="welcome-title">Olá!</h1>
+                    <p class='text-text-secondary font-medium'>Aqui está o panorama geral das suas finanças.</p>
                 </div>
-                <div>
-                    <button id="btn-ai-summary" class="px-4 py-2.5 bg-accent-500 text-[#080808] hover:bg-accent-600 rounded-lg font-bold transition-all duration-200 shadow-lg flex items-center gap-2">
-                        <span>🤖 Resumo Inteligente com IA</span>
+                <div class='flex flex-wrap gap-3'>
+                    <button id="btn-ai-summary" class='px-4 py-2 bg-accent-500 text-[#080808] hover:bg-accent-600 rounded-lg font-bold transition-all duration-200 shadow-lg flex items-center gap-2'>
+                        <svg class='w-5 h-5' fill='none' viewBox='0 0 24 24' stroke='currentColor'>
+                            <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z'></path>
+                        </svg>
+                        Gerar Resumo com IA
                     </button>
+                    <a href='transaction_form.html' class='px-4 py-2 bg-bg-secondary text-text-primary hover:bg-bg-tertiary border border-bg-tertiary rounded-lg font-bold transition-all duration-200 shadow-md flex items-center gap-2'>
+                        <svg class='w-5 h-5 text-accent-500' fill='none' viewBox='0 0 24 24' stroke='currentColor'>
+                            <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M12 4v16m8-8H4'></path>
+                        </svg>
+                        Nova Transação
+                    </a>
                 </div>
             </div>
 
             <!-- AI Summary Box -->
             <div id="ai-summary-container" class="mb-8 hidden transition-all duration-300">
-                <div class="bg-gradient-to-r from-accent-500/10 via-primary-500/10 to-transparent border border-accent-500/20 rounded-2xl p-6 relative overflow-hidden">
+                <div class="bg-accent-500/5 border border-accent-500/30 rounded-2xl p-6 shadow-xl relative overflow-hidden">
                     <div class="flex items-start gap-4">
-                        <div class="p-3 bg-accent-500/10 rounded-xl text-accent-500 text-xl">
-                            💡
+                        <div class="w-12 h-12 rounded-xl bg-accent-500/10 flex items-center justify-center text-accent-500 shrink-0">
+                            <svg class="w-6 h-6 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                            </svg>
                         </div>
-                        <div class="space-y-2 flex-grow">
-                            <h3 class="text-lg font-bold text-white">Análise do MonetraBot</h3>
+                        <div class="space-y-2 w-full">
+                            <div class="flex items-center justify-between">
+                                <h3 class="text-lg font-bold text-accent-500">Análise Financeira Inteligente (IA)</h3>
+                                <span class="text-xs bg-accent-500 text-[#080808] px-2 py-0.5 rounded font-extrabold uppercase tracking-wider">LangChain 1.0</span>
+                            </div>
                             <div id="ai-summary-text" class="text-text-secondary text-sm leading-relaxed whitespace-pre-line">
-                                Calculando métricas da carteira e conectando com o agente financeiro...
+                                Gerando análise...
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Metrics Grid -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <!-- Numerical Indicators Grid -->
+            <div class='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8'>
                 <!-- Total Balance -->
-                <div class="bg-bg-secondary border border-bg-tertiary p-6 rounded-2xl">
-                    <div class="text-xs font-semibold text-text-secondary uppercase tracking-wider mb-2">Saldo Total Consolidado</div>
-                    <div id="total-balance" class="text-2xl font-extrabold text-white">R$ 0,00</div>
+                <div class='bg-bg-secondary rounded-xl p-6 shadow-lg border border-bg-tertiary hover:border-accent-500/30 transition-all duration-300'>
+                    <span class='text-text-muted text-sm font-semibold uppercase tracking-wider block mb-1'>Saldo Total</span>
+                    <h3 class='text-3xl font-bold text-accent-500' id="total-balance">R$ 0,00</h3>
+                    <p class='text-xs text-text-muted mt-2' id="active-accounts-count">Consolidado de 0 contas ativas</p>
                 </div>
-                <!-- Income -->
-                <div class="bg-bg-secondary border border-bg-tertiary p-6 rounded-2xl">
-                    <div class="text-xs font-semibold text-text-secondary uppercase tracking-wider mb-2">Receitas no Mês</div>
-                    <div id="monthly-income" class="text-2xl font-extrabold text-success">R$ 0,00</div>
+
+                <!-- Monthly Income -->
+                <div class='bg-bg-secondary rounded-xl p-6 shadow-lg border border-bg-tertiary hover:border-success/30 transition-all duration-300'>
+                    <div class='flex items-center justify-between mb-1'>
+                        <span class='text-text-muted text-sm font-semibold uppercase tracking-wider'>Entradas (Mês)</span>
+                        <span class='w-6 h-6 rounded-full bg-success/10 text-success flex items-center justify-center font-bold text-xs'>↑</span>
+                    </div>
+                    <h3 class='text-3xl font-bold text-success' id="monthly-income">R$ 0,00</h3>
+                    <p class='text-xs text-text-muted mt-2'>Receitas registradas este mês</p>
                 </div>
-                <!-- Expense -->
-                <div class="bg-bg-secondary border border-bg-tertiary p-6 rounded-2xl">
-                    <div class="text-xs font-semibold text-text-secondary uppercase tracking-wider mb-2">Despesas no Mês</div>
-                    <div id="monthly-expense" class="text-2xl font-extrabold text-error">R$ 0,00</div>
+
+                <!-- Monthly Expenses -->
+                <div class='bg-bg-secondary rounded-xl p-6 shadow-lg border border-bg-tertiary hover:border-error/30 transition-all duration-300'>
+                    <div class='flex items-center justify-between mb-1'>
+                        <span class='text-text-muted text-sm font-semibold uppercase tracking-wider'>Saídas (Mês)</span>
+                        <span class='w-6 h-6 rounded-full bg-error/10 text-error flex items-center justify-center font-bold text-xs'>↓</span>
+                    </div>
+                    <h3 class='text-3xl font-bold text-error' id="monthly-expense">R$ 0,00</h3>
+                    <p class='text-xs text-text-muted mt-2'>Despesas registradas este mês</p>
                 </div>
-                <!-- Net Balance -->
-                <div class="bg-bg-secondary border border-bg-tertiary p-6 rounded-2xl">
-                    <div class="text-xs font-semibold text-text-secondary uppercase tracking-wider mb-2">Balanço do Período</div>
-                    <div id="monthly-balance" class="text-2xl font-extrabold text-white">R$ 0,00</div>
+
+                <!-- Monthly Balance -->
+                <div class='bg-bg-secondary rounded-xl p-6 shadow-lg border border-bg-tertiary hover:border-accent-500/30 transition-all duration-300'>
+                    <div class='flex items-center justify-between mb-1'>
+                        <span class='text-text-muted text-sm font-semibold uppercase tracking-wider'>Balanço (Mês)</span>
+                        <span id="monthly-balance-indicator" class='w-6 h-6 rounded-full bg-success/10 text-success flex items-center justify-center font-bold text-xs'>✓</span>
+                    </div>
+                    <h3 class='text-3xl font-bold text-success' id="monthly-balance">R$ 0,00</h3>
+                    <p class='text-xs text-text-muted mt-2'>Saldo líquido do período</p>
                 </div>
             </div>
 
-            <!-- Two Columns Layout -->
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <!-- Recent Transactions (Col-span 2) -->
-                <div class="lg:col-span-2 bg-bg-secondary border border-bg-tertiary rounded-2xl p-6 space-y-6">
-                    <div class="flex justify-between items-center">
-                        <h3 class="text-lg font-bold text-white">Transações Recentes</h3>
-                        <a href="transactions.html" class="text-accent-500 hover:text-accent-600 text-sm font-bold">Ver todas &rarr;</a>
-                    </div>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left border-collapse">
-                            <thead>
-                                <tr class="text-xs font-semibold text-text-secondary uppercase border-b border-bg-tertiary pb-3">
-                                    <th class="py-3">Data</th>
-                                    <th>Descrição</th>
-                                    <th>Categoria</th>
-                                    <th>Conta</th>
-                                    <th class="text-right">Valor</th>
-                                </tr>
-                            </thead>
-                            <tbody id="transactions-body" class="divide-y divide-bg-tertiary/50 text-sm">
-                                <tr>
-                                    <td colspan="5" class="py-4 text-center text-text-muted">Carregando transações...</td>
-                                </tr>
-                            </tbody>
-                        </table>
+            <!-- Charts Row 1 -->
+            <div class='grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8'>
+                <!-- Daily Evolution Line Chart -->
+                <div class='bg-bg-secondary p-6 rounded-xl border border-bg-tertiary shadow-lg lg:col-span-2'>
+                    <h2 class='text-lg font-bold text-white mb-4'>Evolução do Saldo Diário</h2>
+                    <div class='h-64'>
+                        <canvas id="chart-line-evolution"></canvas>
                     </div>
                 </div>
 
-                <!-- Category expense progress indicators -->
-                <div class="bg-bg-secondary border border-bg-tertiary rounded-2xl p-6 space-y-6">
-                    <h3 class="text-lg font-bold text-white">Gastos por Categoria</h3>
-                    <div id="category-summary-container" class="space-y-4">
-                        <div class="text-center text-text-muted text-sm py-4">Carregando categorias...</div>
+                <!-- Expense Categories Pie Chart -->
+                <div class='bg-bg-secondary p-6 rounded-xl border border-bg-tertiary shadow-lg'>
+                    <h2 class='text-lg font-bold text-white mb-4'>Distribuição de Gastos</h2>
+                    <div class='h-64 flex items-center justify-center'>
+                        <canvas id="chart-pie-expenses"></canvas>
                     </div>
                 </div>
+            </div>
+
+            <!-- Charts Row 2 -->
+            <div class='grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8'>
+                <!-- Monthly Columns Chart -->
+                <div class='bg-bg-secondary p-6 rounded-xl border border-bg-tertiary shadow-lg lg:col-span-2'>
+                    <h2 class='text-lg font-bold text-white mb-4'>Entradas vs Saídas Mensais</h2>
+                    <div class='h-64'>
+                        <canvas id="chart-column-history"></canvas>
+                    </div>
+                </div>
+
+                <!-- Category Progress Summary -->
+                <div class='bg-bg-secondary p-6 rounded-xl border border-bg-tertiary shadow-lg'>
+                    <h2 class='text-lg font-bold text-white mb-4'>Resumo por Categoria</h2>
+                    <div id="category-summary-container" class='space-y-4 max-h-64 overflow-y-auto pr-2'>
+                        <div class='text-text-muted text-center py-12'>Sem despesas registradas.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Transactions -->
+            <div class='bg-bg-secondary rounded-xl shadow-lg border border-bg-tertiary overflow-hidden mb-8'>
+                <div class='px-6 py-4 border-b border-bg-tertiary flex items-center justify-between'>
+                    <h2 class='text-lg font-bold text-white'>Últimas Transações</h2>
+                    <a href='transactions.html' class='text-accent-500 hover:text-accent-600 text-sm font-semibold transition-colors'>Ver Todas</a>
+                </div>
+                <table class='w-full'>
+                    <thead>
+                        <tr class='bg-bg-tertiary/50'>
+                            <th class='px-6 py-4 text-left text-text-secondary text-sm font-semibold'>Data</th>
+                            <th class='px-6 py-4 text-left text-text-secondary text-sm font-semibold'>Descrição</th>
+                            <th class='px-6 py-4 text-left text-text-secondary text-sm font-semibold'>Valor</th>
+                        </tr>
+                    </thead>
+                    <tbody id="transactions-body" class='divide-y divide-bg-tertiary'>
+                        <tr>
+                            <td colspan='3' class='px-6 py-12 text-center text-text-muted'>
+                                Nenhuma transação registrada.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
 
         </div>
@@ -126,6 +183,17 @@
             const user = await checkAuthAndSetup(true);
             if (!user) return;
 
+            // Welcome greeting
+            const welcomeTitle = document.getElementById('welcome-title');
+            if (user.email) {
+                welcomeTitle.textContent = `Olá, ${user.email}!`;
+            }
+
+            // Currency formatter helper
+            function formatCurrency(val) {
+                return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val);
+            }
+
             // Load Dashboard statistics
             async function loadDashboardData() {
                 try {
@@ -137,26 +205,62 @@
                     const data = await response.json();
 
                     // Update UI elements
-                    document.getElementById('total-balance').textContent = `R$ ${data.total_balance.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
+                    document.getElementById('total-balance').textContent = formatCurrency(data.total_balance);
+                    document.getElementById('active-accounts-count').textContent = `Consolidado de ${data.active_accounts_count} conta${data.active_accounts_count !== 1 ? 's' : ''} ativa${data.active_accounts_count !== 1 ? 's' : ''}`;
                     
-                    const incomeEl = document.getElementById('monthly-income');
-                    incomeEl.textContent = `+ R$ ${data.monthly_income.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
-                    
-                    const expenseEl = document.getElementById('monthly-expense');
-                    expenseEl.textContent = `- R$ ${data.monthly_expense.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
+                    document.getElementById('monthly-income').textContent = formatCurrency(data.monthly_income);
+                    document.getElementById('monthly-expense').textContent = formatCurrency(data.monthly_expense);
 
                     const balanceEl = document.getElementById('monthly-balance');
-                    balanceEl.textContent = `R$ ${data.monthly_balance.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
-                    if (data.monthly_balance > 0) {
-                        balanceEl.className = 'text-2xl font-extrabold text-success';
-                    } else if (data.monthly_balance < 0) {
-                        balanceEl.className = 'text-2xl font-extrabold text-error';
+                    balanceEl.textContent = formatCurrency(data.monthly_balance);
+                    const indicatorEl = document.getElementById('monthly-balance-indicator');
+                    
+                    if (data.monthly_balance >= 0) {
+                        balanceEl.className = 'text-3xl font-bold text-success';
+                        if (indicatorEl) {
+                            indicatorEl.className = 'w-6 h-6 rounded-full bg-success/10 text-success flex items-center justify-center font-bold text-xs';
+                            indicatorEl.textContent = '✓';
+                        }
+                    } else {
+                        balanceEl.className = 'text-3xl font-bold text-error';
+                        if (indicatorEl) {
+                            indicatorEl.className = 'w-6 h-6 rounded-full bg-error/10 text-error flex items-center justify-center font-bold text-xs';
+                            indicatorEl.textContent = '!';
+                        }
+                    }
+
+                    // Render Category Progress Summary
+                    const catContainer = document.getElementById('category-summary-container');
+                    if (!data.category_summary || data.category_summary.length === 0) {
+                        catContainer.innerHTML = `<p class='text-text-muted text-center py-12'>Sem despesas registradas.</p>`;
+                    } else {
+                        catContainer.innerHTML = data.category_summary.map(item => {
+                            const percentage = item.percentage || 0;
+                            const total = item.total || 0;
+                            const color = item.category__color || '#D4AF37';
+                            return `
+                                <div>
+                                    <div class='flex justify-between text-sm mb-1'>
+                                        <span class='text-text-secondary'>${item.category__name}</span>
+                                        <span class='text-text-primary font-bold'>${formatCurrency(total)}</span>
+                                    </div>
+                                    <div class='w-full bg-bg-tertiary rounded-full h-2'>
+                                        <div class='h-2 rounded-full' style='width: ${percentage}%; background-color: ${color};'></div>
+                                    </div>
+                                </div>
+                            `;
+                        }).join('');
                     }
 
                     // Render transactions table
                     const tbody = document.getElementById('transactions-body');
-                    if (data.recent_transactions.length === 0) {
-                        tbody.innerHTML = `<tr><td colspan="5" class="py-4 text-center text-text-muted">Nenhuma transação registrada.</td></tr>`;
+                    if (!data.recent_transactions || data.recent_transactions.length === 0) {
+                        tbody.innerHTML = `
+                            <tr>
+                                <td colspan='3' class='px-6 py-12 text-center text-text-muted'>
+                                    Nenhuma transação registrada.
+                                </td>
+                            </tr>`;
                     } else {
                         tbody.innerHTML = data.recent_transactions.map(t => {
                             const date = new Date(t.transaction_date + 'T00:00:00');
@@ -164,48 +268,143 @@
                             const valueClass = t.transaction_type === 'INCOME' ? 'text-success' : 'text-error';
                             const valuePrefix = t.transaction_type === 'INCOME' ? '+' : '-';
                             return `
-                                <tr class="hover:bg-bg-tertiary/20">
-                                    <td class="py-4 text-text-secondary">${formattedDate}</td>
-                                    <td class="font-medium text-white">${t.description || 'Sem descrição'}</td>
-                                    <td>
-                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold" style="background-color: ${t.category_color}22; color: ${t.category_color}">
-                                            <span class="w-1.5 h-1.5 rounded-full" style="background-color: ${t.category_color}"></span>
-                                            ${t.category}
-                                        </span>
+                                <tr class='hover:bg-bg-tertiary/30 transition-all duration-150'>
+                                    <td class='px-6 py-4 text-text-primary text-sm'>${formattedDate}</td>
+                                    <td class='px-6 py-4'>
+                                        <div class='text-text-primary font-medium text-sm'>${t.description || 'Sem descrição'}</div>
+                                        <div class='text-text-muted text-xs'>${t.category} • ${t.account}</div>
                                     </td>
-                                    <td class="text-text-secondary">${t.account}</td>
-                                    <td class="text-right font-bold ${valueClass}">${valuePrefix} R$ ${t.amount.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</td>
+                                    <td class='px-6 py-4 font-bold text-sm ${valueClass}'>
+                                        ${valuePrefix} ${formatCurrency(t.amount)}
+                                    </td>
                                 </tr>
                             `;
                         }).join('');
                     }
 
-                    // Render categories progress summary
-                    const catContainer = document.getElementById('category-summary-container');
-                    if (data.category_summary.length === 0) {
-                        catContainer.innerHTML = `<div class="text-center text-text-muted text-sm py-4">Nenhum gasto registrado.</div>`;
-                    } else {
-                        catContainer.innerHTML = data.category_summary.map(item => {
-                            const percentage = item.percentage || 0;
-                            const total = item.total || 0;
-                            return `
-                                <div class="space-y-2">
-                                    <div class="flex justify-between text-sm">
-                                        <span class="font-medium text-white">${item.category__name}</span>
-                                        <span class="text-text-secondary font-bold">R$ ${total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })} (${percentage}%)</span>
-                                    </div>
-                                    <div class="w-full bg-bg-tertiary h-2 rounded-full overflow-hidden">
-                                        <div class="h-full rounded-full transition-all duration-500" style="width: ${percentage}%; background-color: ${item.category__color}"></div>
-                                    </div>
-                                </div>
-                            `;
-                        }).join('');
-                    }
+                    // Initialize Charts
+                    initCharts(data);
 
                 } catch (err) {
                     console.error('Error fetching dashboard statistics:', err);
                     showToast('Erro ao carregar os dados financeiros do painel.', 'error');
                 }
+            }
+
+            function initCharts(data) {
+                // Dark theme colors for Charts
+                const accentColor = '#D4AF37'; // Gold
+                const textMuted = '#9A8176';
+                const gridBorder = '#2b130c';
+
+                // 1. Line Chart (Daily Evolution)
+                const lineCtx = document.getElementById('chart-line-evolution').getContext('2d');
+                const dailyData = data.daily_evolution || [];
+                
+                new Chart(lineCtx, {
+                    type: 'line',
+                    data: {
+                        labels: dailyData.map(d => d.day),
+                        datasets: [{
+                            label: 'Saldo Acumulado',
+                            data: dailyData.map(d => d.balance),
+                            borderColor: accentColor,
+                            backgroundColor: 'rgba(212, 175, 55, 0.1)',
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.3,
+                            pointBackgroundColor: accentColor
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false }
+                        },
+                        scales: {
+                            x: {
+                                grid: { color: gridBorder },
+                                ticks: { color: textMuted }
+                            },
+                            y: {
+                                grid: { color: gridBorder },
+                                ticks: { color: textMuted }
+                            }
+                        }
+                    }
+                });
+
+                // 2. Doughnut Pie Chart (Expenses by Category)
+                const pieCtx = document.getElementById('chart-pie-expenses').getContext('2d');
+                const categories = data.category_summary || [];
+                
+                new Chart(pieCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: categories.map(cat => cat.category__name),
+                        datasets: [{
+                            data: categories.map(cat => cat.total),
+                            backgroundColor: categories.map(cat => cat.category__color || '#D4AF37'),
+                            borderWidth: 2,
+                            borderColor: '#2B130C' // Match Card backdrop
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'right',
+                                labels: { color: '#f1f5f9' }
+                            }
+                        }
+                    }
+                });
+
+                // 3. Column Bar Chart (Monthly Incomes vs Expenses)
+                const columnCtx = document.getElementById('chart-column-history').getContext('2d');
+                const history = data.monthly_history || [];
+
+                new Chart(columnCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: history.map(h => h.month),
+                        datasets: [
+                            {
+                                label: 'Entradas',
+                                data: history.map(h => h.income),
+                                backgroundColor: '#2EC47D',
+                                borderRadius: 6
+                            },
+                            {
+                                label: 'Saídas',
+                                data: history.map(h => h.expense),
+                                backgroundColor: '#EF3823',
+                                borderRadius: 6
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                labels: { color: '#f1f5f9' }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                grid: { color: gridBorder },
+                                ticks: { color: textMuted }
+                            },
+                            y: {
+                                grid: { color: gridBorder },
+                                ticks: { color: textMuted }
+                            }
+                        }
+                    }
+                });
             }
 
             await loadDashboardData();
@@ -215,66 +414,90 @@
             const containerAI = document.getElementById("ai-summary-container");
             const textAI = document.getElementById("ai-summary-text");
 
-            btnAI.addEventListener("click", async function () {
-                // Show loading toast
+            btnAI.addEventListener("click", function () {
+                // Toastify info notification that analysis started
                 let loadingToast;
                 if (window.Toastify) {
                     loadingToast = Toastify({
-                        text: "Conectando ao agente financeiro de Inteligência Artificial...",
-                        duration: -1,
+                        text: "Processando dados financeiros com Inteligência Artificial...",
+                        duration: -1, // Permanent until closed manually or via logic
                         close: false,
                         gravity: "top",
                         position: "right",
                         style: {
-                            background: "rgba(102, 126, 234, 0.95)",
-                            color: "#white",
+                            background: "rgba(0, 230, 118, 0.9)",
+                            color: "#080808",
                             fontWeight: "bold",
                         }
                     });
                     loadingToast.showToast();
                 }
 
-                // Disable button
+                // Disable button during task execution
                 btnAI.disabled = true;
                 btnAI.classList.add("opacity-50", "cursor-not-allowed");
 
-                // Show AI box with temporary message
+                // Display analysis card structure with loading placeholder
                 containerAI.classList.remove("hidden");
-                textAI.innerHTML = `<span class="animate-pulse">Analisando sua carteira e cotações com o MonetraBot...</span>`;
+                textAI.innerHTML = `<span class="animate-pulse">Calculando métricas da carteira e conectando com o agente financeiro LangChain...</span>`;
 
-                try {
-                    // Call generate-summary endpoint on backend
-                    const response = await fetch(`${BACKEND_URL}/ai/generate-summary/`, {
-                        credentials: 'include'
+                // AJAX call to background simulation endpoint
+                fetch(`${BACKEND_URL}/ai/generate-summary/`, { credentials: 'include' })
+                    .then(response => {
+                        if (loadingToast) loadingToast.hideToast();
+                        if (!response.ok) throw new Error(`HTTP error ${response.status}`);
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.status === 'success') {
+                            // Display AI summary result text
+                            textAI.innerHTML = data.summary;
+                            
+                            // Fire success toast notification
+                            if (window.Toastify) {
+                                Toastify({
+                                    text: "Resumo com Inteligência Artificial concluído!",
+                                    duration: 5000,
+                                    close: true,
+                                    gravity: "top",
+                                    position: "right",
+                                    style: {
+                                        background: "#2EC47D",
+                                        color: "white",
+                                        fontWeight: "bold",
+                                    }
+                                }).showToast();
+                            }
+                        } else {
+                            textAI.textContent = data.message || "Não foi possível gerar o resumo de IA no momento.";
+                        }
+                    })
+                    .catch(err => {
+                        if (loadingToast) loadingToast.hideToast();
+                        textAI.textContent = "Erro ao processar requisição.";
+                        console.error("Erro no resumo:", err);
+                        
+                        if (window.Toastify) {
+                            Toastify({
+                                text: "Erro ao conectar com o servidor.",
+                                duration: 4000,
+                                close: true,
+                                gravity: "top",
+                                position: "right",
+                                style: {
+                                    background: "#EF3823",
+                                    color: "white"
+                                }
+                            }).showToast();
+                        }
+                    })
+                    .finally(() => {
+                        // Re-enable button
+                        btnAI.disabled = false;
+                        btnAI.classList.remove("opacity-50", "cursor-not-allowed");
                     });
-
-                    // Hide loading toast
-                    if (loadingToast) loadingToast.hideToast();
-
-                    // Correctly handle JSON vs non-JSON response errors
-                    if (!response.ok) {
-                        const errorData = await response.json().catch(() => ({}));
-                        throw new Error(errorData.message || `Servidor retornou status ${response.status}`);
-                    }
-
-                    const data = await response.json();
-
-                    if (data.status === 'success') {
-                        textAI.innerHTML = data.summary;
-                        showToast('Análise financeira de IA concluída com sucesso!');
-                    } else {
-                        textAI.textContent = data.message || "Não foi possível gerar a análise de IA.";
-                    }
-                } catch (err) {
-                    console.error("Erro no resumo:", err);
-                    if (loadingToast) loadingToast.hideToast();
-                    textAI.textContent = `Erro ao processar resumo: ${err.message || 'Sem resposta do servidor'}.`;
-                    showToast('Falha na comunicação com o agente financeiro.', 'error');
-                } finally {
-                    btnAI.disabled = false;
-                    btnAI.classList.remove("opacity-50", "cursor-not-allowed");
-                }
             });
+
         });
     </script>
 </body>

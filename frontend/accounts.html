@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gerenciar Contas - Monetra</title>
+    <title>Minhas Contas - Monetra</title>
+    <link rel="shortcut icon" href="static/images/logo1.png" type="image/png">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
     <link rel="stylesheet" href="static/css/styles.css">
@@ -22,79 +23,32 @@
     <main class="flex-grow">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             
-            <!-- Header -->
-            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8 gap-4">
+            <div class="mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                 <div>
-                    <h1 class="text-3xl font-extrabold text-white tracking-tight">Suas Contas</h1>
-                    <p class="text-text-secondary text-sm">Gerencie suas contas correntes, poupanças e carteiras físicas.</p>
+                    <h1 class="text-3xl font-bold text-white">Minhas Contas</h1>
+                    <p class="text-text-secondary">Gerencie suas contas bancárias e saldos.</p>
                 </div>
-                <div>
-                    <button id="open-add-modal-btn" class="px-4 py-2.5 bg-accent-500 hover:bg-accent-600 text-[#080808] font-bold rounded-lg transition-all shadow-lg flex items-center gap-2">
-                        <span>+ Nova Conta</span>
-                    </button>
-                </div>
+                <a href="account_form.html" class="px-4 py-2 bg-gradient-to-r from-primary-500 to-accent-500 text-white rounded-lg font-medium hover:opacity-90 transition-all duration-200 shadow-lg flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                    </svg>
+                    Nova Conta
+                </a>
             </div>
 
-            <!-- Accounts List Container -->
-            <div id="accounts-container" class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <!-- Accounts load here -->
-                <div class="text-center text-text-muted text-sm py-8 col-span-3">Carregando contas...</div>
+            <!-- Total Balance Card -->
+            <div class="bg-gradient-to-br from-primary-500 to-accent-500 rounded-xl p-6 shadow-xl mb-8 max-w-sm">
+                <span class="text-white/80 text-sm font-medium">Saldo Total Consolidado</span>
+                <p id="total-balance" class="text-3xl font-bold text-white mt-1">R$ 0,00</p>
+            </div>
+
+            <!-- Grid Container -->
+            <div id="accounts-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="text-center text-text-muted text-sm py-12 md:col-span-2 lg:col-span-3">Carregando contas...</div>
             </div>
 
         </div>
     </main>
-
-    <!-- Modal Form (Add / Edit) -->
-    <div id="account-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-black/60 backdrop-blur-sm p-4">
-        <div class="bg-bg-secondary border border-bg-tertiary rounded-2xl w-full max-w-md p-6 space-y-6 shadow-2xl relative">
-            <div class="flex justify-between items-center border-b border-bg-tertiary pb-3">
-                <h3 id="modal-title" class="text-lg font-bold text-white">Nova Conta</h3>
-                <button id="close-modal-btn" class="text-text-secondary hover:text-text-primary text-xl font-bold">&times;</button>
-            </div>
-            
-            <form id="account-form" class="space-y-4">
-                <input type="hidden" id="account-id">
-                
-                <div>
-                    <label for="name" class="block text-sm font-medium text-text-secondary mb-1">Nome da Conta</label>
-                    <input id="name" type="text" required class="w-full px-4 py-2 bg-bg-secondary border border-bg-tertiary rounded-lg text-text-primary focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all" placeholder="Ex: Conta Principal">
-                </div>
-                
-                <div>
-                    <label for="bank_name" class="block text-sm font-medium text-text-secondary mb-1">Banco / Instituição</label>
-                    <input id="bank_name" type="text" required class="w-full px-4 py-2 bg-bg-secondary border border-bg-tertiary rounded-lg text-text-primary focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all" placeholder="Ex: Itaú, Nubank">
-                </div>
-
-                <div>
-                    <label for="account_type" class="block text-sm font-medium text-text-secondary mb-1">Tipo de Conta</label>
-                    <select id="account_type" required class="w-full px-4 py-2 bg-bg-secondary border border-bg-tertiary rounded-lg text-text-primary focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all">
-                        <option value="CHECKING">Conta Corrente</option>
-                        <option value="SAVINGS">Poupança</option>
-                        <option value="WALLET">Carteira (Dinheiro Físico)</option>
-                    </select>
-                </div>
-
-                <div>
-                    <label for="balance" class="block text-sm font-medium text-text-secondary mb-1">Saldo Inicial (R$)</label>
-                    <input id="balance" type="number" step="0.01" required class="w-full px-4 py-2 bg-bg-secondary border border-bg-tertiary rounded-lg text-text-primary focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all" placeholder="0,00">
-                </div>
-
-                <div class="flex items-center gap-2">
-                    <input id="is_active" type="checkbox" checked class="w-4 h-4 text-primary-500 border-bg-tertiary rounded bg-bg-secondary focus:ring-2 focus:ring-primary-500 focus:border-transparent">
-                    <label for="is_active" class="text-sm font-medium text-text-secondary">Conta Ativa</label>
-                </div>
-
-                <div class="flex gap-3 pt-4 justify-end">
-                    <button type="button" id="cancel-modal-btn" class="px-4 py-2 bg-bg-tertiary border border-bg-tertiary text-white rounded-lg text-sm font-bold hover:bg-bg-tertiary/80 transition-all">
-                        Cancelar
-                    </button>
-                    <button type="submit" class="px-4 py-2 bg-accent-500 hover:bg-accent-600 text-[#080808] rounded-lg text-sm font-bold transition-all shadow-md">
-                        Salvar
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
 
     <!-- Footer Placeholder -->
     <div id="footer-placeholder"></div>
@@ -106,64 +60,64 @@
             const user = await checkAuthAndSetup(true);
             if (!user) return;
 
-            const container = document.getElementById('accounts-container');
-            const modal = document.getElementById('account-modal');
-            const accountForm = document.getElementById('account-form');
-            const modalTitle = document.getElementById('modal-title');
-            
-            const nameInput = document.getElementById('name');
-            const bankInput = document.getElementById('bank_name');
-            const typeSelect = document.getElementById('account_type');
-            const balanceInput = document.getElementById('balance');
-            const activeCheckbox = document.getElementById('is_active');
-            const accountIdInput = document.getElementById('account-id');
+            const grid = document.getElementById('accounts-grid');
+            const totalBalanceEl = document.getElementById('total-balance');
 
-            // Load all accounts
             async function loadAccounts() {
                 try {
                     const res = await fetch(`${BACKEND_URL}/api/accounts/`, { credentials: 'include' });
                     if (!res.ok) throw new Error();
                     const accounts = await res.json();
 
+                    // Calculate total balance
+                    let total = 0;
+                    accounts.forEach(acc => {
+                        if (acc.is_active) total += acc.balance;
+                    });
+                    totalBalanceEl.textContent = `R$ ${total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
+
                     if (accounts.length === 0) {
-                        container.innerHTML = `
-                            <div class="text-center text-text-muted text-sm py-12 col-span-3 border border-dashed border-bg-tertiary rounded-2xl">
-                                Nenhuma conta cadastrada ainda. Clique em "+ Nova Conta" para começar.
+                        grid.innerHTML = `
+                            <div class="md:col-span-2 lg:col-span-3 bg-bg-secondary rounded-xl p-12 shadow-lg border border-bg-tertiary text-center">
+                                <p class="text-text-muted mb-6">Você ainda não possui nenhuma conta cadastrada.</p>
+                                <a href="account_form.html" class="inline-block px-6 py-3 bg-gradient-to-r from-primary-500 to-accent-500 text-white rounded-lg font-bold hover:opacity-90 transition-all duration-200 shadow-lg">
+                                    Criar Minha Primeira Conta
+                                </a>
                             </div>
                         `;
                     } else {
-                        container.innerHTML = accounts.map(acc => `
-                            <div class="bg-bg-secondary border border-bg-tertiary rounded-2xl p-6 flex flex-col justify-between shadow-md space-y-4">
-                                <div class="space-y-1">
-                                    <div class="flex justify-between items-center">
-                                        <h3 class="text-lg font-bold text-white">${escapeHTML(acc.name)}</h3>
-                                        <span class="px-2 py-0.5 rounded text-xs font-bold ${acc.is_active ? 'bg-success/15 text-success' : 'bg-text-muted/15 text-text-muted'}">
-                                            ${acc.is_active ? 'Ativa' : 'Inativa'}
-                                        </span>
+                        grid.innerHTML = accounts.map(acc => `
+                            <div class="bg-bg-secondary rounded-xl p-6 shadow-lg border border-bg-tertiary hover:border-accent-500 transition-all duration-200 flex flex-col">
+                                <div class="flex items-start justify-between mb-4">
+                                    <div>
+                                        <h3 class="text-xl font-bold text-white">${escapeHTML(acc.name)}</h3>
+                                        <p class="text-text-muted text-sm">${escapeHTML(acc.bank_name)} • ${acc.account_type_display}</p>
                                     </div>
-                                    <p class="text-sm text-text-secondary">${escapeHTML(acc.bank_name)} • ${acc.account_type_display}</p>
+                                    <span class="px-2 py-1 ${acc.is_active ? 'bg-success/10 text-success' : 'bg-text-muted/10 text-text-muted'} rounded text-xs font-bold uppercase">
+                                        ${acc.is_active ? 'Ativa' : 'Inativa'}
+                                    </span>
                                 </div>
-                                <div class="text-2xl font-extrabold text-white">
-                                    R$ ${acc.balance.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-                                </div>
-                                <div class="flex gap-2 pt-2 justify-end">
-                                    <button class="edit-btn px-3 py-1.5 bg-bg-tertiary hover:bg-bg-tertiary/70 rounded-lg text-xs font-bold text-white transition-all" data-id="${acc.id}">
-                                        Editar
-                                    </button>
-                                    <button class="delete-btn px-3 py-1.5 bg-error/10 hover:bg-error hover:text-white rounded-lg text-xs font-bold text-error transition-all border border-error/15" data-id="${acc.id}">
-                                        Excluir
-                                    </button>
+                                
+                                <div class="mt-auto pt-6 border-t border-bg-tertiary flex items-end justify-between">
+                                    <div>
+                                        <span class="text-text-muted text-xs block mb-1">Saldo Atual</span>
+                                        <p class="text-2xl font-bold text-text-primary">R$ ${acc.balance.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
+                                    </div>
+                                    <div class="flex gap-2">
+                                        <a href="account_form.html?id=${acc.id}" class="p-2 text-text-secondary hover:text-accent-500 transition-colors">
+                                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                            </svg>
+                                        </a>
+                                        <a href="account_confirm_delete.html?id=${acc.id}" class="p-2 text-text-secondary hover:text-error transition-colors">
+                                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-4v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                            </svg>
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         `).join('');
-
-                        // Attach listeners to buttons
-                        document.querySelectorAll('.edit-btn').forEach(btn => {
-                            btn.addEventListener('click', () => openEditModal(btn.dataset.id));
-                        });
-                        document.querySelectorAll('.delete-btn').forEach(btn => {
-                            btn.addEventListener('click', () => deleteAccount(btn.dataset.id));
-                        });
                     }
                 } catch (e) {
                     showToast('Erro ao carregar contas.', 'error');
@@ -174,110 +128,6 @@
                 return str.replace(/[&<>'"]/g, tag => ({
                     '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
                 }[tag] || tag));
-            }
-
-            // Modal Handlers
-            function openAddModal() {
-                modalTitle.textContent = 'Nova Conta';
-                accountIdInput.value = '';
-                accountForm.reset();
-                balanceInput.disabled = false;
-                modal.classList.remove('hidden');
-            }
-
-            async function openEditModal(id) {
-                try {
-                    const res = await fetch(`${BACKEND_URL}/api/accounts/${id}/`, { credentials: 'include' });
-                    if (!res.ok) throw new Error();
-                    const acc = await res.json();
-
-                    modalTitle.textContent = 'Editar Conta';
-                    accountIdInput.value = acc.id;
-                    nameInput.value = acc.name;
-                    bankInput.value = acc.bank_name;
-                    typeSelect.value = acc.account_type;
-                    balanceInput.value = acc.balance;
-                    // Balance editing is restricted to audit log or simple overrides, let's keep it editable
-                    balanceInput.disabled = false;
-                    activeCheckbox.checked = acc.is_active;
-
-                    modal.classList.remove('hidden');
-                } catch (e) {
-                    showToast('Erro ao buscar dados da conta.', 'error');
-                }
-            }
-
-            function closeModal() {
-                modal.classList.add('hidden');
-            }
-
-            document.getElementById('open-add-modal-btn').addEventListener('click', openAddModal);
-            document.getElementById('close-modal-btn').addEventListener('click', closeModal);
-            document.getElementById('cancel-modal-btn').addEventListener('click', closeModal);
-
-            // Form Submit handler (Create / Update)
-            accountForm.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                const id = accountIdInput.value;
-                const bodyData = {
-                    name: nameInput.value.trim(),
-                    bank_name: bankInput.value.trim(),
-                    account_type: typeSelect.value,
-                    balance: parseFloat(balanceInput.value),
-                    is_active: activeCheckbox.checked
-                };
-
-                const url = id ? `${BACKEND_URL}/api/accounts/${id}/` : `${BACKEND_URL}/api/accounts/`;
-                const method = id ? 'PUT' : 'POST';
-
-                try {
-                    const csrfToken = await fetchCSRFToken();
-                    const res = await fetch(url, {
-                        method: method,
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRFToken': csrfToken
-                        },
-                        body: JSON.stringify(bodyData),
-                        credentials: 'include'
-                    });
-
-                    if (res.ok) {
-                        showToast(id ? 'Conta atualizada com sucesso!' : 'Conta criada com sucesso!');
-                        closeModal();
-                        await loadAccounts();
-                    } else {
-                        const error = await res.json();
-                        showToast(error.error || 'Erro ao salvar conta.', 'error');
-                    }
-                } catch (err) {
-                    showToast('Erro ao salvar conta.', 'error');
-                }
-            });
-
-            // Delete handler
-            async function deleteAccount(id) {
-                if (!confirm('Deseja realmente excluir esta conta? Isso removerá o histórico dela.')) return;
-                try {
-                    const csrfToken = await fetchCSRFToken();
-                    const res = await fetch(`${BACKEND_URL}/api/accounts/${id}/`, {
-                        method: 'DELETE',
-                        headers: {
-                            'X-CSRFToken': csrfToken
-                        },
-                        credentials: 'include'
-                    });
-
-                    if (res.ok) {
-                        showToast('Conta excluída com sucesso!');
-                        await loadAccounts();
-                    } else {
-                        const error = await res.json();
-                        showToast(error.error || 'Erro ao excluir conta.', 'error');
-                    }
-                } catch (e) {
-                    showToast('Erro ao excluir conta.', 'error');
-                }
             }
 
             await loadAccounts();

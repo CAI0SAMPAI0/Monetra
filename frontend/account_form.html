@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Salvar Conta - Monetra</title>
+    <link rel="shortcut icon" href="static/images/logo1.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <link rel="stylesheet" href="static/css/styles.css">
+    <style>
+        body {
+            background-color: #080808;
+            color: #F1F5F9;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col font-sans">
+    
+    <!-- Navbar Placeholder -->
+    <div id="navbar-placeholder"></div>
+
+    <main class="flex-grow">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            
+            <div class="max-w-3xl mx-auto">
+                <div class="mb-8">
+                    <h1 id="form-heading" class="text-3xl font-bold text-white">Nova Conta</h1>
+                    <p id="form-subheading" class="text-text-secondary">Cadastre uma nova conta bancária ou carteira.</p>
+                </div>
+
+                <div class="bg-bg-secondary rounded-2xl shadow-lg border border-bg-tertiary overflow-hidden">
+                    <form id="account-form" class="p-8 space-y-6">
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Name (Full width) -->
+                            <div class="md:col-span-2">
+                                <label for="name" class="block text-text-secondary text-sm font-medium mb-2">Nome da conta</label>
+                                <input type="text" name="name" id="name" required
+                                    class="w-full px-4 py-3 bg-bg-primary border border-bg-tertiary rounded-lg text-text-primary focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
+                                    placeholder="Ex: Conta Principal">
+                            </div>
+
+                            <!-- Bank Name -->
+                            <div>
+                                <label for="bank_name" class="block text-text-secondary text-sm font-medium mb-2">Nome do banco</label>
+                                <input type="text" name="bank_name" id="bank_name" required
+                                    class="w-full px-4 py-3 bg-bg-primary border border-bg-tertiary rounded-lg text-text-primary focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
+                                    placeholder="Ex: Itaú, Nubank">
+                            </div>
+
+                            <!-- Account Type -->
+                            <div>
+                                <label for="account_type" class="block text-text-secondary text-sm font-medium mb-2">Tipo de conta</label>
+                                <select name="account_type" id="account_type"
+                                    class="w-full px-4 py-3 bg-bg-primary border border-bg-tertiary rounded-lg text-text-primary focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200">
+                                    <option value="CHECKING">Conta Corrente</option>
+                                    <option value="SAVINGS">Poupança</option>
+                                    <option value="WALLET">Carteira</option>
+                                </select>
+                            </div>
+
+                            <!-- Balance -->
+                            <div>
+                                <label for="balance" class="block text-text-secondary text-sm font-medium mb-2">Saldo</label>
+                                <input type="number" step="0.01" name="balance" id="balance" required
+                                    class="w-full px-4 py-3 bg-bg-primary border border-bg-tertiary rounded-lg text-text-primary focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
+                                    placeholder="0.00">
+                            </div>
+
+                            <!-- Is Active -->
+                            <div class="flex items-center pt-8">
+                                <div class="flex items-center">
+                                    <input type="checkbox" name="is_active" id="is_active" checked
+                                        class="w-4 h-4 bg-bg-primary border border-bg-tertiary rounded text-accent-500 focus:ring-accent-500 focus:ring-offset-bg-secondary">
+                                    <span class="ml-2 text-text-secondary text-sm">Ativa</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-10 pt-6 border-t border-bg-tertiary flex justify-end gap-4">
+                            <a href="accounts.html" class="px-6 py-3 bg-bg-tertiary text-text-primary rounded-lg font-bold hover:bg-bg-primary transition-all duration-200 border border-bg-tertiary">
+                                Cancelar
+                            </a>
+                            <button type="submit" id="submit-btn" class="px-6 py-3 bg-gradient-to-r from-primary-500 to-accent-500 text-white rounded-lg font-bold hover:opacity-90 transition-all duration-200 shadow-lg">
+                                Criar Conta
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer Placeholder -->
+    <div id="footer-placeholder"></div>
+
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script src="static/js/common.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const user = await checkAuthAndSetup(true);
+            if (!user) return;
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const accountId = urlParams.get('id');
+
+            const form = document.getElementById('account-form');
+            const heading = document.getElementById('form-heading');
+            const subheading = document.getElementById('form-subheading');
+            const submitBtn = document.getElementById('submit-btn');
+
+            const nameInput = document.getElementById('name');
+            const bankInput = document.getElementById('bank_name');
+            const typeSelect = document.getElementById('account_type');
+            const balanceInput = document.getElementById('balance');
+            const activeCheckbox = document.getElementById('is_active');
+
+            if (accountId) {
+                // We are editing an existing account
+                heading.textContent = 'Editar Conta';
+                subheading.textContent = 'Atualize os dados da sua conta.';
+                submitBtn.textContent = 'Salvar Alterações';
+
+                try {
+                    const res = await fetch(`${BACKEND_URL}/api/accounts/${accountId}/`, { credentials: 'include' });
+                    if (!res.ok) throw new Error();
+                    const acc = await res.json();
+
+                    nameInput.value = acc.name;
+                    bankInput.value = acc.bank_name;
+                    typeSelect.value = acc.account_type;
+                    balanceInput.value = acc.balance;
+                    activeCheckbox.checked = acc.is_active;
+                } catch (e) {
+                    showToast('Erro ao buscar dados da conta.', 'error');
+                }
+            }
+
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                const bodyData = {
+                    name: nameInput.value.trim(),
+                    bank_name: bankInput.value.trim(),
+                    account_type: typeSelect.value,
+                    balance: parseFloat(balanceInput.value),
+                    is_active: activeCheckbox.checked
+                };
+
+                const url = accountId ? `${BACKEND_URL}/api/accounts/${accountId}/` : `${BACKEND_URL}/api/accounts/`;
+                const method = accountId ? 'PUT' : 'POST';
+
+                try {
+                    const csrfToken = await fetchCSRFToken();
+                    const res = await fetch(url, {
+                        method: method,
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': csrfToken
+                        },
+                        body: JSON.stringify(bodyData),
+                        credentials: 'include'
+                    });
+
+                    if (res.ok) {
+                        showToast(accountId ? 'Conta atualizada com sucesso!' : 'Conta criada com sucesso!');
+                        setTimeout(() => {
+                            window.location.href = 'accounts.html';
+                        }, 1000);
+                    } else {
+                        const error = await res.json();
+                        showToast(error.error || 'Erro ao salvar conta.', 'error');
+                    }
+                } catch (err) {
+                    showToast('Erro ao salvar conta.', 'error');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

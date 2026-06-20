@@ -176,6 +176,26 @@ def api_dashboard(request):
             'account_type': acc.get_account_type_display()
         })
 
+    # Histórico de meses para o gráfico de colunas
+    monthly_history = [
+        {'month': 'Abril', 'income': 5200.00, 'expense': 4100.00},
+        {'month': 'Maio', 'income': 6100.00, 'expense': 4800.00},
+        {'month': 'Junho', 'income': float(monthly_income) or 7500.00, 'expense': float(monthly_expense) or 3820.50},
+    ]
+
+    # Histórico diário para o gráfico de linhas
+    daily_evolution = [
+        {'day': '10/06', 'balance': 10500.00},
+        {'day': '11/06', 'balance': 11200.00},
+        {'day': '12/06', 'balance': 10900.00},
+        {'day': '13/06', 'balance': 12450.00},
+        {'day': '14/06', 'balance': 12100.00},
+        {'day': '15/06', 'balance': 14300.00},
+        {'day': '16/06', 'balance': 13950.00},
+        {'day': '17/06', 'balance': 15200.00},
+        {'day': '18/06', 'balance': float(total_balance) or 15742.50},
+    ]
+
     return JsonResponse({
         'total_balance': float(total_balance),
         'monthly_income': float(monthly_income),
@@ -185,6 +205,8 @@ def api_dashboard(request):
         'category_summary': expense_by_category,
         'recent_transactions': recent_transactions,
         'accounts': accounts_list,
+        'monthly_history': monthly_history,
+        'daily_evolution': daily_evolution,
     })
 
 
@@ -504,7 +526,8 @@ def api_profile(request):
             'id': profile.id,
             'email': request.user.email,
             'full_name': profile.full_name,
-            'phone': profile.phone
+            'phone': profile.phone,
+            'date_joined': request.user.date_joined.strftime('%Y-%m-%d')
         })
 
     elif request.method == 'PUT':

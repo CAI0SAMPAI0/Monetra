@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Excluir Conta - Monetra</title>
+    <link rel="shortcut icon" href="static/images/logo1.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <link rel="stylesheet" href="static/css/styles.css">
+    <style>
+        body {
+            background-color: #080808;
+            color: #F1F5F9;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col font-sans">
+    
+    <!-- Navbar Placeholder -->
+    <div id="navbar-placeholder"></div>
+
+    <main class="flex-grow flex items-center justify-center py-12 px-4">
+        <div class="max-w-md w-full">
+            <div class="bg-bg-secondary rounded-2xl shadow-xl border border-bg-tertiary overflow-hidden">
+                <div class="p-8 text-center">
+                    <div class="w-20 h-20 bg-error/10 text-error rounded-full flex items-center justify-center mx-auto mb-6">
+                        <svg class="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                        </svg>
+                    </div>
+                    
+                    <h1 class="text-2xl font-bold text-white mb-4">Excluir Conta?</h1>
+                    <p class="text-text-secondary mb-8">
+                        Tem certeza que deseja excluir a conta <span id="account-name" class="text-white font-bold">"Carregando..."</span>? 
+                        Esta ação não poderá ser desfeita.
+                    </p>
+
+                    <form id="delete-form" class="flex flex-col gap-3">
+                        <button type="submit" class="w-full px-6 py-3 bg-error text-white rounded-lg font-bold hover:bg-red-600 transition-all duration-200 shadow-lg">
+                            Sim, Excluir Conta
+                        </button>
+                        <a href="accounts.html" class="w-full px-6 py-3 bg-bg-tertiary text-text-primary rounded-lg font-bold hover:bg-bg-primary transition-all duration-200 border border-bg-tertiary text-center">
+                            Cancelar
+                        </a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer Placeholder -->
+    <div id="footer-placeholder"></div>
+
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script src="static/js/common.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const user = await checkAuthAndSetup(true);
+            if (!user) return;
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const accountId = urlParams.get('id');
+            if (!accountId) {
+                window.location.href = 'accounts.html';
+                return;
+            }
+
+            const nameEl = document.getElementById('account-name');
+            const form = document.getElementById('delete-form');
+
+            // Fetch details to print name
+            try {
+                const res = await fetch(`${BACKEND_URL}/api/accounts/${accountId}/`, { credentials: 'include' });
+                if (!res.ok) throw new Error();
+                const acc = await res.json();
+                nameEl.textContent = `"${acc.name}"`;
+            } catch (e) {
+                nameEl.textContent = 'a conta selecionada';
+            }
+
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+
+                try {
+                    const csrfToken = await fetchCSRFToken();
+                    const res = await fetch(`${BACKEND_URL}/api/accounts/${accountId}/`, {
+                        method: 'DELETE',
+                        headers: {
+                            'X-CSRFToken': csrfToken
+                        },
+                        credentials: 'include'
+                    });
+
+                    if (res.ok) {
+                        showToast('Conta excluída com sucesso!');
+                        setTimeout(() => {
+                            window.location.href = 'accounts.html';
+                        }, 1000);
+                    } else {
+                        const error = await res.json();
+                        showToast(error.error || 'Erro ao excluir conta.', 'error');
+                    }
+                } catch (err) {
+                    showToast('Erro ao excluir conta.', 'error');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

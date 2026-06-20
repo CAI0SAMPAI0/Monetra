@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Meu Perfil - Monetra</title>
+    <link rel="shortcut icon" href="static/images/logo1.png" type="image/png">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
     <link rel="stylesheet" href="static/css/styles.css">
@@ -19,41 +20,89 @@
     <!-- Navbar Placeholder -->
     <div id="navbar-placeholder"></div>
 
-    <main class="flex-grow flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-        <div class="max-w-md w-full space-y-8 bg-bg-secondary border border-bg-tertiary p-8 rounded-2xl shadow-xl">
-            <div class="text-center">
-                <h2 class="text-3xl font-extrabold text-white">Seu Perfil</h2>
-                <p class="mt-2 text-sm text-text-secondary">Visualizar e editar suas informações pessoais.</p>
-            </div>
+    <main class="flex-grow">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             
-            <form id="profile-form" class="mt-8 space-y-6">
-                <div class="space-y-4">
-                    <div>
-                        <label class="block text-sm font-medium text-text-secondary mb-1">E-mail (Login)</label>
-                        <input id="email" type="email" disabled 
-                            class="w-full px-4 py-3 bg-bg-tertiary border border-bg-tertiary rounded-lg text-text-secondary cursor-not-allowed opacity-75">
-                    </div>
-                    <div>
-                        <label for="full_name" class="block text-sm font-medium text-text-secondary mb-1">Nome Completo</label>
-                        <input id="full_name" name="full_name" type="text" required 
-                            class="w-full px-4 py-3 bg-bg-secondary border border-bg-tertiary rounded-lg text-text-primary focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all" 
-                            placeholder="Seu nome completo">
-                    </div>
-                    <div>
-                        <label for="phone" class="block text-sm font-medium text-text-secondary mb-1">Telefone</label>
-                        <input id="phone" name="phone" type="text" 
-                            class="w-full px-4 py-3 bg-bg-secondary border border-bg-tertiary rounded-lg text-text-primary focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all" 
-                            placeholder="(00) 00000-0000">
-                    </div>
+            <div class='max-w-3xl mx-auto'>
+                <div class='mb-8'>
+                    <h1 id="page-title" class='text-3xl font-bold text-white'>Meu Perfil</h1>
+                    <p id="page-subtitle" class='text-text-secondary'>Gerencie suas informações pessoais.</p>
                 </div>
 
-                <div>
-                    <button type="submit" 
-                        class="w-full flex justify-center py-3 px-4 border border-transparent text-sm font-bold rounded-lg text-[#080808] bg-accent-500 hover:bg-accent-600 focus:outline-none transition-all duration-200 shadow-md">
-                        Salvar Alterações
-                    </button>
+                <div class='bg-bg-secondary rounded-2xl shadow-lg border border-bg-tertiary overflow-hidden'>
+                    
+                    <!-- ═══════════ PROFILE DETAIL CONTAINER ═══════════ -->
+                    <div id="profile-detail-container" class='p-8'>
+                        <div class='space-y-6'>
+                            <div>
+                                <label class='block text-text-muted text-sm font-medium mb-1'>E-mail (Login)</label>
+                                <p id="detail-email" class='text-text-primary text-lg font-medium'>...</p>
+                                <p class='text-text-muted text-xs mt-1'>O e-mail não pode ser alterado.</p>
+                            </div>
+
+                            <div class='grid grid-cols-1 md:grid-cols-2 gap-6'>
+                                <div>
+                                    <label class='block text-text-muted text-sm font-medium mb-1'>Nome Completo</label>
+                                    <p id="detail-name" class='text-text-primary text-lg font-medium'>Não informado</p>
+                                </div>
+                                <div>
+                                    <label class='block text-text-muted text-sm font-medium mb-1'>Telefone</label>
+                                    <p id="detail-phone" class='text-text-primary text-lg font-medium'>Não informado</p>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class='block text-text-muted text-sm font-medium mb-1'>Membro desde</label>
+                                <p id="detail-joined" class='text-text-primary font-medium'>...</p>
+                            </div>
+                        </div>
+
+                        <div class='mt-10 pt-6 border-t border-bg-tertiary flex justify-end'>
+                            <button id="edit-mode-btn" class='px-6 py-3 bg-gradient-to-r from-primary-500 to-accent-500 text-white rounded-lg font-bold hover:opacity-90 transition-all duration-200 shadow-lg'>
+                                Editar Perfil
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- ═══════════ PROFILE FORM CONTAINER (EDIT) ═══════════ -->
+                    <div id="profile-edit-container" class="hidden p-8">
+                        <form id="profile-form" class='space-y-6'>
+                            <div id="error-message" class="hidden bg-error/10 border border-error/20 rounded-lg p-4 text-error text-sm"></div>
+
+                            <div class='grid grid-cols-1 md:grid-cols-2 gap-6'>
+                                <div class='md:col-span-2'>
+                                    <label for='id_full_name' class='block text-text-secondary text-sm font-medium mb-2'>
+                                        Nome Completo
+                                    </label>
+                                    <input type='text' name='full_name' id='id_full_name'
+                                           class='w-full px-4 py-3 bg-bg-primary border border-bg-tertiary rounded-lg text-text-primary focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200'
+                                           placeholder="Seu nome completo">
+                                </div>
+
+                                <div class='md:col-span-2'>
+                                    <label for='id_phone' class='block text-text-secondary text-sm font-medium mb-2'>
+                                        Telefone
+                                    </label>
+                                    <input type='text' name='phone' id='id_phone'
+                                           class='w-full px-4 py-3 bg-bg-primary border border-bg-tertiary rounded-lg text-text-primary focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200'
+                                           placeholder="(00) 00000-0000">
+                                </div>
+                            </div>
+
+                            <div class='mt-10 pt-6 border-t border-bg-tertiary flex justify-end gap-4'>
+                                <button type="button" id="cancel-edit-btn" class='px-6 py-3 bg-bg-tertiary text-text-primary rounded-lg font-bold hover:bg-bg-primary transition-all duration-200 border border-bg-tertiary'>
+                                    Cancelar
+                                </button>
+                                <button type='submit' class='px-6 py-3 bg-gradient-to-r from-primary-500 to-accent-500 text-white rounded-lg font-bold hover:opacity-90 transition-all duration-200 shadow-lg'>
+                                    Salvar Alterações
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
                 </div>
-            </form>
+            </div>
+
         </div>
     </main>
 
@@ -67,31 +116,85 @@
             const user = await checkAuthAndSetup(true);
             if (!user) return;
 
-            const emailInput = document.getElementById('email');
-            const nameInput = document.getElementById('full_name');
-            const phoneInput = document.getElementById('phone');
+            const pageTitle = document.getElementById('page-title');
+            const pageSubtitle = document.getElementById('page-subtitle');
+            
+            const detailContainer = document.getElementById('profile-detail-container');
+            const editContainer = document.getElementById('profile-edit-container');
+            
+            const editModeBtn = document.getElementById('edit-mode-btn');
+            const cancelEditBtn = document.getElementById('cancel-edit-btn');
             const profileForm = document.getElementById('profile-form');
+            const errorDiv = document.getElementById('error-message');
 
-            // Load profile data
+            // Detail fields
+            const detailEmail = document.getElementById('detail-email');
+            const detailName = document.getElementById('detail-name');
+            const detailPhone = document.getElementById('detail-phone');
+            const detailJoined = document.getElementById('detail-joined');
+
+            // Form inputs
+            const nameInput = document.getElementById('id_full_name');
+            const phoneInput = document.getElementById('id_phone');
+
+            let cachedProfile = {};
+
+            function formatDate(dateStr) {
+                if (!dateStr) return '...';
+                const parts = dateStr.split('-');
+                if (parts.length !== 3) return dateStr;
+                return `${parts[2]}/${parts[1]}/${parts[0]}`;
+            }
+
             async function loadProfile() {
                 try {
                     const res = await fetch(`${BACKEND_URL}/api/profile/`, { credentials: 'include' });
                     if (!res.ok) throw new Error();
                     const profile = await res.json();
+                    
+                    cachedProfile = profile;
 
-                    emailInput.value = profile.email;
+                    // Update detail views
+                    detailEmail.textContent = profile.email;
+                    detailName.textContent = profile.full_name || 'Não informado';
+                    detailPhone.textContent = profile.phone || 'Não informado';
+                    detailJoined.textContent = formatDate(profile.date_joined);
+
+                    // Update input values
                     nameInput.value = profile.full_name || '';
                     phoneInput.value = profile.phone || '';
+
                 } catch (e) {
-                    showToast('Erro ao carregar informações de perfil.', 'error');
+                    console.error('Error loading profile:', e);
+                    showToast('Erro ao carregar dados do perfil.', 'error');
                 }
             }
 
             await loadProfile();
 
-            // Submit form handler
+            // Toggle view to edit mode
+            editModeBtn.addEventListener('click', () => {
+                pageTitle.textContent = 'Editar Perfil';
+                pageSubtitle.textContent = 'Atualize suas informações de contato.';
+                detailContainer.classList.add('hidden');
+                editContainer.classList.remove('hidden');
+                errorDiv.classList.add('hidden');
+            });
+
+            // Toggle edit to view mode
+            cancelEditBtn.addEventListener('click', () => {
+                pageTitle.textContent = 'Meu Perfil';
+                pageSubtitle.textContent = 'Gerencie suas informações pessoais.';
+                editContainer.classList.add('hidden');
+                detailContainer.classList.remove('hidden');
+            });
+
+            // Submit profile edits
             profileForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
+                errorDiv.classList.add('hidden');
+                errorDiv.textContent = '';
+
                 const bodyData = {
                     full_name: nameInput.value.trim(),
                     phone: phoneInput.value.trim()
@@ -109,15 +212,26 @@
                         credentials: 'include'
                     });
 
-                    if (res.ok) {
-                        showToast('Perfil atualizado com sucesso!');
-                        await loadProfile();
-                    } else {
-                        const error = await res.json();
-                        showToast(error.error || 'Erro ao atualizar perfil.', 'error');
+                    const data = await res.json();
+
+                    if (!res.ok) {
+                        throw new Error(data.error || 'Falha ao salvar alterações do perfil.');
                     }
+
+                    showToast('Perfil atualizado com sucesso!');
+                    await loadProfile();
+                    
+                    // Switch back to view mode
+                    pageTitle.textContent = 'Meu Perfil';
+                    pageSubtitle.textContent = 'Gerencie suas informações pessoais.';
+                    editContainer.classList.add('hidden');
+                    detailContainer.classList.remove('hidden');
+
                 } catch (err) {
-                    showToast('Erro ao atualizar perfil.', 'error');
+                    console.error(err);
+                    errorDiv.textContent = err.message;
+                    errorDiv.classList.remove('hidden');
+                    showToast(err.message, 'error');
                 }
             });
         });

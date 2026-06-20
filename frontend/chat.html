@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MonetraBot - Monetra</title>
+    <title>MonetraBot - Assistente IA</title>
+    <link rel="shortcut icon" href="static/images/logo1.png" type="image/png">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
     <link rel="stylesheet" href="static/css/styles.css">
@@ -11,6 +12,33 @@
         body {
             background-color: #080808;
             color: #F1F5F9;
+        }
+        /* Custom Scrollbar for Chat Box */
+        .chat-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .chat-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .chat-scrollbar::-webkit-scrollbar-thumb {
+            background-color: #262626;
+            border-radius: 20px;
+        }
+        /* Typing Indicator Animation */
+        .typing-dots span {
+            animation: typing 1.4s infinite both;
+        }
+        .typing-dots span:nth-child(2) {
+            animation-delay: .2s;
+        }
+        .typing-dots span:nth-child(3) {
+            animation-delay: .4s;
+        }
+        @keyframes typing {
+            0% { opacity: .2; transform: translateY(0); }
+            20% { opacity: 1; transform: translateY(-3px); }
+            40% { opacity: .2; transform: translateY(0); }
+            100% { opacity: .2; transform: translateY(0); }
         }
     </style>
 </head>
@@ -20,57 +48,124 @@
     <div id="navbar-placeholder"></div>
 
     <main class="flex-grow">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 h-[calc(100vh-4rem)] flex flex-col">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             
-            <div class="grid grid-cols-1 lg:grid-cols-4 gap-8 flex-grow h-full overflow-hidden">
-                <!-- Chat Window (Col-span 3) -->
-                <div class="lg:col-span-3 bg-bg-secondary border border-bg-tertiary rounded-2xl flex flex-col h-full overflow-hidden">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start min-h-[calc(100vh-12rem)]">
+                
+                <!-- ═══════════ LEFT COLUMN: Chat Interface ═══════════ -->
+                <div class="lg:col-span-7 flex flex-col bg-bg-secondary border border-bg-tertiary rounded-2xl overflow-hidden shadow-2xl h-[600px]">
                     <!-- Chat Header -->
-                    <div class="px-6 py-4 border-b border-bg-tertiary flex items-center justify-between">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 bg-accent-500/10 text-accent-500 rounded-xl flex items-center justify-center font-bold text-xl">
-                                🤖
+                    <div class="flex items-center gap-3 p-4 border-b border-bg-tertiary bg-bg-secondary/50 backdrop-blur-md">
+                        <div class="w-10 h-10 rounded-full bg-accent-500/10 flex items-center justify-center text-accent-500 relative shrink-0">
+                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                            </svg>
+                            <span class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-success rounded-full border-2 border-bg-secondary animate-pulse"></span>
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-bold text-white">MonetraBot</h4>
+                            <span class="text-[11px] text-success flex items-center gap-1 font-medium">
+                                <span class="w-1.5 h-1.5 bg-success rounded-full animate-ping"></span>
+                                Assistente Financeiro Online
+                            </span>
+                        </div>
+                        <span class="ml-auto bg-accent-500/10 text-accent-500 text-[10px] font-extrabold uppercase px-2.5 py-1 rounded border border-accent-500/20">AGENT IA</span>
+                    </div>
+
+                    <!-- Chat Body (Messages) -->
+                    <div id="chat-messages-container" class="flex-grow p-4 space-y-4 overflow-y-auto chat-scrollbar bg-[#090909]">
+                        <!-- Welcome Message -->
+                        <div class="flex gap-3 items-start">
+                            <div class="w-8 h-8 rounded-full bg-accent-500/10 flex items-center justify-center text-accent-500 shrink-0">
+                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                                </svg>
                             </div>
-                            <div>
-                                <h3 class="font-bold text-white leading-tight">MonetraBot</h3>
-                                <span class="text-xs text-accent-500 font-semibold flex items-center gap-1.5">
-                                    <span class="w-1.5 h-1.5 rounded-full bg-accent-500 animate-pulse"></span>
-                                    Online e Pronto
-                                </span>
+                            <div class="bg-[#0D1A0D] border border-accent-500/15 rounded-2xl p-3 max-w-[85%] text-text-secondary text-sm space-y-2 leading-relaxed">
+                                <p>Olá! Eu sou o MonetraBot. Como posso ajudar com suas finanças pessoais hoje?</p>
+                                <p class="text-xs text-text-muted">Você pode me perguntar sobre seus gastos, receitas, pedir sugestões para economizar ou consultar indicadores financeiros reais.</p>
+                            </div>
+                        </div>
+
+                        <!-- Typing Indicator -->
+                        <div id="typing-indicator" class="hidden flex gap-3 items-start">
+                            <div class="w-8 h-8 rounded-full bg-accent-500/10 flex items-center justify-center text-accent-500 shrink-0">
+                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                                </svg>
+                            </div>
+                            <div class="bg-[#0D1A0D] border border-accent-500/15 rounded-2xl p-3 text-text-secondary text-sm flex items-center gap-1">
+                                <span class="text-text-muted">MonetraBot está pensando</span>
+                                <div class="typing-dots flex items-center gap-0.5 ml-1">
+                                    <span class="w-1.5 h-1.5 bg-accent-500 rounded-full"></span>
+                                    <span class="w-1.5 h-1.5 bg-accent-500 rounded-full"></span>
+                                    <span class="w-1.5 h-1.5 bg-accent-500 rounded-full"></span>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Messages Box -->
-                    <div id="chat-messages-container" class="flex-grow p-6 overflow-y-auto space-y-4">
-                        <!-- Messages will load dynamically here -->
-                        <div class="text-center text-text-muted text-sm py-4">Carregando conversa...</div>
+                    <!-- Chat Input Form -->
+                    <div class="p-4 border-t border-bg-tertiary bg-bg-secondary/50">
+                        <form id="chat-form" class="flex gap-3">
+                            <input type="text" id="chat-input" placeholder="Pergunte ao MonetraBot ou peça insights..." autocomplete="off" class="flex-grow px-4 py-3 bg-bg-tertiary border border-bg-tertiary focus:border-accent-500 focus:ring-1 focus:ring-accent-500 rounded-xl text-sm text-text-primary placeholder-text-muted outline-none transition-all duration-200">
+                            <button type="submit" class="p-3 bg-accent-500 hover:bg-accent-600 text-[#080808] font-bold rounded-xl transition-all duration-200 flex items-center justify-center shadow-lg shadow-accent-500/10">
+                                <svg class="w-5 h-5 transform rotate-90" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                                </svg>
+                            </button>
+                        </form>
                     </div>
-
-                    <!-- Typing Indicator -->
-                    <div id="typing-indicator" class="px-6 py-2 text-text-secondary text-xs font-semibold animate-pulse hidden">
-                        MonetraBot está pensando...
-                    </div>
-
-                    <!-- Message Form -->
-                    <form id="chat-form" class="p-4 border-t border-bg-tertiary bg-bg-secondary flex gap-3">
-                        <input id="chat-input" type="text" autocomplete="off" required
-                            class="flex-grow px-4 py-3 bg-bg-secondary border border-bg-tertiary rounded-xl text-text-primary placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
-                            placeholder="Pergunte sobre seu saldo, últimas transações ou dicas de economia...">
-                        <button type="submit"
-                            class="px-6 py-3 bg-accent-500 hover:bg-accent-600 text-[#080808] font-bold rounded-xl transition-all shadow-lg flex items-center justify-center">
-                            Enviar
-                        </button>
-                    </form>
                 </div>
 
-                <!-- Right Side AI Analysis Snapshot -->
-                <div class="bg-bg-secondary border border-bg-tertiary rounded-2xl p-6 flex flex-col h-full overflow-hidden">
-                    <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
-                        <span>🎯 Último Insight de IA</span>
-                    </h3>
-                    <div id="insight-card-body" class="flex-grow overflow-y-auto space-y-4 pr-1 text-sm">
-                        <div class="text-text-muted">Nenhuma análise registrada no chat ainda.</div>
+                <!-- ═══════════ RIGHT COLUMN: Latest Analysis Panel ═══════════ -->
+                <div class="lg:col-span-5 space-y-6">
+                    <!-- AI Insight Card -->
+                    <div class="bg-bg-secondary border border-bg-tertiary rounded-2xl p-6 shadow-2xl relative overflow-hidden backdrop-blur-md">
+                        <!-- Background glow effect -->
+                        <div class="absolute top-0 right-0 w-32 h-32 bg-accent-500/5 rounded-full blur-3xl -mr-10 -mt-10 pointer-events-none"></div>
+                        
+                        <div class="flex items-center gap-3 pb-4 border-b border-bg-tertiary mb-4">
+                            <div class="w-8 h-8 rounded-full bg-accent-500/10 flex items-center justify-center text-accent-500">
+                                <svg class="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 class="text-base font-extrabold text-white">Último Insight da IA</h3>
+                                <p class="text-[10px] text-text-muted uppercase font-semibold">Análise de Saúde Financeira</p>
+                            </div>
+                        </div>
+
+                        <!-- Insight Content -->
+                        <div id="latest-insight-container" class="space-y-4 text-sm text-text-secondary leading-relaxed">
+                            <div id="insight-empty" class="text-center py-12 bg-bg-tertiary/30 border border-dashed border-bg-tertiary rounded-xl">
+                                <svg class="w-8 h-8 mx-auto text-text-muted mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                                </svg>
+                                <p class="text-xs text-text-muted">Nenhum insight gerado ainda.</p>
+                                <p class="text-[10px] text-text-muted mt-1 px-4">Envie uma mensagem no chat para que o MonetraBot gere sua primeira análise financeira!</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Suggestion Chips Card -->
+                    <div class="bg-bg-secondary border border-bg-tertiary rounded-2xl p-5 shadow-2xl">
+                        <h4 class="text-xs font-bold text-white uppercase tracking-wider mb-3">Tópicos Sugeridos</h4>
+                        <div class="flex flex-wrap gap-2">
+                            <button onclick="fillAndSend('Onde gastei mais no mês atual?')" class="px-3 py-1.5 bg-bg-tertiary hover:bg-bg-tertiary/80 text-text-secondary text-xs rounded-lg border border-bg-tertiary transition-colors duration-200">
+                                Onde gastei mais?
+                            </button>
+                            <button onclick="fillAndSend('Me dê dicas de economia com base nos meus gastos.')" class="px-3 py-1.5 bg-bg-tertiary hover:bg-bg-tertiary/80 text-text-secondary text-xs rounded-lg border border-bg-tertiary transition-colors duration-200">
+                                Dicas de economia
+                            </button>
+                            <button onclick="fillAndSend('Como está a cotação do dólar hoje e como isso afeta minhas finanças?')" class="px-3 py-1.5 bg-bg-tertiary hover:bg-bg-tertiary/80 text-text-secondary text-xs rounded-lg border border-bg-tertiary transition-colors duration-200">
+                                Cotação do Dólar
+                            </button>
+                            <button onclick="fillAndSend('Faça uma análise geral do meu saldo e contas.')" class="px-3 py-1.5 bg-bg-tertiary hover:bg-bg-tertiary/80 text-text-secondary text-xs rounded-lg border border-bg-tertiary transition-colors duration-200">
+                                Análise do meu saldo
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -84,81 +179,110 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
     <script src="static/js/common.js"></script>
     <script>
+        const chatMessagesContainer = document.getElementById('chat-messages-container');
+        const chatForm = document.getElementById('chat-form');
+        const chatInput = document.getElementById('chat-input');
+        const typingIndicator = document.getElementById('typing-indicator');
+        const latestInsightContainer = document.getElementById('latest-insight-container');
+
+        // Auto-scroll to the bottom of messages
+        function scrollToBottom() {
+            chatMessagesContainer.scrollTop = chatMessagesContainer.scrollHeight;
+        }
+
+        // Fill suggestion chips and submit
+        function fillAndSend(text) {
+            chatInput.value = text;
+            chatForm.dispatchEvent(new Event('submit'));
+        }
+
+        function escapeHTML(str) {
+            if (str === null || str === undefined) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        function appendUserMessage(text) {
+            const msgDiv = document.createElement('div');
+            msgDiv.className = 'flex justify-end';
+            msgDiv.innerHTML = `
+                <div class="bg-bg-tertiary border border-bg-tertiary text-text-primary rounded-2xl p-3 max-w-[85%] text-sm">
+                    <p class="whitespace-pre-line">${escapeHTML(text)}</p>
+                </div>
+            `;
+            chatMessagesContainer.insertBefore(msgDiv, typingIndicator);
+        }
+
+        function appendBotMessage(text) {
+            const msgDiv = document.createElement('div');
+            msgDiv.className = 'flex gap-3 items-start';
+            msgDiv.innerHTML = `
+                <div class="w-8 h-8 rounded-full bg-accent-500/10 flex items-center justify-center text-accent-500 shrink-0">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                    </svg>
+                </div>
+                <div class="bg-[#0D1A0D] border border-accent-500/15 rounded-2xl p-3 max-w-[85%] text-text-secondary text-sm space-y-2 leading-relaxed">
+                    <p class="whitespace-pre-line">${escapeHTML(text)}</p>
+                </div>
+            `;
+            chatMessagesContainer.insertBefore(msgDiv, typingIndicator);
+        }
+
+        function updateInsightCard(analysis) {
+            if (!analysis) {
+                latestInsightContainer.innerHTML = `
+                    <div id="insight-empty" class="text-center py-12 bg-bg-tertiary/30 border border-dashed border-bg-tertiary rounded-xl">
+                        <svg class="w-8 h-8 mx-auto text-text-muted mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                        </svg>
+                        <p class="text-xs text-text-muted">Nenhum insight gerado ainda.</p>
+                        <p class="text-[10px] text-text-muted mt-1 px-4">Envie uma mensagem no chat para que o MonetraBot gere sua primeira análise financeira!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            let currenciesHTML = '';
+            if (analysis.market_data_snapshot && analysis.market_data_snapshot.currencies) {
+                currenciesHTML = `
+                    <div class="mt-4 pt-4 border-t border-bg-tertiary/60 space-y-2">
+                        <h5 class="text-xs font-bold text-white uppercase tracking-wider">Câmbio e Mercado (no momento da análise)</h5>
+                        <div class="grid grid-cols-2 gap-2 text-xs">
+                            <div class="bg-bg-tertiary/30 p-2 rounded border border-bg-tertiary/40">
+                                <span class="text-text-muted block text-[10px]">Câmbio Dólar</span>
+                                <strong class="text-white">${analysis.market_data_snapshot.currencies.USD_BRL || 'N/A'}</strong>
+                            </div>
+                            <div class="bg-bg-tertiary/30 p-2 rounded border border-bg-tertiary/40">
+                                <span class="text-text-muted block text-[10px]">Ibovespa</span>
+                                <strong class="text-white">${analysis.market_data_snapshot.stocks.Ibovespa || 'N/A'}</strong>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            const formattedDate = new Date(analysis.created_at).toLocaleString('pt-BR');
+
+            latestInsightContainer.innerHTML = `
+                <div class="bg-bg-tertiary/40 border border-bg-tertiary/60 rounded-xl p-4">
+                    <h4 id="insight-summary" class="font-bold text-white text-sm mb-2">${escapeHTML(analysis.summary)}</h4>
+                    <p id="insight-text" class="text-xs text-text-secondary whitespace-pre-line">${escapeHTML(analysis.analysis_text)}</p>
+                    <span id="insight-date" class="block text-[10px] text-text-muted mt-3 text-right">Atualizado em: ${formattedDate}</span>
+                </div>
+                ${currenciesHTML}
+            `;
+        }
+
         document.addEventListener('DOMContentLoaded', async () => {
             const user = await checkAuthAndSetup(true);
             if (!user) return;
 
-            const chatMessagesContainer = document.getElementById('chat-messages-container');
-            const chatForm = document.getElementById('chat-form');
-            const chatInput = document.getElementById('chat-input');
-            const typingIndicator = document.getElementById('typing-indicator');
-            const insightCardBody = document.getElementById('insight-card-body');
-
-            function escapeHTML(str) {
-                return str.replace(/[&<>'"]/g, 
-                    tag => ({
-                        '&': '&amp;',
-                        '<': '&lt;',
-                        '>': '&gt;',
-                        "'": '&#39;',
-                        '"': '&quot;'
-                    }[tag] || tag)
-                );
-            }
-
-            function scrollToBottom() {
-                chatMessagesContainer.scrollTop = chatMessagesContainer.scrollHeight;
-            }
-
-            function appendMessage(text, isFromBot) {
-                const msgDiv = document.createElement('div');
-                msgDiv.className = isFromBot ? 'flex justify-start' : 'flex justify-end';
-
-                const innerDivClass = isFromBot 
-                    ? 'bg-bg-secondary border border-bg-tertiary text-text-primary rounded-2xl p-4 max-w-[85%] text-sm'
-                    : 'bg-bg-tertiary border border-bg-tertiary text-text-primary rounded-2xl p-4 max-w-[85%] text-sm';
-
-                msgDiv.innerHTML = `
-                    <div class="${innerDivClass}">
-                        <p class="whitespace-pre-line">${isFromBot ? text : escapeHTML(text)}</p>
-                    </div>
-                `;
-                chatMessagesContainer.appendChild(msgDiv);
-            }
-
-            function updateInsightCard(analysis) {
-                if (!analysis) {
-                    insightCardBody.innerHTML = `<div class="text-text-muted">Nenhuma análise gerada recentemente.</div>`;
-                    return;
-                }
-
-                let marketSnapshotHTML = '';
-                if (analysis.market_data_snapshot && analysis.market_data_snapshot.currencies) {
-                    const currencies = analysis.market_data_snapshot.currencies;
-                    marketSnapshotHTML = `
-                        <div class="mt-4 pt-4 border-t border-bg-tertiary">
-                            <h4 class="font-bold text-white text-xs uppercase mb-2">Cotações salvas na análise</h4>
-                            <ul class="space-y-1 text-xs text-text-secondary">
-                                <li>USD/BRL: ${currencies.USD_BRL || 'N/A'}</li>
-                                <li>EUR/BRL: ${currencies.EUR_BRL || 'N/A'}</li>
-                            </ul>
-                        </div>
-                    `;
-                }
-
-                insightCardBody.innerHTML = `
-                    <div class="space-y-4">
-                        <div>
-                            <span class="text-xs text-text-secondary">Gerado em ${analysis.created_at}</span>
-                            <h4 class="font-bold text-accent-500 text-sm mt-1 mb-2">${escapeHTML(analysis.summary)}</h4>
-                            <p class="text-text-secondary text-xs leading-relaxed whitespace-pre-line">${analysis.analysis_text}</p>
-                        </div>
-                        ${marketSnapshotHTML}
-                    </div>
-                `;
-            }
-
-            // Load chat history
+            // Load Chat History
             async function loadChatHistory() {
                 try {
                     const response = await fetch(`${BACKEND_URL}/api/chatbot/history/`, {
@@ -168,27 +292,49 @@
 
                     const data = await response.json();
 
-                    // Render messages
-                    chatMessagesContainer.innerHTML = '';
-                    if (data.messages.length === 0) {
-                        chatMessagesContainer.innerHTML = `
-                            <div class="text-center text-text-muted text-sm py-4">
-                                Olá! Eu sou o MonetraBot. Como posso ajudar com suas finanças hoje?
-                            </div>
+                    // Update Welcome Message with username
+                    const welcomeDiv = chatMessagesContainer.querySelector('.bg-[#0D1A0D]');
+                    if (welcomeDiv) {
+                        welcomeDiv.innerHTML = `
+                            <p>Olá, <strong>${escapeHTML(user.email)}</strong>! Eu sou o MonetraBot. Como posso ajudar com suas finanças pessoais hoje?</p>
+                            <p class="text-xs text-text-muted">Você pode me perguntar sobre seus gastos, receitas, pedir sugestões para economizar ou consultar indicadores financeiros reais.</p>
                         `;
-                    } else {
+                    }
+
+                    // Render previous messages
+                    if (data.messages && data.messages.length > 0) {
                         data.messages.forEach(msg => {
-                            appendMessage(msg.message_text, msg.is_from_bot);
+                            const msgDiv = document.createElement('div');
+                            if (msg.is_from_bot) {
+                                msgDiv.className = 'flex gap-3 items-start';
+                                msgDiv.innerHTML = `
+                                    <div class="w-8 h-8 rounded-full bg-accent-500/10 flex items-center justify-center text-accent-500 shrink-0">
+                                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                                        </svg>
+                                    </div>
+                                    <div class="bg-[#0D1A0D] border border-accent-500/15 rounded-2xl p-3 max-w-[85%] text-text-secondary text-sm space-y-2 leading-relaxed">
+                                        <p class="whitespace-pre-line">${escapeHTML(msg.message_text)}</p>
+                                    </div>
+                                `;
+                            } else {
+                                msgDiv.className = 'flex justify-end';
+                                msgDiv.innerHTML = `
+                                    <div class="bg-bg-tertiary border border-bg-tertiary text-text-primary rounded-2xl p-3 max-w-[85%] text-sm">
+                                        <p class="whitespace-pre-line">${escapeHTML(msg.message_text)}</p>
+                                    </div>
+                                `;
+                            }
+                            chatMessagesContainer.insertBefore(msgDiv, typingIndicator);
                         });
                     }
-                    scrollToBottom();
 
-                    // Render latest analysis insight card
+                    // Update Insight Card
                     updateInsightCard(data.latest_analysis);
+                    scrollToBottom();
 
                 } catch (err) {
                     console.error('Error loading chat history:', err);
-                    chatMessagesContainer.innerHTML = `<div class="text-center text-error text-sm py-4">Erro ao carregar mensagens anteriores.</div>`;
                 }
             }
 
@@ -201,7 +347,7 @@
                 if (!message) return;
 
                 chatInput.value = '';
-                appendMessage(message, false);
+                appendUserMessage(message);
                 scrollToBottom();
 
                 typingIndicator.classList.remove('hidden');
@@ -226,14 +372,14 @@
                     }
 
                     const data = await response.json();
-                    appendMessage(data.response, true);
+                    appendBotMessage(data.response);
                     updateInsightCard(data.analysis);
                     scrollToBottom();
 
                 } catch (error) {
                     console.error('Error sending message:', error);
                     typingIndicator.classList.add('hidden');
-                    appendMessage('Erro ao obter resposta do MonetraBot. Verifique se o servidor está ativo.', true);
+                    appendBotMessage('Erro ao obter resposta do MonetraBot. Verifique se o servidor está ativo.');
                     scrollToBottom();
                 }
             });
