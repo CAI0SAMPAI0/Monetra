@@ -1,18 +1,19 @@
-// Retrieve backend URL from localStorage, config.js, or default to localhost
-let backendUrlCandidate = '';
+let BACKEND_URL = '';
 
-if (window.MONETRA_CONFIG && window.MONETRA_CONFIG.BACKEND_URL) {
-    backendUrlCandidate = window.MONETRA_CONFIG.BACKEND_URL;
-} else if (localStorage.getItem('BACKEND_URL')) {
-    backendUrlCandidate = localStorage.getItem('BACKEND_URL');
-} else {
-    // Safe default to localhost for local environment
-    backendUrlCandidate = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname === '5500' || window.location.port === '8000' || window.location.port === '5500'
-        ? 'http://127.0.0.1:8000'
-        : '';
+async function loadConfig() {
+    try {
+        const response = await fetch('config.json');
+        if (response.ok) {
+            const config = await response.json();
+            if (config && config.BACKEND_URL) {
+                return config.BACKEND_URL;
+            }
+        }
+    } catch (e) {
+        // config.json not found
+    }
+    return '';
 }
-
-const BACKEND_URL = backendUrlCandidate.trim().replace(/\/$/, "");
 
 function showToast(text, type = 'success') {
     let background = '#2EC47D';
@@ -39,16 +40,38 @@ function showToast(text, type = 'success') {
 
 async function checkAuthAndSetup(isProtectedRoute = false) {
     if (!BACKEND_URL) {
-        // Prompt the user for the backend URL if not set
-        const userUrl = prompt("Por favor, configure a URL do seu backend do Monetra no Hugging Face (ex: https://caiosampaio-monetra.hf.space):");
-        if (userUrl) {
-            const cleanedUrl = userUrl.trim().replace(/\/$/, "");
-            localStorage.setItem('BACKEND_URL', cleanedUrl);
-            window.location.reload();
-            return null;
+        // Try to load config.json first
+        let url = await loadConfig();
+        if (!url) {
+            // Check global config object
+            if (window.MONETRA_CONFIG && window.MONETRA_CONFIG.BACKEND_URL) {
+                url = window.MONETRA_CONFIG.BACKEND_URL;
+            } else {
+                // Check localStorage
+                url = localStorage.getItem('BACKEND_URL') || '';
+            }
+        }
+        if (!url) {
+            // Default to localhost if applicable
+            url = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname === '5500' || window.location.port === '8000' || window.location.port === '5500'
+                ? 'http://127.0.0.1:8000'
+                : '';
+        }
+
+        if (url) {
+            BACKEND_URL = url.trim().replace(/\/$/, "");
         } else {
-            showToast("A URL do backend é obrigatória para o funcionamento da plataforma.", "error");
-            return null;
+            // Prompt the user for the backend URL if not set
+            const userUrl = prompt("Por favor, configure a URL do seu backend do Monetra no Hugging Face (ex: https://caiosampaio-monetra.hf.space):");
+            if (userUrl) {
+                BACKEND_URL = userUrl.trim().replace(/\/$/, "");
+                localStorage.setItem('BACKEND_URL', BACKEND_URL);
+                window.location.reload();
+                return null;
+            } else {
+                showToast("A URL do backend é obrigatória para o funcionamento da plataforma.", "error");
+                return null;
+            }
         }
     }
 

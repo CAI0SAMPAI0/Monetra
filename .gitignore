@@ -198,5 +198,6 @@ Thumbs.db
 node_modules/
 .npm/
 frontend/config.js
+frontend/config.json
 
 design_system/
