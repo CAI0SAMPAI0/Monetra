@@ -1,11 +1,19 @@
-// Decoupled Frontend Common JavaScript Configuration and Utilities
+// Retrieve backend URL from localStorage, config.js, or default to localhost
+let backendUrlCandidate = '';
 
-// Auto-detect Backend API base URL
-const BACKEND_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname === '5500'
-    ? 'http://127.0.0.1:8000'
-    : 'https://caiosampaio-monetra.hf.space'; // Change this to your production Hugging Face space URL if needed
+if (window.MONETRA_CONFIG && window.MONETRA_CONFIG.BACKEND_URL) {
+    backendUrlCandidate = window.MONETRA_CONFIG.BACKEND_URL;
+} else if (localStorage.getItem('BACKEND_URL')) {
+    backendUrlCandidate = localStorage.getItem('BACKEND_URL');
+} else {
+    // Safe default to localhost for local environment
+    backendUrlCandidate = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname === '5500' || window.location.port === '8000' || window.location.port === '5500'
+        ? 'http://127.0.0.1:8000'
+        : '';
+}
 
-// Dynamic toast helper using Toastify
+const BACKEND_URL = backendUrlCandidate.trim().replace(/\/$/, "");
+
 function showToast(text, type = 'success') {
     let background = '#2EC47D';
     if (type === 'error') background = '#EF3823';
@@ -29,8 +37,21 @@ function showToast(text, type = 'success') {
     }
 }
 
-// Check auth status and update UI/redirect if needed
 async function checkAuthAndSetup(isProtectedRoute = false) {
+    if (!BACKEND_URL) {
+        // Prompt the user for the backend URL if not set
+        const userUrl = prompt("Por favor, configure a URL do seu backend do Monetra no Hugging Face (ex: https://caiosampaio-monetra.hf.space):");
+        if (userUrl) {
+            const cleanedUrl = userUrl.trim().replace(/\/$/, "");
+            localStorage.setItem('BACKEND_URL', cleanedUrl);
+            window.location.reload();
+            return null;
+        } else {
+            showToast("A URL do backend é obrigatória para o funcionamento da plataforma.", "error");
+            return null;
+        }
+    }
+
     try {
         const response = await fetch(`${BACKEND_URL}/api/auth/status/`, {
             method: 'GET',
@@ -45,7 +66,6 @@ async function checkAuthAndSetup(isProtectedRoute = false) {
         const data = await response.json();
 
         if (data.authenticated) {
-            // User is authenticated
             if (!isProtectedRoute && (window.location.pathname.endsWith('login.html') || window.location.pathname.endsWith('signup.html'))) {
                 window.location.href = 'dashboard.html';
                 return;
@@ -54,7 +74,6 @@ async function checkAuthAndSetup(isProtectedRoute = false) {
             renderFooter();
             return data.user;
         } else {
-            // User is not authenticated
             if (isProtectedRoute) {
                 window.location.href = 'login.html';
                 return null;
@@ -67,7 +86,6 @@ async function checkAuthAndSetup(isProtectedRoute = false) {
         console.error('Erro ao verificar status de autenticação:', error);
         if (isProtectedRoute) {
             showToast('Erro de conexão com o servidor. Faça o login.', 'error');
-            // Redirect to login if connection fails on protected route
             setTimeout(() => { window.location.href = 'login.html'; }, 2000);
         } else {
             renderNavbar(false);
@@ -104,6 +122,7 @@ function renderNavbar(authenticated, email = '') {
             <a href="transactions.html" class="text-text-secondary hover:text-text-primary transition-colors duration-200">Transações</a>
             <div class="h-6 w-px bg-bg-tertiary"></div>
             <a href="profile.html" class="text-text-secondary hover:text-text-primary transition-colors duration-200">Perfil</a>
+            <button id="config-api-btn" class="text-text-secondary hover:text-text-primary transition-colors duration-200 text-sm">Configuração</button>
             <button id="logout-btn" class="px-4 py-2 bg-error/10 text-error rounded-lg text-sm font-medium hover:bg-error hover:text-white transition-all duration-200 border border-error/20">
                 Sair
             </button>
@@ -111,6 +130,7 @@ function renderNavbar(authenticated, email = '') {
     } else {
         menuItems = `
             <a href="login.html" class="text-text-secondary hover:text-text-primary transition-colors duration-200">Login</a>
+            <button id="config-api-btn" class="text-text-secondary hover:text-text-primary transition-colors duration-200 text-sm">Configurar API</button>
             <a href="signup.html" class="px-6 py-2 bg-accent-500 text-[#080808] rounded-lg font-bold hover:bg-accent-600 transition-all duration-200 shadow-lg">
                 Cadastrar
             </a>
@@ -153,11 +173,13 @@ function renderNavbar(authenticated, email = '') {
                     <a href="categories.html" class="block px-4 py-2 text-text-secondary hover:text-text-primary hover:bg-bg-tertiary rounded-lg transition-colors">Categorias</a>
                     <a href="transactions.html" class="block px-4 py-2 text-text-secondary hover:text-text-primary hover:bg-bg-tertiary rounded-lg transition-colors">Transações</a>
                     <a href="profile.html" class="block px-4 py-2 text-text-secondary hover:text-text-primary hover:bg-bg-tertiary rounded-lg transition-colors">Perfil</a>
+                    <button id="config-api-btn-mobile" class="w-full text-left block px-4 py-2 text-text-secondary hover:text-text-primary hover:bg-bg-tertiary rounded-lg transition-colors">Configurar API</button>
                     <button id="logout-btn-mobile" class="w-full text-left px-4 py-2 text-error hover:bg-error hover:text-white rounded-lg transition-colors">
                         Sair
                     </button>
                 ` : `
                     <a href="login.html" class="block px-4 py-2 text-text-secondary hover:text-text-primary hover:bg-bg-tertiary rounded-lg">Login</a>
+                    <button id="config-api-btn-mobile" class="w-full text-left block px-4 py-2 text-text-secondary hover:text-text-primary hover:bg-bg-tertiary rounded-lg transition-colors">Configurar API</button>
                     <a href="signup.html" class="block px-4 py-2 text-center bg-accent-500 text-[#080808] rounded-lg font-bold hover:bg-accent-600 transition-all">
                         Cadastrar
                     </a>
@@ -182,6 +204,28 @@ function renderNavbar(authenticated, email = '') {
             mobileMenu.classList.toggle('hidden');
         });
     }
+
+    // Set up Config API handlers
+    const configBtn = document.getElementById('config-api-btn');
+    const configBtnMobile = document.getElementById('config-api-btn-mobile');
+    const handleConfig = () => {
+        const currentUrl = localStorage.getItem('BACKEND_URL') || '';
+        const userUrl = prompt("Configure a URL do seu backend do Monetra (ex: https://caiosampaio-monetra.hf.space):", currentUrl);
+        if (userUrl !== null) {
+            const cleanedUrl = userUrl.trim().replace(/\/$/, "");
+            if (cleanedUrl) {
+                localStorage.setItem('BACKEND_URL', cleanedUrl);
+                showToast("URL da API atualizada com sucesso!");
+                setTimeout(() => { window.location.reload(); }, 1000);
+            } else {
+                localStorage.removeItem('BACKEND_URL');
+                showToast("Configuração customizada removida.");
+                setTimeout(() => { window.location.reload(); }, 1000);
+            }
+        }
+    };
+    if (configBtn) configBtn.addEventListener('click', handleConfig);
+    if (configBtnMobile) configBtnMobile.addEventListener('click', handleConfig);
 
     // Set up Logout handlers
     const logoutBtn = document.getElementById('logout-btn');
@@ -209,6 +253,7 @@ function renderNavbar(authenticated, email = '') {
 
     if (logoutBtn) logoutBtn.addEventListener('click', handleLogout);
     if (logoutBtnMobile) logoutBtnMobile.addEventListener('click', handleLogout);
+}
 }
 
 // Render Footer HTML
