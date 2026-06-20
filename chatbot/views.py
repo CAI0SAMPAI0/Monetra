@@ -26,9 +26,13 @@ def chat_view(request):
     return render(request, 'chatbot/chat.html', context)
 
 
-@login_required
+from django.views.decorators.csrf import csrf_exempt
+
+@csrf_exempt
 @require_POST
 def send_message(request):
+    if not request.user.is_authenticated:
+        return JsonResponse({'error': 'Não autorizado. Faça o login.'}, status=401)
     """
     Handles AJAX POST requests, runs the AI agent, persists messages and the analysis,
     and returns the JSON response.
@@ -91,3 +95,13 @@ def send_message(request):
             'market_data_snapshot': analysis.market_data_snapshot
         }
     })
+
+
+@csrf_exempt
+@require_POST
+def clear_chat(request):
+    if not request.user.is_authenticated:
+        return JsonResponse({'error': 'Não autorizado. Faça o login.'}, status=401)
+    ChatMessage.objects.filter(user=request.user).delete()
+    ChatbotAnalysis.objects.filter(user=request.user).delete()
+    return JsonResponse({'status': 'success', 'message': 'Histórico de mensagens deletado com sucesso.'})

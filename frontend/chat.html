@@ -42,139 +42,163 @@
         }
     </style>
 </head>
-<body class="min-h-screen flex flex-col font-sans">
+<body class="h-screen overflow-hidden flex flex-col font-sans bg-[#080808]">
     
     <!-- Navbar Placeholder -->
-    <div id="navbar-placeholder"></div>
+    <div id="navbar-placeholder" class="shrink-0"></div>
 
-    <main class="flex-grow">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Main Container -->
+    <div class="flex-grow flex overflow-hidden relative">
+        
+        <!-- Left Sidebar: Chat history & Search -->
+        <div id="chat-sidebar" class="w-72 shrink-0 bg-[#0B0B0B] border-r border-bg-tertiary flex flex-col h-full transition-transform duration-300 md:translate-x-0 md:static fixed top-16 left-0 z-40 h-[calc(100vh-4rem)] -translate-x-full">
+            <div class="p-4 border-b border-bg-tertiary flex flex-col gap-3">
+                <button id="clear-chat-btn" class="w-full py-2.5 bg-error/10 hover:bg-error hover:text-white text-error font-bold rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all duration-200 border border-error/20">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                    </svg>
+                    + Nova Conversa
+                </button>
+                <input type="text" id="chat-search" placeholder="Buscar nas conversas..." class="w-full px-3 py-2.5 bg-bg-secondary border border-bg-tertiary rounded-xl text-xs text-text-primary placeholder-text-muted outline-none focus:border-accent-500 transition-colors">
+            </div>
             
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start min-h-[calc(100vh-12rem)]">
+            <div id="sidebar-queries-list" class="flex-grow overflow-y-auto p-3 space-y-1 chat-scrollbar">
+                <!-- Dynamic query items go here -->
+            </div>
+        </div>
+
+        <!-- Center: Chat Box -->
+        <div class="flex-grow flex flex-col h-full bg-[#080808] relative">
+            <!-- Header bar for control toggles -->
+            <div class="flex items-center gap-3 p-4 border-b border-bg-tertiary bg-bg-secondary/40 backdrop-blur-md shrink-0">
+                <button id="sidebar-toggle-btn" class="md:hidden p-2 text-text-secondary hover:text-white rounded-xl bg-bg-tertiary/50">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+                <div class="w-10 h-10 rounded-full bg-accent-500/10 flex items-center justify-center text-accent-500 relative shrink-0">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                    </svg>
+                    <span class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-success rounded-full border-2 border-bg-secondary animate-pulse"></span>
+                </div>
+                <div>
+                    <h4 class="text-sm font-bold text-white">MonetraBot</h4>
+                    <span class="text-[11px] text-success flex items-center gap-1 font-medium">
+                        <span class="w-1.5 h-1.5 bg-success rounded-full animate-ping"></span>
+                        Assistente Financeiro Online
+                    </span>
+                </div>
                 
-                <!-- ═══════════ LEFT COLUMN: Chat Interface ═══════════ -->
-                <div class="lg:col-span-7 flex flex-col bg-bg-secondary border border-bg-tertiary rounded-2xl overflow-hidden shadow-2xl h-[600px]">
-                    <!-- Chat Header -->
-                    <div class="flex items-center gap-3 p-4 border-b border-bg-tertiary bg-bg-secondary/50 backdrop-blur-md">
-                        <div class="w-10 h-10 rounded-full bg-accent-500/10 flex items-center justify-center text-accent-500 relative shrink-0">
-                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
-                            </svg>
-                            <span class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-success rounded-full border-2 border-bg-secondary animate-pulse"></span>
-                        </div>
-                        <div>
-                            <h4 class="text-sm font-bold text-white">MonetraBot</h4>
-                            <span class="text-[11px] text-success flex items-center gap-1 font-medium">
-                                <span class="w-1.5 h-1.5 bg-success rounded-full animate-ping"></span>
-                                Assistente Financeiro Online
-                            </span>
-                        </div>
-                        <span class="ml-auto bg-accent-500/10 text-accent-500 text-[10px] font-extrabold uppercase px-2.5 py-1 rounded border border-accent-500/20">AGENT IA</span>
+                <div class="ml-auto flex items-center gap-2">
+                    <span class="hidden sm:inline bg-accent-500/10 text-accent-500 text-[10px] font-extrabold uppercase px-2.5 py-1 rounded border border-accent-500/20">AGENT IA</span>
+                    <button id="insight-toggle-btn" class="lg:hidden p-2 text-text-secondary hover:text-white rounded-xl bg-bg-tertiary/50 flex items-center gap-1 text-xs">
+                        <svg class="w-4.5 h-4.5 text-accent-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                        </svg>
+                        Insight
+                    </button>
+                </div>
+            </div>
+
+            <!-- Messages Box -->
+            <div id="chat-messages-container" class="flex-grow p-6 space-y-4 overflow-y-auto chat-scrollbar bg-[#090909]">
+                <!-- Welcome Message -->
+                <div class="flex gap-3 items-start">
+                    <div class="w-8 h-8 rounded-full bg-accent-500/10 flex items-center justify-center text-accent-500 shrink-0">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                        </svg>
                     </div>
-
-                    <!-- Chat Body (Messages) -->
-                    <div id="chat-messages-container" class="flex-grow p-4 space-y-4 overflow-y-auto chat-scrollbar bg-[#090909]">
-                        <!-- Welcome Message -->
-                        <div class="flex gap-3 items-start">
-                            <div class="w-8 h-8 rounded-full bg-accent-500/10 flex items-center justify-center text-accent-500 shrink-0">
-                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
-                                </svg>
-                            </div>
-                            <div class="bg-[#0D1A0D] border border-accent-500/15 rounded-2xl p-3 max-w-[85%] text-text-secondary text-sm space-y-2 leading-relaxed">
-                                <p>Olá! Eu sou o MonetraBot. Como posso ajudar com suas finanças pessoais hoje?</p>
-                                <p class="text-xs text-text-muted">Você pode me perguntar sobre seus gastos, receitas, pedir sugestões para economizar ou consultar indicadores financeiros reais.</p>
-                            </div>
-                        </div>
-
-                        <!-- Typing Indicator -->
-                        <div id="typing-indicator" class="hidden flex gap-3 items-start">
-                            <div class="w-8 h-8 rounded-full bg-accent-500/10 flex items-center justify-center text-accent-500 shrink-0">
-                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
-                                </svg>
-                            </div>
-                            <div class="bg-[#0D1A0D] border border-accent-500/15 rounded-2xl p-3 text-text-secondary text-sm flex items-center gap-1">
-                                <span class="text-text-muted">MonetraBot está pensando</span>
-                                <div class="typing-dots flex items-center gap-0.5 ml-1">
-                                    <span class="w-1.5 h-1.5 bg-accent-500 rounded-full"></span>
-                                    <span class="w-1.5 h-1.5 bg-accent-500 rounded-full"></span>
-                                    <span class="w-1.5 h-1.5 bg-accent-500 rounded-full"></span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Chat Input Form -->
-                    <div class="p-4 border-t border-bg-tertiary bg-bg-secondary/50">
-                        <form id="chat-form" class="flex gap-3">
-                            <input type="text" id="chat-input" placeholder="Pergunte ao MonetraBot ou peça insights..." autocomplete="off" class="flex-grow px-4 py-3 bg-bg-tertiary border border-bg-tertiary focus:border-accent-500 focus:ring-1 focus:ring-accent-500 rounded-xl text-sm text-text-primary placeholder-text-muted outline-none transition-all duration-200">
-                            <button type="submit" class="p-3 bg-accent-500 hover:bg-accent-600 text-[#080808] font-bold rounded-xl transition-all duration-200 flex items-center justify-center shadow-lg shadow-accent-500/10">
-                                <svg class="w-5 h-5 transform rotate-90" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
-                                </svg>
-                            </button>
-                        </form>
+                    <div id="welcome-message-bubble" class="bg-[#0D1A0D] border border-accent-500/15 rounded-2xl p-4 max-w-[85%] text-text-secondary text-sm space-y-2 leading-relaxed">
+                        <p>Olá! Eu sou o MonetraBot. Como posso ajudar com suas finanças pessoais hoje?</p>
+                        <p class="text-xs text-text-muted">Você pode me perguntar sobre seus gastos, receitas, pedir sugestões para economizar ou consultar indicadores financeiros reais.</p>
                     </div>
                 </div>
 
-                <!-- ═══════════ RIGHT COLUMN: Latest Analysis Panel ═══════════ -->
-                <div class="lg:col-span-5 space-y-6">
-                    <!-- AI Insight Card -->
-                    <div class="bg-bg-secondary border border-bg-tertiary rounded-2xl p-6 shadow-2xl relative overflow-hidden backdrop-blur-md">
-                        <!-- Background glow effect -->
-                        <div class="absolute top-0 right-0 w-32 h-32 bg-accent-500/5 rounded-full blur-3xl -mr-10 -mt-10 pointer-events-none"></div>
-                        
-                        <div class="flex items-center gap-3 pb-4 border-b border-bg-tertiary mb-4">
-                            <div class="w-8 h-8 rounded-full bg-accent-500/10 flex items-center justify-center text-accent-500">
-                                <svg class="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                                </svg>
-                            </div>
-                            <div>
-                                <h3 class="text-base font-extrabold text-white">Último Insight da IA</h3>
-                                <p class="text-[10px] text-text-muted uppercase font-semibold">Análise de Saúde Financeira</p>
-                            </div>
-                        </div>
-
-                        <!-- Insight Content -->
-                        <div id="latest-insight-container" class="space-y-4 text-sm text-text-secondary leading-relaxed">
-                            <div id="insight-empty" class="text-center py-12 bg-bg-tertiary/30 border border-dashed border-bg-tertiary rounded-xl">
-                                <svg class="w-8 h-8 mx-auto text-text-muted mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
-                                </svg>
-                                <p class="text-xs text-text-muted">Nenhum insight gerado ainda.</p>
-                                <p class="text-[10px] text-text-muted mt-1 px-4">Envie uma mensagem no chat para que o MonetraBot gere sua primeira análise financeira!</p>
-                            </div>
-                        </div>
+                <!-- Typing Indicator -->
+                <div id="typing-indicator" class="hidden flex gap-3 items-start">
+                    <div class="w-8 h-8 rounded-full bg-accent-500/10 flex items-center justify-center text-accent-500 shrink-0">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                        </svg>
                     </div>
-
-                    <!-- Suggestion Chips Card -->
-                    <div class="bg-bg-secondary border border-bg-tertiary rounded-2xl p-5 shadow-2xl">
-                        <h4 class="text-xs font-bold text-white uppercase tracking-wider mb-3">Tópicos Sugeridos</h4>
-                        <div class="flex flex-wrap gap-2">
-                            <button onclick="fillAndSend('Onde gastei mais no mês atual?')" class="px-3 py-1.5 bg-bg-tertiary hover:bg-bg-tertiary/80 text-text-secondary text-xs rounded-lg border border-bg-tertiary transition-colors duration-200">
-                                Onde gastei mais?
-                            </button>
-                            <button onclick="fillAndSend('Me dê dicas de economia com base nos meus gastos.')" class="px-3 py-1.5 bg-bg-tertiary hover:bg-bg-tertiary/80 text-text-secondary text-xs rounded-lg border border-bg-tertiary transition-colors duration-200">
-                                Dicas de economia
-                            </button>
-                            <button onclick="fillAndSend('Como está a cotação do dólar hoje e como isso afeta minhas finanças?')" class="px-3 py-1.5 bg-bg-tertiary hover:bg-bg-tertiary/80 text-text-secondary text-xs rounded-lg border border-bg-tertiary transition-colors duration-200">
-                                Cotação do Dólar
-                            </button>
-                            <button onclick="fillAndSend('Faça uma análise geral do meu saldo e contas.')" class="px-3 py-1.5 bg-bg-tertiary hover:bg-bg-tertiary/80 text-text-secondary text-xs rounded-lg border border-bg-tertiary transition-colors duration-200">
-                                Análise do meu saldo
-                            </button>
+                    <div class="bg-[#0D1A0D] border border-accent-500/15 rounded-2xl p-3 text-text-secondary text-sm flex items-center gap-1">
+                        <span class="text-text-muted">MonetraBot está pensando</span>
+                        <div class="typing-dots flex items-center gap-0.5 ml-1">
+                            <span class="w-1.5 h-1.5 bg-accent-500 rounded-full"></span>
+                            <span class="w-1.5 h-1.5 bg-accent-500 rounded-full"></span>
+                            <span class="w-1.5 h-1.5 bg-accent-500 rounded-full"></span>
                         </div>
                     </div>
                 </div>
             </div>
 
-        </div>
-    </main>
+            <!-- Suggested chips and Input area combined at bottom -->
+            <div class="p-4 border-t border-bg-tertiary bg-[#0B0B0B] shrink-0">
+                
+                <!-- Dynamic suggestion chips -->
+                <div class="max-w-3xl mx-auto mb-4 flex flex-wrap gap-2 justify-center">
+                    <button onclick="fillAndSend('Onde gastei mais no mês atual?')" class="px-3 py-1.5 bg-bg-secondary hover:bg-bg-tertiary hover:text-white text-text-secondary text-xs rounded-full border border-bg-tertiary transition-all duration-200">
+                        Onde gastei mais?
+                    </button>
+                    <button onclick="fillAndSend('Me dê dicas de economia com base nos meus gastos.')" class="px-3 py-1.5 bg-bg-secondary hover:bg-bg-tertiary hover:text-white text-text-secondary text-xs rounded-full border border-bg-tertiary transition-all duration-200">
+                        Dicas de economia
+                    </button>
+                    <button onclick="fillAndSend('Como está a cotação do dólar hoje e como isso afeta minhas finanças?')" class="px-3 py-1.5 bg-bg-secondary hover:bg-bg-tertiary hover:text-white text-text-secondary text-xs rounded-full border border-bg-tertiary transition-all duration-200">
+                        Cotação do Dólar
+                    </button>
+                    <button onclick="fillAndSend('Faça uma análise geral do meu saldo e contas.')" class="px-3 py-1.5 bg-bg-secondary hover:bg-bg-tertiary hover:text-white text-text-secondary text-xs rounded-full border border-bg-tertiary transition-all duration-200">
+                        Análise do meu saldo
+                    </button>
+                </div>
 
-    <!-- Footer Placeholder -->
-    <div id="footer-placeholder"></div>
+                <!-- Input form container -->
+                <form id="chat-form" class="max-w-3xl mx-auto flex items-center gap-2 bg-bg-secondary border border-bg-tertiary rounded-full px-4 py-2 shadow-lg focus-within:border-accent-500 focus-within:ring-1 focus-within:ring-accent-500 transition-all duration-200">
+                    <button type="button" id="chat-action-btn" class="p-2 text-text-secondary hover:text-white rounded-full transition-colors flex items-center justify-center shrink-0">
+                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path>
+                        </svg>
+                    </button>
+                    <input type="text" id="chat-input" placeholder="Digite sua dúvida ou selecione uma sugestão..." autocomplete="off" class="flex-grow bg-transparent border-none outline-none focus:ring-0 text-sm text-text-primary placeholder-text-muted px-2">
+                    <button type="submit" class="p-2 bg-accent-500 hover:bg-accent-600 text-[#080808] rounded-full transition-all duration-200 flex items-center justify-center shrink-0 shadow">
+                        <svg class="w-4 h-4 transform rotate-90" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                        </svg>
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Right Side Panel: AI Insight & Market Data -->
+        <div id="insight-sidebar" class="w-80 shrink-0 bg-[#0B0B0B] border-l border-bg-tertiary flex flex-col h-full transition-transform duration-300 lg:translate-x-0 lg:static fixed top-16 right-0 z-40 h-[calc(100vh-4rem)] translate-x-full">
+            <div class="p-4 border-b border-bg-tertiary flex items-center gap-3">
+                <div class="w-8 h-8 rounded-full bg-accent-500/10 flex items-center justify-center text-accent-500">
+                    <svg class="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="text-sm font-extrabold text-white">Último Insight da IA</h3>
+                    <p class="text-[9px] text-text-muted uppercase font-semibold">Análise de Saúde Financeira</p>
+                </div>
+                <button id="insight-close-btn" class="lg:hidden ml-auto p-1.5 text-text-muted hover:text-white rounded-lg">✕</button>
+            </div>
+            
+            <div class="flex-grow overflow-y-auto p-4 space-y-4 chat-scrollbar">
+                <div id="latest-insight-container" class="space-y-4 text-sm text-text-secondary leading-relaxed">
+                    <div id="insight-empty" class="text-center py-12 bg-bg-tertiary/30 border border-dashed border-bg-tertiary rounded-xl">
+                        <svg class="w-8 h-8 mx-auto text-text-muted mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                        </svg>
+                        <p class="text-xs text-text-muted">Nenhum insight gerado ainda.</p>
+                        <p class="text-[10px] text-text-muted mt-1 px-4">Envie uma mensagem no chat para que o MonetraBot gere sua primeira análise financeira!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
 
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
     <script src="static/js/common.js"></script>
@@ -184,6 +208,46 @@
         const chatInput = document.getElementById('chat-input');
         const typingIndicator = document.getElementById('typing-indicator');
         const latestInsightContainer = document.getElementById('latest-insight-container');
+        const clearChatBtn = document.getElementById('clear-chat-btn');
+        const searchInput = document.getElementById('chat-search');
+
+        // Sidebar drawer toggles for mobile
+        const sidebarToggleBtn = document.getElementById('sidebar-toggle-btn');
+        const chatSidebar = document.getElementById('chat-sidebar');
+        const insightToggleBtn = document.getElementById('insight-toggle-btn');
+        const insightSidebar = document.getElementById('insight-sidebar');
+        const insightCloseBtn = document.getElementById('insight-close-btn');
+
+        if (sidebarToggleBtn && chatSidebar) {
+            sidebarToggleBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                chatSidebar.classList.toggle('-translate-x-full');
+            });
+            // Close sidebar when clicking outside on mobile
+            document.addEventListener('click', (e) => {
+                if (window.innerWidth < 768 && !chatSidebar.contains(e.target) && !sidebarToggleBtn.contains(e.target)) {
+                    chatSidebar.classList.add('-translate-x-full');
+                }
+            });
+        }
+
+        if (insightToggleBtn && insightSidebar) {
+            insightToggleBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                insightSidebar.classList.toggle('translate-x-full');
+            });
+            // Close panel when clicking outside on mobile
+            document.addEventListener('click', (e) => {
+                if (window.innerWidth < 1024 && !insightSidebar.contains(e.target) && !insightToggleBtn.contains(e.target)) {
+                    insightSidebar.classList.add('translate-x-full');
+                }
+            });
+        }
+        if (insightCloseBtn && insightSidebar) {
+            insightCloseBtn.addEventListener('click', () => {
+                insightSidebar.classList.add('translate-x-full');
+            });
+        }
 
         // Auto-scroll to the bottom of messages
         function scrollToBottom() {
@@ -206,15 +270,17 @@
                 .replace(/'/g, '&#039;');
         }
 
-        function appendUserMessage(text) {
+        function appendUserMessage(text, id = null) {
+            const msgId = id || `msg-temp-${Date.now()}`;
             const msgDiv = document.createElement('div');
             msgDiv.className = 'flex justify-end';
             msgDiv.innerHTML = `
-                <div class="bg-bg-tertiary border border-bg-tertiary text-text-primary rounded-2xl p-3 max-w-[85%] text-sm">
+                <div class="user-message-bubble bg-bg-tertiary border border-bg-tertiary text-text-primary rounded-2xl p-3 max-w-[85%] text-sm" id="${msgId}" data-msg-text="${escapeHTML(text)}">
                     <p class="whitespace-pre-line">${escapeHTML(text)}</p>
                 </div>
             `;
             chatMessagesContainer.insertBefore(msgDiv, typingIndicator);
+            updateSidebarFromChat();
         }
 
         function appendBotMessage(text) {
@@ -278,9 +344,107 @@
             `;
         }
 
+        // Dynamically pull user questions from the DOM to render in the left sidebar
+        function updateSidebarFromChat() {
+            const list = document.getElementById('sidebar-queries-list');
+            if (!list) return;
+            list.innerHTML = '';
+            
+            const userMessageBubbles = chatMessagesContainer.querySelectorAll('.user-message-bubble');
+            
+            if (userMessageBubbles.length === 0) {
+                list.innerHTML = `
+                    <div class="px-4 py-3 text-xs text-text-muted text-center italic">
+                        Nenhuma pergunta recente
+                    </div>
+                `;
+                return;
+            }
+            
+            // Render list items in reverse chronological order
+            Array.from(userMessageBubbles).reverse().forEach((el, index) => {
+                const text = el.dataset.msgText || el.textContent.trim();
+                const msgId = el.id || `msg-temp-${index}`;
+                
+                const item = document.createElement('button');
+                item.className = 'w-full text-left px-4 py-3 text-xs text-text-secondary hover:text-white hover:bg-bg-tertiary/40 rounded-lg transition-colors border-b border-bg-tertiary/20 flex items-center gap-2 truncate group';
+                item.innerHTML = `
+                    <svg class="w-3.5 h-3.5 text-text-muted group-hover:text-accent-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                    </svg>
+                    <span class="truncate">${escapeHTML(text)}</span>
+                `;
+                
+                item.addEventListener('click', () => {
+                    const targetElement = document.getElementById(msgId);
+                    if (targetElement) {
+                        targetElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        // Add highlight effect
+                        targetElement.classList.add('ring-2', 'ring-accent-500/50');
+                        setTimeout(() => targetElement.classList.remove('ring-2', 'ring-accent-500/50'), 2000);
+                        // Close sidebar on mobile
+                        if (window.innerWidth < 768) {
+                            chatSidebar.classList.add('-translate-x-full');
+                        }
+                    }
+                });
+                
+                list.appendChild(item);
+            });
+        }
+
+        // Setup real-time filtering on the queries
+        if (searchInput) {
+            searchInput.addEventListener('input', (e) => {
+                const query = e.target.value.toLowerCase().trim();
+                const items = document.querySelectorAll('#sidebar-queries-list button');
+                items.forEach(item => {
+                    const text = item.querySelector('span').textContent.toLowerCase();
+                    if (text.includes(query)) {
+                        item.classList.remove('hidden');
+                    } else {
+                        item.classList.add('hidden');
+                    }
+                });
+            });
+        }
+
         document.addEventListener('DOMContentLoaded', async () => {
             const user = await checkAuthAndSetup(true);
             if (!user) return;
+
+            // Clear chat handler
+            if (clearChatBtn) {
+                clearChatBtn.addEventListener('click', async () => {
+                    if (!confirm('Deseja realmente limpar todo o histórico de mensagens desta conversa?')) return;
+                    
+                    try {
+                        const csrfToken = await fetchCSRFToken();
+                        const response = await fetch(`${BACKEND_URL}/chatbot/clear/`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRFToken': csrfToken
+                            },
+                            credentials: 'include'
+                        });
+                        
+                        if (response.ok) {
+                            // Delete all user and bot messages except the welcome bubble
+                            const bubbles = chatMessagesContainer.querySelectorAll('.flex.justify-end, .flex.gap-3.items-start:not(:first-child)');
+                            bubbles.forEach(el => el.remove());
+                            updateInsightCard(null);
+                            updateSidebarFromChat();
+                            showToast('Histórico da conversa reiniciado com sucesso!');
+                        } else {
+                            showToast('Erro ao reiniciar conversa.', 'error');
+                        }
+                    } catch (e) {
+                        console.error('Error clearing chat:', e);
+                        showToast('Erro ao se conectar ao servidor.', 'error');
+                    }
+                });
+            }
 
             // Load Chat History
             async function loadChatHistory() {
@@ -292,8 +456,8 @@
 
                     const data = await response.json();
 
-                    // Update Welcome Message with username
-                    const welcomeDiv = chatMessagesContainer.querySelector('.bg-[#0D1A0D]');
+                    // Update Welcome Message with user email (using ID selector, fixing syntax error)
+                    const welcomeDiv = document.getElementById('welcome-message-bubble');
                     if (welcomeDiv) {
                         welcomeDiv.innerHTML = `
                             <p>Olá, <strong>${escapeHTML(user.email)}</strong>! Eu sou o MonetraBot. Como posso ajudar com suas finanças pessoais hoje?</p>
@@ -320,7 +484,7 @@
                             } else {
                                 msgDiv.className = 'flex justify-end';
                                 msgDiv.innerHTML = `
-                                    <div class="bg-bg-tertiary border border-bg-tertiary text-text-primary rounded-2xl p-3 max-w-[85%] text-sm">
+                                    <div class="user-message-bubble bg-bg-tertiary border border-bg-tertiary text-text-primary rounded-2xl p-3 max-w-[85%] text-sm" id="msg-${msg.id}" data-msg-text="${escapeHTML(msg.message_text)}">
                                         <p class="whitespace-pre-line">${escapeHTML(msg.message_text)}</p>
                                     </div>
                                 `;
@@ -329,8 +493,9 @@
                         });
                     }
 
-                    // Update Insight Card
+                    // Update Insight Card and Sidebar
                     updateInsightCard(data.latest_analysis);
+                    updateSidebarFromChat();
                     scrollToBottom();
 
                 } catch (err) {
@@ -347,7 +512,8 @@
                 if (!message) return;
 
                 chatInput.value = '';
-                appendUserMessage(message);
+                const tempId = `msg-temp-${Date.now()}`;
+                appendUserMessage(message, tempId);
                 scrollToBottom();
 
                 typingIndicator.classList.remove('hidden');
@@ -374,6 +540,9 @@
                     const data = await response.json();
                     appendBotMessage(data.response);
                     updateInsightCard(data.analysis);
+                    
+                    // Replace temp user message with database ID if possible, or just refresh sidebar
+                    await loadChatHistory(); // This will refresh and assign real database IDs
                     scrollToBottom();
 
                 } catch (error) {

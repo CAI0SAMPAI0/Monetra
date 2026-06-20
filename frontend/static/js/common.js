@@ -43,12 +43,23 @@ async function checkAuthAndSetup(isProtectedRoute = false) {
         // Try to load config.json first
         let url = await loadConfig();
         if (!url) {
-            // Check global config object
+            // Check global configs
             if (window.MONETRA_CONFIG && window.MONETRA_CONFIG.BACKEND_URL) {
                 url = window.MONETRA_CONFIG.BACKEND_URL;
+            } else if (window.BACKEND_URL) {
+                url = window.BACKEND_URL;
             } else {
-                // Check localStorage
-                url = localStorage.getItem('BACKEND_URL') || '';
+                // Check process.env (in case of bundler replacement)
+                try {
+                    if (typeof process !== 'undefined' && process.env && process.env.BACKEND_URL) {
+                        url = process.env.BACKEND_URL;
+                    }
+                } catch (e) {}
+
+                if (!url) {
+                    // Check localStorage
+                    url = localStorage.getItem('BACKEND_URL') || '';
+                }
             }
         }
         if (!url) {
@@ -61,17 +72,9 @@ async function checkAuthAndSetup(isProtectedRoute = false) {
         if (url) {
             BACKEND_URL = url.trim().replace(/\/$/, "");
         } else {
-            // Prompt the user for the backend URL if not set
-            const userUrl = prompt("Por favor, configure a URL do seu backend do Monetra no Hugging Face (ex: https://caiosampaio-monetra.hf.space):");
-            if (userUrl) {
-                BACKEND_URL = userUrl.trim().replace(/\/$/, "");
-                localStorage.setItem('BACKEND_URL', BACKEND_URL);
-                window.location.reload();
-                return null;
-            } else {
-                showToast("A URL do backend é obrigatória para o funcionamento da plataforma.", "error");
-                return null;
-            }
+            console.error("Erro: A variável BACKEND_URL não está configurada.");
+            showToast("A URL do backend não está configurada.", "error");
+            return null;
         }
     }
 
@@ -145,7 +148,6 @@ function renderNavbar(authenticated, email = '') {
             <a href="transactions.html" class="text-text-secondary hover:text-text-primary transition-colors duration-200">Transações</a>
             <div class="h-6 w-px bg-bg-tertiary"></div>
             <a href="profile.html" class="text-text-secondary hover:text-text-primary transition-colors duration-200">Perfil</a>
-            <button id="config-api-btn" class="text-text-secondary hover:text-text-primary transition-colors duration-200 text-sm">Configuração</button>
             <button id="logout-btn" class="px-4 py-2 bg-error/10 text-error rounded-lg text-sm font-medium hover:bg-error hover:text-white transition-all duration-200 border border-error/20">
                 Sair
             </button>
@@ -153,7 +155,6 @@ function renderNavbar(authenticated, email = '') {
     } else {
         menuItems = `
             <a href="login.html" class="text-text-secondary hover:text-text-primary transition-colors duration-200">Login</a>
-            <button id="config-api-btn" class="text-text-secondary hover:text-text-primary transition-colors duration-200 text-sm">Configurar API</button>
             <a href="signup.html" class="px-6 py-2 bg-accent-500 text-[#080808] rounded-lg font-bold hover:bg-accent-600 transition-all duration-200 shadow-lg">
                 Cadastrar
             </a>
@@ -196,13 +197,11 @@ function renderNavbar(authenticated, email = '') {
                     <a href="categories.html" class="block px-4 py-2 text-text-secondary hover:text-text-primary hover:bg-bg-tertiary rounded-lg transition-colors">Categorias</a>
                     <a href="transactions.html" class="block px-4 py-2 text-text-secondary hover:text-text-primary hover:bg-bg-tertiary rounded-lg transition-colors">Transações</a>
                     <a href="profile.html" class="block px-4 py-2 text-text-secondary hover:text-text-primary hover:bg-bg-tertiary rounded-lg transition-colors">Perfil</a>
-                    <button id="config-api-btn-mobile" class="w-full text-left block px-4 py-2 text-text-secondary hover:text-text-primary hover:bg-bg-tertiary rounded-lg transition-colors">Configurar API</button>
                     <button id="logout-btn-mobile" class="w-full text-left px-4 py-2 text-error hover:bg-error hover:text-white rounded-lg transition-colors">
                         Sair
                     </button>
                 ` : `
                     <a href="login.html" class="block px-4 py-2 text-text-secondary hover:text-text-primary hover:bg-bg-tertiary rounded-lg">Login</a>
-                    <button id="config-api-btn-mobile" class="w-full text-left block px-4 py-2 text-text-secondary hover:text-text-primary hover:bg-bg-tertiary rounded-lg transition-colors">Configurar API</button>
                     <a href="signup.html" class="block px-4 py-2 text-center bg-accent-500 text-[#080808] rounded-lg font-bold hover:bg-accent-600 transition-all">
                         Cadastrar
                     </a>
@@ -227,28 +226,6 @@ function renderNavbar(authenticated, email = '') {
             mobileMenu.classList.toggle('hidden');
         });
     }
-
-    // Set up Config API handlers
-    const configBtn = document.getElementById('config-api-btn');
-    const configBtnMobile = document.getElementById('config-api-btn-mobile');
-    const handleConfig = () => {
-        const currentUrl = localStorage.getItem('BACKEND_URL') || '';
-        const userUrl = prompt("Configure a URL do seu backend do Monetra (ex: https://caiosampaio-monetra.hf.space):", currentUrl);
-        if (userUrl !== null) {
-            const cleanedUrl = userUrl.trim().replace(/\/$/, "");
-            if (cleanedUrl) {
-                localStorage.setItem('BACKEND_URL', cleanedUrl);
-                showToast("URL da API atualizada com sucesso!");
-                setTimeout(() => { window.location.reload(); }, 1000);
-            } else {
-                localStorage.removeItem('BACKEND_URL');
-                showToast("Configuração customizada removida.");
-                setTimeout(() => { window.location.reload(); }, 1000);
-            }
-        }
-    };
-    if (configBtn) configBtn.addEventListener('click', handleConfig);
-    if (configBtnMobile) configBtnMobile.addEventListener('click', handleConfig);
 
     // Set up Logout handlers
     const logoutBtn = document.getElementById('logout-btn');
