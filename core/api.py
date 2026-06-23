@@ -35,7 +35,7 @@ def api_login(request):
     except (json.JSONDecodeError, KeyError):
         return JsonResponse({'error': 'Dados inválidos.'}, status=400)
 
-    user = authenticate(request, email=email, password=password)
+    user = authenticate(request, username=email, password=password)
     if user is not None:
         login(request, user)
         # Ensure profile exists
