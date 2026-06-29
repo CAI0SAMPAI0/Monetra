@@ -1,0 +1,4 @@
+{
+  "cleanUrls": true,
+  "buildCommand": "echo \"{\\\"BACKEND_URL\\\": \\\"$BACKEND_URL\\\"}\" > config.json"
+}

@@ -2,7 +2,7 @@ let BACKEND_URL = '';
 
 async function loadConfig() {
     try {
-        const response = await fetch('config.json');
+        const response = await fetch('/config.json');
         if (response.ok) {
             const config = await response.json();
             if (config && config.BACKEND_URL) {
