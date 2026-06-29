@@ -158,7 +158,7 @@ function renderNavbar(authenticated, email = '') {
                 <div class="flex items-center justify-between h-16">
                     <div class="flex items-center">
                         <a href="index.html" class="flex items-center space-x-2 text-2xl font-bold text-accent-500 tracking-tight">
-                            <img src="static/images/logo1.png" alt="Monetra" class="h-8 w-auto onerror-fallback">
+                            <img src="/static/images/logo1.png" alt="Monetra" class="h-8 w-auto onerror-fallback">
                             <span>Monetra</span>
                         </a>
                     </div>
