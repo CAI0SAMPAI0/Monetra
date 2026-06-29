@@ -66,7 +66,7 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         total_balance = accounts.aggregate(total=Sum('balance'))['total'] or 0
 
         # Transactions
-        user_transactions = Transaction.objects.filter(account__user=user)
+        user_transactions = Transaction.objects.filter(account__user=user).select_related('account', 'category')
 
         # Monthly stats
         monthly_transactions = user_transactions.filter(transaction_date__gte=start_of_month)
