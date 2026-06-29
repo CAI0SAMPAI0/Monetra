@@ -41,8 +41,12 @@ function showToast(text, type = 'success') {
 async function checkAuthAndSetup(isProtectedRoute = false) {
     if (!BACKEND_URL) {
         // Default to localhost if applicable first to avoid 404 on config.json
-        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.port === '5500' || window.location.port === '8080') {
+        if (window.location.port === '8000') {
+            BACKEND_URL = window.location.origin;
+        } else if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.port === '5500' || window.location.port === '8080') {
             BACKEND_URL = 'http://127.0.0.1:8000';
+        } else if (window.location.hostname.endsWith('.hf.space') || window.location.hostname.endsWith('.onrender.com')) {
+            BACKEND_URL = window.location.origin;
         } else {
             // Try to load config.json
             let url = await loadConfig();
