@@ -28,6 +28,21 @@ if 'SPACE_HOST' in os.environ:
     if space_host not in ALLOWED_HOSTS:
         ALLOWED_HOSTS.append(space_host)
 
+# Configure CORS allowed origins for production
+CORS_ALLOWED_ORIGINS = config('CORS_ALLOWED_ORIGINS', cast=Csv(), default='')
+if isinstance(CORS_ALLOWED_ORIGINS, str):
+    CORS_ALLOWED_ORIGINS = [CORS_ALLOWED_ORIGINS] if CORS_ALLOWED_ORIGINS else []
+else:
+    CORS_ALLOWED_ORIGINS = list(CORS_ALLOWED_ORIGINS)
+
+# Add defaults from base.py
+from .base import CORS_ALLOWED_ORIGINS as BASE_CORS_ALLOWED_ORIGINS
+CORS_ALLOWED_ORIGINS.extend(BASE_CORS_ALLOWED_ORIGINS)
+
+# Automatically add Vercel domain to CORS
+if 'https://monetra-coral-two.vercel.app' not in CORS_ALLOWED_ORIGINS:
+    CORS_ALLOWED_ORIGINS.append('https://monetra-coral-two.vercel.app')
+
 # Configure CSRF trusted origins for production (needed for form submissions)
 CSRF_TRUSTED_ORIGINS = config('CSRF_TRUSTED_ORIGINS', cast=Csv(), default='')
 if isinstance(CSRF_TRUSTED_ORIGINS, str):
@@ -35,9 +50,13 @@ if isinstance(CSRF_TRUSTED_ORIGINS, str):
 else:
     CSRF_TRUSTED_ORIGINS = list(CSRF_TRUSTED_ORIGINS)
 
-# Automatically trust Hugging Face subdomains
+# Automatically trust Hugging Face subdomains and Vercel domains
 if 'https://*.hf.space' not in CSRF_TRUSTED_ORIGINS:
     CSRF_TRUSTED_ORIGINS.append('https://*.hf.space')
+if 'https://*.vercel.app' not in CSRF_TRUSTED_ORIGINS:
+    CSRF_TRUSTED_ORIGINS.append('https://*.vercel.app')
+if 'https://monetra-coral-two.vercel.app' not in CSRF_TRUSTED_ORIGINS:
+    CSRF_TRUSTED_ORIGINS.append('https://monetra-coral-two.vercel.app')
 
 # Database configuration for production
 # Using dj_database_url to parse the DATABASE_URL environment variable
