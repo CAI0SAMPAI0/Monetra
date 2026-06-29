@@ -438,6 +438,51 @@
             updateSidebarFromChat();
         }
 
+        function updateInsightCard(analysis) {
+            if (!analysis) {
+                latestInsightContainer.innerHTML = `
+                    <div id="insight-empty" class="text-center py-12 bg-bg-tertiary/30 border border-dashed border-bg-tertiary rounded-xl">
+                        <svg class="w-8 h-8 mx-auto text-text-muted mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                        </svg>
+                        <p class="text-xs text-text-muted">Nenhum insight gerado ainda.</p>
+                        <p class="text-[10px] text-text-muted mt-1 px-4">Envie uma mensagem no chat para que o MonetraBot gere sua primeira análise financeira!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            let currenciesHTML = '';
+            if (analysis.market_data_snapshot && analysis.market_data_snapshot.currencies) {
+                currenciesHTML = `
+                    <div class="mt-4 pt-4 border-t border-bg-tertiary/60 space-y-2">
+                        <h5 class="text-xs font-bold text-white uppercase tracking-wider">Câmbio e Mercado (no momento da análise)</h5>
+                        <div class="grid grid-cols-2 gap-2 text-xs">
+                            <div class="bg-bg-tertiary/30 p-2 rounded border border-bg-tertiary/40">
+                                <span class="text-text-muted block text-[10px]">Câmbio Dólar</span>
+                                <strong class="text-white">${analysis.market_data_snapshot.currencies.USD_BRL || 'N/A'}</strong>
+                            </div>
+                            <div class="bg-bg-tertiary/30 p-2 rounded border border-bg-tertiary/40">
+                                <span class="text-text-muted block text-[10px]">Ibovespa</span>
+                                <strong class="text-white">${analysis.market_data_snapshot.stocks.Ibovespa || 'N/A'}</strong>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            const dateStr = analysis.created_at || new Date().toLocaleString('pt-BR');
+
+            latestInsightContainer.innerHTML = `
+                <div class="bg-bg-tertiary/40 border border-bg-tertiary/60 rounded-xl p-4">
+                    <h4 id="insight-summary" class="font-bold text-white text-sm mb-2">${escapeHTML(analysis.summary)}</h4>
+                    <p id="insight-text" class="text-xs text-text-secondary whitespace-pre-line">${escapeHTML(analysis.analysis_text)}</p>
+                    <span id="insight-date" class="block text-[10px] text-text-muted mt-3 text-right">Atualizado em: ${escapeHTML(dateStr)}</span>
+                </div>
+                ${currenciesHTML}
+            `;
+        }
+
         // Dynamically pull user questions from the DOM to render in the left sidebar
         function updateSidebarFromChat() {
             const list = document.getElementById('sidebar-queries-list');
