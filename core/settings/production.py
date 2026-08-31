@@ -29,15 +29,9 @@ if 'SPACE_HOST' in os.environ:
         ALLOWED_HOSTS.append(space_host)
 
 # Configure CORS allowed origins for production
-CORS_ALLOWED_ORIGINS = ['*']
-if isinstance(CORS_ALLOWED_ORIGINS, str):
-    CORS_ALLOWED_ORIGINS = [CORS_ALLOWED_ORIGINS] if CORS_ALLOWED_ORIGINS else []
-else:
-    CORS_ALLOWED_ORIGINS = list(CORS_ALLOWED_ORIGINS)
-
-# Add defaults from base.py
+CORS_ALLOW_ALL_ORIGINS = True
 from .base import CORS_ALLOWED_ORIGINS as BASE_CORS_ALLOWED_ORIGINS
-CORS_ALLOWED_ORIGINS.extend(BASE_CORS_ALLOWED_ORIGINS)
+CORS_ALLOWED_ORIGINS = list(BASE_CORS_ALLOWED_ORIGINS)
 
 # Automatically add Vercel domain to CORS
 if 'https://monetra-coral-two.vercel.app' not in CORS_ALLOWED_ORIGINS:
