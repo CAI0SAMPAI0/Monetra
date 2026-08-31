@@ -6,7 +6,7 @@ DEBUG = False
 
 import os
 
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv(), default='')
+ALLOWED_HOSTS = ['*']
 
 # Auto-add Render external hostname if running on Render
 if 'RENDER_EXTERNAL_HOSTNAME' in os.environ:
@@ -29,7 +29,7 @@ if 'SPACE_HOST' in os.environ:
         ALLOWED_HOSTS.append(space_host)
 
 # Configure CORS allowed origins for production
-CORS_ALLOWED_ORIGINS = config('CORS_ALLOWED_ORIGINS', cast=Csv(), default='')
+CORS_ALLOWED_ORIGINS = ['*']
 if isinstance(CORS_ALLOWED_ORIGINS, str):
     CORS_ALLOWED_ORIGINS = [CORS_ALLOWED_ORIGINS] if CORS_ALLOWED_ORIGINS else []
 else:
