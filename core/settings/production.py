@@ -50,13 +50,21 @@ if isinstance(CSRF_TRUSTED_ORIGINS, str):
 else:
     CSRF_TRUSTED_ORIGINS = list(CSRF_TRUSTED_ORIGINS)
 
-# Automatically trust Hugging Face subdomains and Vercel domains
+# Automatically trust Render, Hugging Face subdomains, Vercel, and Fly.io domains
+if 'https://*.onrender.com' not in CSRF_TRUSTED_ORIGINS:
+    CSRF_TRUSTED_ORIGINS.append('https://*.onrender.com')
+if 'RENDER_EXTERNAL_HOSTNAME' in os.environ:
+    render_url = f"https://{os.environ['RENDER_EXTERNAL_HOSTNAME']}"
+    if render_url not in CSRF_TRUSTED_ORIGINS:
+        CSRF_TRUSTED_ORIGINS.append(render_url)
 if 'https://*.hf.space' not in CSRF_TRUSTED_ORIGINS:
     CSRF_TRUSTED_ORIGINS.append('https://*.hf.space')
 if 'https://*.vercel.app' not in CSRF_TRUSTED_ORIGINS:
     CSRF_TRUSTED_ORIGINS.append('https://*.vercel.app')
 if 'https://monetra-coral-two.vercel.app' not in CSRF_TRUSTED_ORIGINS:
     CSRF_TRUSTED_ORIGINS.append('https://monetra-coral-two.vercel.app')
+if 'https://*.fly.dev' not in CSRF_TRUSTED_ORIGINS:
+    CSRF_TRUSTED_ORIGINS.append('https://*.fly.dev')
 
 # Database configuration for production
 # Using dj_database_url to parse the DATABASE_URL environment variable
