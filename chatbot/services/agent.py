@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 
 def run_chatbot_agent(user_id: int, user_input: str) -> str:
     """
-    Executa o agente financeiro do chatbot com Groq (llama-3.1-8b-instant).
+    Executa o agente financeiro do chatbot com Groq (openai/gpt-oss-20b).
     Usa um único prompt estruturado com contexto pré-carregado para evitar limites de taxa (429) e timeouts.
     """
     from chatbot.services.tools import get_user_financial_data, get_market_data_summary
@@ -37,7 +37,7 @@ def run_chatbot_agent(user_id: int, user_input: str) -> str:
 
     # ChatOpenAI configuration pointing to Groq's endpoint
     llm = ChatOpenAI(
-        model='llama-3.1-8b-instant',
+        model='openai/gpt-oss-20b',
         base_url='https://api.groq.com/openai/v1',
         api_key=api_key,
         temperature=0.4,

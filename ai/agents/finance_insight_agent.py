@@ -26,7 +26,7 @@ def run_financial_agent(user_id: int, prompt_input: str) -> str:
 
     # ChatOpenAI configuration pointing to Groq's endpoint
     llm = ChatOpenAI(
-        model='llama-3.1-8b-instant',
+        model='openai/gpt-oss-20b',
         base_url='https://api.groq.com/openai/v1',
         api_key=api_key,
         temperature=0.4,
