@@ -52,6 +52,7 @@ USER appuser
 EXPOSE 8000
 
 # Start application with gunicorn after running migrations
-CMD ["sh", "-c", "python manage.py migrate --noinput && gunicorn core.wsgi:application --bind 0.0.0.0:${PORT:-8000} --workers 2 --threads 4 --timeout 120"]
+CMD ["sh", "-c", "python manage.py migrate --noinput ; gunicorn core.wsgi:application --bind 0.0.0.0:${PORT:-8000} --workers 2 --threads 4 --timeout 120 --access-logfile - --error-logfile -"]
+
 
 
