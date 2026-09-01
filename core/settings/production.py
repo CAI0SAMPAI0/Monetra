@@ -44,7 +44,7 @@ if isinstance(CSRF_TRUSTED_ORIGINS, str):
 else:
     CSRF_TRUSTED_ORIGINS = list(CSRF_TRUSTED_ORIGINS)
 
-# Automatically trust Render, Hugging Face subdomains, Vercel, and Fly.io domains
+# Automatically trust Render, Hugging Face, Vercel, Fly.io, and Railway domains
 if 'https://*.onrender.com' not in CSRF_TRUSTED_ORIGINS:
     CSRF_TRUSTED_ORIGINS.append('https://*.onrender.com')
 if 'RENDER_EXTERNAL_HOSTNAME' in os.environ:
@@ -59,16 +59,39 @@ if 'https://monetra-coral-two.vercel.app' not in CSRF_TRUSTED_ORIGINS:
     CSRF_TRUSTED_ORIGINS.append('https://monetra-coral-two.vercel.app')
 if 'https://*.fly.dev' not in CSRF_TRUSTED_ORIGINS:
     CSRF_TRUSTED_ORIGINS.append('https://*.fly.dev')
+if 'https://*.railway.app' not in CSRF_TRUSTED_ORIGINS:
+    CSRF_TRUSTED_ORIGINS.append('https://*.railway.app')
+if 'https://*.up.railway.app' not in CSRF_TRUSTED_ORIGINS:
+    CSRF_TRUSTED_ORIGINS.append('https://*.up.railway.app')
+if 'RAILWAY_STATIC_URL' in os.environ:
+    railway_url = f"https://{os.environ['RAILWAY_STATIC_URL']}"
+    if railway_url not in CSRF_TRUSTED_ORIGINS:
+        CSRF_TRUSTED_ORIGINS.append(railway_url)
+if 'RAILWAY_PUBLIC_DOMAIN' in os.environ:
+    railway_domain = f"https://{os.environ['RAILWAY_PUBLIC_DOMAIN']}"
+    if railway_domain not in CSRF_TRUSTED_ORIGINS:
+        CSRF_TRUSTED_ORIGINS.append(railway_domain)
+
 
 # Database configuration for production
 # Using dj_database_url to parse the DATABASE_URL environment variable
-DATABASES = {
-    'default': dj_database_url.config(
-        default=config('DATABASE_URL', default=config('NEON_POSTGRESQL', default='')),
-        conn_max_age=600,
-        conn_health_checks=True,
-    )
-}
+db_url = config('DATABASE_URL', default=config('NEON_POSTGRESQL', default=''))
+if db_url:
+    DATABASES = {
+        'default': dj_database_url.config(
+            default=db_url,
+            conn_max_age=600,
+            conn_health_checks=True,
+        )
+    }
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
+
 
 # Security settings
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
@@ -116,6 +139,21 @@ LOGGING = {
         'django': {
             'handlers': ['console'],
             'level': 'ERROR',
+            'propagate': True,
+        },
+        'profiles': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        'accounts': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        'chatbot': {
+            'handlers': ['console'],
+            'level': 'INFO',
             'propagate': True,
         },
     },
