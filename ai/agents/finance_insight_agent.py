@@ -1,49 +1,35 @@
 import logging
 from decouple import config
 from langchain_openai import ChatOpenAI
-from langchain_classic.agents import AgentExecutor, create_react_agent
-from langchain_core.prompts import PromptTemplate
+from chatbot.services.agent import build_antia_financial_system_prompt
 
 logger = logging.getLogger(__name__)
 
 
 def run_financial_agent(user_id: int, prompt_input: str) -> str:
     """
-    Executa o agente financeiro do Langchain para análises em lote/dashboard.
-    Usa um único prompt estruturado com contexto pré-carregado para evitar limites de taxa (429) e timeouts.
+    Executa o agente financeiro para análises e resumos aplicando a diretriz AntIA v3.
     """
     from chatbot.services.tools import get_user_financial_data, get_market_data_summary
 
-    # Coleta dados locais
     financial_data = get_user_financial_data(user_id)
     market_data = get_market_data_summary()
 
-    # Groq API configuration using ChatOpenAI
     api_key = config('GROQ_API_KEY', default='')
     if not api_key:
         logger.error('GROQ_API_KEY is not defined in .env')
         return 'Erro: GROQ_API_KEY não configurada no arquivo de ambiente.'
 
-    # ChatOpenAI configuration pointing to Groq's endpoint
     llm = ChatOpenAI(
         model='openai/gpt-oss-20b',
         base_url='https://api.groq.com/openai/v1',
         api_key=api_key,
-        temperature=0.4,
+        temperature=0.35,
         max_tokens=1500,
         max_retries=2,
     )
 
-    system_instruction = (
-        "Você é o FynanBot, um consultor financeiro pessoal de inteligência artificial especializado do sistema Finanpy.\n"
-        "Você é extremamente amigável, prestativo, educado e profissional. Sua tarefa é fazer uma análise da saúde financeira do usuário baseando-se nos dados fornecidos.\n\n"
-        f"=== DADOS FINANCEIROS DO USUÁRIO ===\n{financial_data}\n\n"
-        f"=== DADOS DE MERCADO ATUAIS ===\n{market_data}\n\n"
-        "Instruções:\n"
-        "- Identifique padrões de consumo, áreas de desperdício e forneça 3 dicas práticas e empáticas em Português do Brasil.\n"
-        "- Seja empático e encorajador.\n"
-        "- Não invente dados."
-    )
+    system_instruction = build_antia_financial_system_prompt(financial_data, market_data)
 
     try:
         messages = [
@@ -55,8 +41,6 @@ def run_financial_agent(user_id: int, prompt_input: str) -> str:
     except Exception as e:
         logger.error(f'Error executing agent: {e}')
         return (
-            'Olá! Identifiquei uma instabilidade ao conectar com meu cérebro de IA da Groq. '
-            'Com base em seus registros locais de contas e transações, recomendamos continuar '
-            'gerenciando seu saldo com disciplina e evitar despesas não-essenciais.'
+            'O serviço de análise automática está temporariamente indisponível para conexão externa. '
+            'Seus registros locais permanecem salvos e você pode acompanhar os saldos e transações no painel principal.'
         )
-

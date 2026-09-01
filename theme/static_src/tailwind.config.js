@@ -48,33 +48,43 @@ module.exports = {
     theme: {
         extend: {
             colors: {
-                primary: {
-                    500: '#0F0F0F',
-                    600: '#080808',
-                    700: '#050505',
-                },
+                bg: '#05090D',
+                surface: '#0A1018',
+                'surface-2': '#0F1720',
+                'surface-3': '#141F2A',
+                border: '#1C2A38',
+                'border-2': '#253648',
+                'text-main': '#C8D4DF',
+                'text-2': '#637585',
+                'text-3': '#374B5C',
+                gold: '#C09B2A',
+                'gold-dim': '#8A6F1E',
+                teal: '#0FC4B3',
+                income: '#1DCF72',
+                expense: '#E84040',
+
+                // Compatibility aliases
+                'bg-primary': '#05090D',
+                'bg-secondary': '#0A1018',
+                'bg-tertiary': '#141F2A',
+                'text-primary': '#C8D4DF',
+                'text-secondary': '#637585',
+                'text-muted': '#374B5C',
                 accent: {
-                    500: '#00E676', // Neon green
-                    600: '#00C853',
-                    700: '#00A843',
+                    500: '#C09B2A',
+                    600: '#8A6F1E',
+                    700: '#685315',
                 },
-                'bg-primary': '#080808',
-                'bg-secondary': '#0F0F0F',
-                'bg-tertiary': '#1A1A1A',
-                'text-primary': '#F1F5F9',
-                'text-secondary': '#CBD5E1',
-                'text-muted': '#64748B',
-                success: '#00E676',
-                error: '#EF3823',
-                warning: '#F5A623',
-                info: '#38BDF8',
+                success: '#1DCF72',
+                error: '#E84040',
+                warning: '#C09B2A',
+                info: '#0FC4B3',
             },
             fontFamily: {
-                sans: ['Inter', 'sans-serif'],
+                sans: ['Inter', 'system-ui', 'sans-serif'],
+                display: ['DM Sans', 'sans-serif'],
+                mono: ['JetBrains Mono', 'monospace'],
             },
-            backgroundImage: {
-                'primary-gradient': 'linear-gradient(135deg, #0F0F0F 0%, #080808 100%)',
-            }
         },
     },
     plugins: [

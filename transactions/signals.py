@@ -6,35 +6,48 @@ from .models import Transaction
 
 @receiver(post_save, sender=Transaction)
 def update_balance_on_create(sender, instance, created, **kwargs):
-    if kwargs.get('raw'):
+    if kwargs.get('raw') or getattr(instance, '_skip_signal', False):
         return
-    if created:
+    # Pluggy accounts have authoritative live balances from Open Finance
+    if instance.account.pluggy_account_id:
+        return
+    if created and instance.transaction_type in ['INCOME', 'EXPENSE']:
         account = instance.account
         amount = Decimal(str(instance.amount))
         if instance.transaction_type == 'INCOME':
             account.balance += amount
-        else:
+        elif instance.transaction_type == 'EXPENSE':
             account.balance -= amount
-        account.save()
+        account.save(update_fields=['balance'])
 
 
 @receiver(post_delete, sender=Transaction)
 def update_balance_on_delete(sender, instance, **kwargs):
-    account = instance.account
-    amount = Decimal(str(instance.amount))
-    if instance.transaction_type == 'INCOME':
-        account.balance -= amount
-    else:
-        account.balance += amount
-    account.save()
+    if getattr(instance, '_skip_signal', False):
+        return
+    if instance.account.pluggy_account_id:
+        return
+    if instance.transaction_type in ['INCOME', 'EXPENSE']:
+        account = instance.account
+        amount = Decimal(str(instance.amount))
+        if instance.transaction_type == 'INCOME':
+            account.balance -= amount
+        elif instance.transaction_type == 'EXPENSE':
+            account.balance += amount
+        account.save(update_fields=['balance'])
 
 
 @receiver(pre_save, sender=Transaction)
 def update_balance_on_update(sender, instance, **kwargs):
-    if kwargs.get('raw'):
+    if kwargs.get('raw') or getattr(instance, '_skip_signal', False):
+        return
+    if instance.account.pluggy_account_id:
         return
     if instance.pk:
-        old_instance = Transaction.objects.get(pk=instance.pk)
+        try:
+            old_instance = Transaction.objects.get(pk=instance.pk)
+        except Transaction.DoesNotExist:
+            return
         old_account = old_instance.account
         new_account = instance.account
 
@@ -44,21 +57,20 @@ def update_balance_on_update(sender, instance, **kwargs):
         # Revert old balance
         if old_instance.transaction_type == 'INCOME':
             old_account.balance -= old_amount
-        else:
+        elif old_instance.transaction_type == 'EXPENSE':
             old_account.balance += old_amount
-        
+
         if old_account == new_account:
-            # Apply new balance to the same account
             if instance.transaction_type == 'INCOME':
                 old_account.balance += new_amount
-            else:
+            elif instance.transaction_type == 'EXPENSE':
                 old_account.balance -= new_amount
-            old_account.save()
+            old_account.save(update_fields=['balance'])
         else:
-            # Apply to different accounts
-            old_account.save()
+            old_account.save(update_fields=['balance'])
             if instance.transaction_type == 'INCOME':
                 new_account.balance += new_amount
-            else:
+            elif instance.transaction_type == 'EXPENSE':
                 new_account.balance -= new_amount
-            new_account.save()
+            new_account.save(update_fields=['balance'])
+

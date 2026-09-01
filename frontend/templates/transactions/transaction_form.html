@@ -1,57 +1,94 @@
 {% extends 'base.html' %}
 
-{% block title %}{% if object %}Editar{% else %}Nova{% endif %} Transação - Monetra{% endblock %}
+{% block title %}{% if object %}Editar Transação{% else %}Nova Transação{% endif %} - Monetra{% endblock %}
 
 {% block content %}
-<div class="max-w-2xl mx-auto">
-    <div class="mb-8">
-        <a href="{% url 'transactions:transaction_list' %}" class="inline-flex items-center text-gray-400 hover:text-white transition-colors mb-4">
-            <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-            </svg>
-            Voltar para lista
-        </a>
-        <h1 class="text-3xl font-bold text-white">{% if object %}Editar{% else %}Nova{% endif %} Transação</h1>
-    </div>
+<div class="max-w-lg mx-auto py-4 sm:py-8">
+    <div class="rounded-xl border border-[#1C2A38] bg-[#0A1018] shadow-2xl overflow-hidden">
+        <!-- Card Header -->
+        <div class="px-6 py-5 border-b border-[#1C2A38] flex items-center justify-between">
+            <h2 class="text-base font-bold font-display text-[#E2EAF0]">
+                {% if object %}Editar Transação{% else %}Nova Transação{% endif %}
+            </h2>
+            <a href="{% url 'transactions:transaction_list' %}" class="p-1.5 rounded text-[#374B5C] hover:text-[#C8D4DF] hover:bg-[#141F2A] transition-colors">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </a>
+        </div>
 
-    <div class="bg-bg-secondary rounded-2xl border border-bg-tertiary p-8 shadow-xl">
-        <form method="post" class="space-y-6">
+        <!-- Form -->
+        <form method="post" class="p-6 space-y-5">
             {% csrf_token %}
-            
-            {% for field in form %}
-            <div>
-                <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-text-secondary mb-2">
-                    {{ field.label }}
-                </label>
-                {% if field.field.widget.input_type == "select" %}
-                    <select name="{{ field.name }}" id="{{ field.id_for_label }}" 
-                            class="w-full px-4 py-3 bg-bg-primary border border-bg-tertiary rounded-lg text-text-primary focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-transparent transition-all duration-200">
-                        {% for choice in field.field.choices %}
-                            <option value="{{ choice.0 }}" {% if field.value == choice.0 %}selected{% endif %}>{{ choice.1 }}</option>
-                        {% endfor %}
-                    </select>
-                {% else %}
-                    <input type="{{ field.field.widget.input_type|default:'text' }}" 
-                           name="{{ field.name }}" 
-                           id="{{ field.id_for_label }}"
-                           {% if field.field.widget.input_type == "number" %}step="0.01"{% endif %}
-                           class="w-full px-4 py-3 bg-bg-primary border border-bg-tertiary rounded-lg text-text-primary focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-transparent transition-all duration-200"
-                           value="{{ field.value|default:'' }}"
-                           {% if field.field.required %}required{% endif %}>
-                {% endif %}
-                {% if field.errors %}
-                <p class="mt-2 text-sm text-error">{{ field.errors.0 }}</p>
+
+            {% if form.non_field_errors %}
+            <div class="p-3 bg-[#E84040]/10 border border-[#E84040]/30 rounded-md text-xs text-[#E84040]">
+                {{ form.non_field_errors }}
+            </div>
+            {% endif %}
+
+            <!-- Transaction Type -->
+            <div class="space-y-1.5">
+                <label class="text-xs font-semibold uppercase tracking-wider text-[#374B5C]">Tipo de Movimentação</label>
+                {{ form.transaction_type }}
+                {% if form.transaction_type.errors %}
+                    <p class="text-xs text-[#E84040]">{{ form.transaction_type.errors.0 }}</p>
                 {% endif %}
             </div>
-            {% endfor %}
 
-            <div class="flex items-center justify-end space-x-4 pt-4">
-                <a href="{% url 'transactions:transaction_list' %}" class="px-6 py-3 rounded-xl text-text-muted hover:text-white hover:bg-bg-tertiary transition-all">
-                    Cancelar
-                </a>
-                <button type="submit" class="px-8 py-3 rounded-xl text-white bg-gradient-to-r from-primary-500 to-accent-500 hover:opacity-90 transition-all shadow-lg font-bold">
+            <!-- Description -->
+            <div class="space-y-1.5">
+                <label class="text-xs font-semibold uppercase tracking-wider text-[#374B5C]">Descrição</label>
+                {{ form.description }}
+                {% if form.description.errors %}
+                    <p class="text-xs text-[#E84040]">{{ form.description.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Amount & Date Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="space-y-1.5">
+                    <label class="text-xs font-semibold uppercase tracking-wider text-[#374B5C]">Valor (R$)</label>
+                    {{ form.amount }}
+                    {% if form.amount.errors %}
+                        <p class="text-xs text-[#E84040]">{{ form.amount.errors.0 }}</p>
+                    {% endif %}
+                </div>
+                <div class="space-y-1.5">
+                    <label class="text-xs font-semibold uppercase tracking-wider text-[#374B5C]">Data</label>
+                    {{ form.transaction_date }}
+                    {% if form.transaction_date.errors %}
+                        <p class="text-xs text-[#E84040]">{{ form.transaction_date.errors.0 }}</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Category -->
+            <div class="space-y-1.5">
+                <label class="text-xs font-semibold uppercase tracking-wider text-[#374B5C]">Categoria</label>
+                {{ form.category }}
+                {% if form.category.errors %}
+                    <p class="text-xs text-[#E84040]">{{ form.category.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Account -->
+            <div class="space-y-1.5">
+                <label class="text-xs font-semibold uppercase tracking-wider text-[#374B5C]">Conta Bancária / Carteira</label>
+                {{ form.account }}
+                {% if form.account.errors %}
+                    <p class="text-xs text-[#E84040]">{{ form.account.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Action buttons -->
+            <div class="flex items-center gap-3 pt-3 border-t border-[#1C2A38]">
+                <button type="submit" class="btn-gold flex-1 justify-center py-2.5 text-sm font-bold shadow-md">
                     Salvar Transação
                 </button>
+                <a href="{% url 'transactions:transaction_list' %}" class="btn-secondary px-5 py-2.5 text-sm font-medium">
+                    Cancelar
+                </a>
             </div>
         </form>
     </div>

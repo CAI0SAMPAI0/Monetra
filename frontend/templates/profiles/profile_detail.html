@@ -1,46 +1,186 @@
 {% extends 'base.html' %}
 
-{% block title %}Meu Perfil{% endblock %}
+{% block title %}Perfil - Monetra{% endblock %}
 
 {% block content %}
-<div class='max-w-3xl mx-auto'>
-    <div class='mb-8'>
-        <h1 class='text-3xl font-bold text-white'>Meu Perfil</h1>
-        <p class='text-text-secondary'>Gerencie suas informações pessoais.</p>
+<div class="p-4 sm:p-8 space-y-7 max-w-[680px] mx-auto">
+    <div>
+        <h1 class="text-2xl font-bold font-display text-[#E2EAF0]">Perfil e Configurações</h1>
+        <p class="text-xs sm:text-sm text-[#374B5C] mt-0.5">Gerencie suas informações pessoais e conexões bancárias</p>
     </div>
 
-    <div class='bg-bg-secondary rounded-2xl shadow-lg border border-bg-tertiary overflow-hidden'>
-        <div class='p-8'>
-            <div class='space-y-6'>
-                <div>
-                    <label class='block text-text-muted text-sm font-medium mb-1'>E-mail (Login)</label>
-                    <p class='text-text-primary text-lg font-medium'>{{ user.email }}</p>
-                    <p class='text-text-muted text-xs mt-1'>O e-mail não pode ser alterado.</p>
-                </div>
+    <!-- Avatar Header -->
+    <div class="flex items-center gap-5">
+        <div class="w-16 h-16 rounded-2xl flex items-center justify-center text-2xl font-extrabold bg-[#141F2A] text-[#C09B2A] font-display shrink-0 shadow-lg">
+            {{ user.profile.full_name|default:user.email|slice:":1"|upper }}
+        </div>
+        <div class="min-w-0">
+            <p class="font-bold text-base font-display text-[#C8D4DF] truncate">{{ user.profile.full_name|default:user.email }}</p>
+            <p class="text-xs text-[#374B5C] truncate">{{ user.email }}</p>
+        </div>
+    </div>
 
-                <div class='grid grid-cols-1 md:grid-cols-2 gap-6'>
-                    <div>
-                        <label class='block text-text-muted text-sm font-medium mb-1'>Nome Completo</label>
-                        <p class='text-text-primary text-lg font-medium'>{{ profile.full_name|default:"Não informado" }}</p>
-                    </div>
-                    <div>
-                        <label class='block text-text-muted text-sm font-medium mb-1'>Telefone</label>
-                        <p class='text-text-primary text-lg font-medium'>{{ profile.phone|default:"Não informado" }}</p>
-                    </div>
-                </div>
+    <!-- Personal Info Card -->
+    <div class="rounded-lg border border-[#1C2A38] bg-[#0A1018] p-6 space-y-5 shadow-lg">
+        <div class="flex items-center justify-between border-b border-[#1C2A38] pb-4">
+            <p class="text-sm font-bold font-display text-[#C8D4DF]">Informações Pessoais</p>
+            <a href="{% url 'profiles:profile_update' %}" class="text-xs font-semibold text-[#C09B2A] hover:underline font-display">
+                Editar dados →
+            </a>
+        </div>
 
-                <div>
-                    <label class='block text-text-muted text-sm font-medium mb-1'>Membro desde</label>
-                    <p class='text-text-primary'>{{ user.date_joined|date:"d/m/Y" }}</p>
-                </div>
+        <div class="space-y-4 text-sm">
+            <div class="space-y-1">
+                <label class="text-xs font-semibold uppercase tracking-wider text-[#374B5C]">Nome Completo</label>
+                <p class="text-sm font-medium text-[#C8D4DF]">{{ profile.full_name|default:"Não informado" }}</p>
             </div>
-
-            <div class='mt-10 pt-6 border-t border-bg-tertiary flex justify-end'>
-                <a href='{% url "profiles:profile_update" %}' class='px-6 py-3 bg-gradient-to-r from-primary-500 to-accent-500 text-white rounded-lg font-bold hover:opacity-90 transition-all duration-200 shadow-lg'>
-                    Editar Perfil
-                </a>
+            <div class="space-y-1">
+                <label class="text-xs font-semibold uppercase tracking-wider text-[#374B5C]">E-mail de Acesso</label>
+                <p class="text-sm font-medium text-[#C8D4DF]">{{ user.email }}</p>
+            </div>
+            <div class="space-y-1">
+                <label class="text-xs font-semibold uppercase tracking-wider text-[#374B5C]">Telefone</label>
+                <p class="text-sm font-medium text-[#C8D4DF]">{{ profile.phone|default:"Não informado" }}</p>
+            </div>
+            <div class="space-y-1">
+                <label class="text-xs font-semibold uppercase tracking-wider text-[#374B5C]">Membro desde</label>
+                <p class="text-xs text-[#637585] font-mono">{{ user.date_joined|date:"d/m/Y" }}</p>
             </div>
         </div>
+    </div>
+
+    <!-- Pluggy AI / Open Finance Card -->
+    <div class="rounded-lg border border-[#1C2A38] bg-[#0A1018] p-6 space-y-5 shadow-lg">
+        <div class="flex items-center justify-between border-b border-[#1C2A38] pb-4">
+            <div class="flex items-center gap-2">
+                <div class="w-7 h-7 rounded-md bg-[#0FC4B3]/10 flex items-center justify-center text-[#0FC4B3] shrink-0">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                </div>
+                <div>
+                    <p class="text-sm font-bold font-display text-[#E2EAF0]">Open Finance · Pluggy AI</p>
+                </div>
+            </div>
+            {% if profile.pluggy_client_id %}
+                <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-[#1DCF72]/10 text-[#1DCF72] border border-[#1DCF72]/20 flex items-center gap-1">
+                    <span class="w-1.5 h-1.5 rounded-full bg-[#1DCF72]"></span>
+                    {{ profile.pluggy_item_ids_list|length }} Conexão{{ profile.pluggy_item_ids_list|length|pluralize:"ões,ão" }}
+                </span>
+            {% else %}
+                <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-[#374B5C]/20 text-[#637585] border border-[#1C2A38]">
+                    Não configurado
+                </span>
+            {% endif %}
+        </div>
+
+        <p class="text-xs text-[#637585] leading-relaxed">
+            Sincroniza automaticamente suas contas correntes, cartões, extratos e <strong>carteiras de investimentos</strong> via Open Finance.
+        </p>
+
+        <!-- Credentials summary -->
+        <div class="space-y-2 text-xs bg-[#0F1720] border border-[#1C2A38] rounded-lg p-3.5">
+            <div class="flex justify-between items-center">
+                <span class="text-[#374B5C]">Client ID:</span>
+                <span class="font-mono text-[#C8D4DF]">{% if profile.pluggy_client_id %}{{ profile.pluggy_client_id|truncatechars:20 }}{% else %}Não configurado{% endif %}</span>
+            </div>
+            <div class="flex justify-between items-center">
+                <span class="text-[#374B5C]">Client Secret:</span>
+                <span class="font-mono text-[#C8D4DF]">{% if profile.pluggy_client_secret %}••••••••••••••••{% else %}Não configurado{% endif %}</span>
+            </div>
+            {% if profile.pluggy_last_sync %}
+            <div class="flex justify-between items-center">
+                <span class="text-[#374B5C]">Última Sincronização:</span>
+                <span class="font-mono text-[#0FC4B3]">{{ profile.pluggy_last_sync|date:"d/m/Y H:i:s" }}</span>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Connected Banks List -->
+        <div class="space-y-2 pt-2 border-t border-[#1C2A38]">
+            <div class="flex items-center justify-between">
+                <p class="text-xs font-bold uppercase tracking-wider text-[#C09B2A]">Conexões Bancárias Ativas</p>
+                <span class="text-[10px] text-[#374B5C]">{{ profile.pluggy_item_ids_list|length }} cadastrada{{ profile.pluggy_item_ids_list|length|pluralize }}</span>
+            </div>
+
+            {% if profile.pluggy_item_ids_list %}
+            <div class="space-y-2">
+                {% for item_uuid in profile.pluggy_item_ids_list %}
+                <div class="flex items-center justify-between p-2.5 rounded-md bg-[#0F1720] border border-[#1C2A38] text-xs">
+                    <div class="flex items-center gap-2.5 min-w-0">
+                        <span class="w-2 h-2 rounded-full bg-[#1DCF72] shrink-0"></span>
+                        <span class="font-mono text-[#C8D4DF] truncate">{{ item_uuid }}</span>
+                    </div>
+                    <form action="{% url 'profiles:remove_connection' %}" method="post" class="shrink-0 ml-2" onsubmit="return confirm('Remover esta conexão bancária?');">
+                        {% csrf_token %}
+                        <input type="hidden" name="item_id" value="{{ item_uuid }}">
+                        <button type="submit" class="text-[11px] text-[#374B5C] hover:text-[#E84040] hover:bg-[#E84040]/10 px-2 py-1 rounded transition-colors" title="Remover Conexão">
+                            Remover
+                        </button>
+                    </form>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="text-xs text-[#374B5C] italic p-2 bg-[#0F1720]/50 rounded border border-[#1C2A38]">
+                Nenhum Item ID adicionado ainda. Adicione uma conexão abaixo ou conecte seu banco.
+            </p>
+            {% endif %}
+
+            <!-- Add new connection form -->
+            <form action="{% url 'profiles:add_connection' %}" method="post" class="pt-2 flex gap-2">
+                {% csrf_token %}
+                <input 
+                    type="text" 
+                    name="item_id" 
+                    placeholder="Cole o novo Item ID (UUID) do banco..." 
+                    required 
+                    class="flex-1 px-3 py-2 rounded-md text-xs bg-[#0F1720] border border-[#1C2A38] text-[#C8D4DF] focus:outline-none focus:border-[#0FC4B3] font-mono"
+                />
+                <button type="submit" class="btn-teal text-xs py-2 px-3.5 shrink-0 flex items-center gap-1.5">
+                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                    </svg>
+                    <span>+ Conectar Banco</span>
+                </button>
+            </form>
+        </div>
+
+        <!-- Sync Actions -->
+        <div class="pt-3 border-t border-[#1C2A38] flex flex-col sm:flex-row gap-3">
+            {% if profile.pluggy_client_id %}
+                <form action="{% url 'profiles:sync_pluggy' %}" method="post" class="flex-1">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-gold w-full text-center justify-center text-xs py-2.5 flex items-center gap-2 font-bold shadow">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                        </svg>
+                        Sincronizar Todas as Contas & Investimentos
+                    </button>
+                </form>
+                <a href="{% url 'profiles:profile_update' %}" class="btn-secondary text-center justify-center text-xs py-2.5 px-4">
+                    Configurar Chaves
+                </a>
+            {% else %}
+                <a href="{% url 'profiles:profile_update' %}" class="btn-teal w-full text-center justify-center text-xs py-2.5">
+                    Configurar Credenciais Pluggy AI
+                </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Danger Zone Card -->
+    <div class="rounded-lg border border-[#E84040]/30 bg-[#0A1018] p-6 space-y-3 shadow-lg">
+        <p class="text-sm font-bold font-display text-[#E84040]">Zona de Perigo</p>
+        <p class="text-xs text-[#374B5C] leading-relaxed">
+            Para desconectar da sessão atual ou encerrar a conta:
+        </p>
+        <form action="{% url 'users:logout' %}" method="post">
+            {% csrf_token %}
+            <button type="submit" class="text-xs font-semibold px-4 py-2 rounded-md bg-[#E84040]/10 text-[#E84040] border border-[#E84040]/30 hover:bg-[#E84040] hover:text-white transition-all font-display">
+                Desconectar da conta
+            </button>
+        </form>
     </div>
 </div>
 {% endblock %}

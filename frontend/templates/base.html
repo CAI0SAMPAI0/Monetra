@@ -1,41 +1,152 @@
 {% load static %}
 {% load tailwind_tags %}
 <!DOCTYPE html>
-<html lang='pt-br'>
+<html lang="pt-br" class="h-full">
 <head>
-    <meta charset='UTF-8'>
-    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Monetra{% endblock %} - Controle Financeiro Inteligente</title>
     <link rel="shortcut icon" href="{% static 'images/logo1.png' %}" type="image/png">
-    <link href='https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap' rel='stylesheet'>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- CSS & Tailwind CDN -->
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
-    {% tailwind_css %}
-    <style>
-        body {
-            background-color: #080808;
-            color: #F1F5F9;
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        bg: '#05090D',
+                        surface: '#0A1018',
+                        'surface-2': '#0F1720',
+                        'surface-3': '#141F2A',
+                        border: '#1C2A38',
+                        'border-2': '#253648',
+                        'text-main': '#C8D4DF',
+                        'text-2': '#637585',
+                        'text-3': '#374B5C',
+                        gold: '#C09B2A',
+                        'gold-dim': '#8A6F1E',
+                        teal: '#0FC4B3',
+                        income: '#1DCF72',
+                        expense: '#E84040',
+
+                        // Compatibility aliases
+                        'bg-primary': '#05090D',
+                        'bg-secondary': '#0A1018',
+                        'bg-tertiary': '#141F2A',
+                        'text-primary': '#C8D4DF',
+                        'text-secondary': '#637585',
+                        'text-muted': '#374B5C',
+                        accent: {
+                            500: '#C09B2A',
+                            600: '#8A6F1E',
+                            700: '#685315',
+                        },
+                        success: '#1DCF72',
+                        error: '#E84040',
+                        warning: '#C09B2A',
+                        info: '#0FC4B3',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                        display: ['DM Sans', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                }
+            }
         }
-    </style>
+    </script>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     {% block extra_head %}{% endblock %}
 </head>
-<body class='min-h-screen flex flex-col font-sans'>
-    {% include 'includes/navbar.html' %}
-    
-    <main class='flex-grow'>
-        <div class='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8'>
-            {% include 'includes/messages.html' %}
-            {% block content %}{% endblock %}
-        </div>
-    </main>
+<body class="min-h-screen bg-[#05090D] text-[#C8D4DF] font-sans antialiased flex flex-col">
 
-    <footer class='bg-bg-secondary border-t border-bg-tertiary py-8'>
-        <div class='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-text-muted text-sm'>
-            <p>&copy; {% now 'Y' %} Monetra - Todos os direitos reservados.</p>
-        </div>
-    </footer>
+    {% if not user.is_authenticated %}
+        <!-- Top Navbar for Public / Landing pages -->
+        {% include 'includes/navbar.html' %}
+    {% endif %}
 
+    <div class="{% if user.is_authenticated %}flex min-h-screen flex-1{% else %}flex-1 flex flex-col{% endif %}">
+        {% if user.is_authenticated %}
+            <!-- Left Sidebar Navigation -->
+            {% include 'includes/sidebar.html' %}
+
+            <!-- Mobile Drawer Sidebar (Hidden by default) -->
+            <div id="mobile-sidebar-drawer" class="fixed inset-0 z-50 bg-[#05090D]/80 backdrop-blur-sm hidden md:hidden">
+                <div class="w-64 h-full bg-[#070C12] border-r border-[#1C2A38] p-4 flex flex-col">
+                    <div class="flex items-center justify-between pb-4 border-b border-[#1C2A38]">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded flex items-center justify-center font-bold text-sm bg-[#C09B2A] text-[#05090D] font-display">M</div>
+                            <span class="font-bold text-base font-display text-[#C8D4DF]">Monetra</span>
+                        </div>
+                        <button id="close-mobile-drawer" class="p-1 rounded text-[#637585] hover:text-[#C8D4DF]">
+                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                        </button>
+                    </div>
+                    <!-- Navigation -->
+                    <nav class="flex-1 py-4 space-y-1">
+                        <a href="{% url 'users:dashboard' %}" class="flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium font-display text-[#637585] hover:text-[#C8D4DF] hover:bg-[#0F1720]">Dashboard</a>
+                        <a href="{% url 'transactions:transaction_list' %}" class="flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium font-display text-[#637585] hover:text-[#C8D4DF] hover:bg-[#0F1720]">Transações</a>
+                        <a href="{% url 'accounts:account_list' %}" class="flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium font-display text-[#637585] hover:text-[#C8D4DF] hover:bg-[#0F1720]">Contas</a>
+                        <a href="{% url 'categories:category_list' %}" class="flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium font-display text-[#637585] hover:text-[#C8D4DF] hover:bg-[#0F1720]">Categorias</a>
+                        <a href="{% url 'chatbot:chat' %}" class="flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium font-display text-[#0FC4B3] hover:bg-[#0F1720]">Chat IA</a>
+                        <a href="{% url 'profiles:profile_detail' %}" class="flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium font-display text-[#637585] hover:text-[#C8D4DF] hover:bg-[#0F1720]">Perfil</a>
+                    </nav>
+                    <div class="border-t border-[#1C2A38] pt-4">
+                        <form action="{% url 'users:logout' %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit" class="w-full flex items-center gap-3 px-3 py-2 text-sm text-[#E84040]">Sair</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+        <!-- Content Area -->
+        <div class="flex-1 flex flex-col min-w-0 bg-[#05090D] {% if user.is_authenticated %}overflow-y-auto{% endif %}">
+            {% if user.is_authenticated %}
+                <!-- Mobile Top Bar for Auth -->
+                <div class="md:hidden flex items-center justify-between px-4 py-3 border-b border-[#1C2A38] bg-[#070C12]">
+                    <div class="flex items-center gap-2">
+                        <div class="w-7 h-7 rounded flex items-center justify-center font-bold text-xs bg-[#C09B2A] text-[#05090D] font-display">M</div>
+                        <span class="font-bold text-sm font-display text-[#C8D4DF]">Monetra</span>
+                    </div>
+                    <button id="open-mobile-drawer" class="p-1.5 rounded text-[#637585] hover:text-[#C8D4DF]">
+                        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                    </button>
+                </div>
+            {% endif %}
+
+            <main class="flex-1 {% if user.is_authenticated %}p-4 sm:p-6 lg:p-8{% endif %}">
+                {% include 'includes/messages.html' %}
+                {% block content %}{% endblock %}
+            </main>
+        </div>
+    </div>
+
+    <!-- Scripts -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/instant.page@5.2.0/instantpage.js" type="module"></script>
+    <script>
+        const openBtn = document.getElementById('open-mobile-drawer');
+        const closeBtn = document.getElementById('close-mobile-drawer');
+        const drawer = document.getElementById('mobile-sidebar-drawer');
+        if (openBtn && drawer) {
+            openBtn.addEventListener('click', () => drawer.classList.remove('hidden'));
+        }
+        if (closeBtn && drawer) {
+            closeBtn.addEventListener('click', () => drawer.classList.add('hidden'));
+        }
+    </script>
     {% block extra_js %}{% endblock %}
 </body>
 </html>

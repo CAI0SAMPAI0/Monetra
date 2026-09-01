@@ -1,69 +1,88 @@
 {% extends 'base.html' %}
 
-{% block title %}{% if object %}Editar Conta{% else %}Nova Conta{% endif %}{% endblock %}
+{% block title %}{% if object %}Editar Conta{% else %}Nova Conta{% endif %} - Monetra{% endblock %}
 
 {% block content %}
-<div class='max-w-3xl mx-auto'>
-    <div class='mb-8'>
-        <h1 class='text-3xl font-bold text-white'>{% if object %}Editar Conta{% else %}Nova Conta{% endif %}</h1>
-        <p class='text-text-secondary'>{% if object %}Atualize os dados da sua conta.{% else %}Cadastre uma nova conta bancária ou carteira.{% endif %}</p>
-    </div>
+<div class="max-w-lg mx-auto py-4 sm:py-8">
+    <div class="rounded-xl border border-[#1C2A38] bg-[#0A1018] shadow-2xl overflow-hidden">
+        <!-- Card Header -->
+        <div class="px-6 py-5 border-b border-[#1C2A38] flex items-center justify-between">
+            <h2 class="text-base font-bold font-display text-[#E2EAF0]">
+                {% if object %}Editar Conta{% else %}Nova Conta{% endif %}
+            </h2>
+            <a href="{% url 'accounts:account_list' %}" class="p-1.5 rounded text-[#374B5C] hover:text-[#C8D4DF] hover:bg-[#141F2A] transition-colors">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </a>
+        </div>
 
-    <div class='bg-bg-secondary rounded-2xl shadow-lg border border-bg-tertiary overflow-hidden'>
-        <form method='post' class='p-8 space-y-6'>
+        <!-- Form -->
+        <form method="post" class="p-6 space-y-5">
             {% csrf_token %}
-            
+
             {% if form.non_field_errors %}
-                <div class='bg-error/10 border border-error/20 rounded-lg p-4 text-error text-sm'>
-                    {% for error in form.non_field_errors %}
-                        {{ error }}
-                    {% endfor %}
-                </div>
+            <div class="p-3 bg-[#E84040]/10 border border-[#E84040]/30 rounded-md text-xs text-[#E84040]">
+                {{ form.non_field_errors }}
+            </div>
             {% endif %}
 
-            <div class='grid grid-cols-1 md:grid-cols-2 gap-6'>
-                {% for field in form %}
-                <div class='{% if field.name == "name" %}md:col-span-2{% endif %}'>
-                    <label for='{{ field.id_for_label }}' class='block text-text-secondary text-sm font-medium mb-2'>
-                        {{ field.label }}
-                    </label>
-                    {% if field.field.widget.input_type == "select" or field.name == "account_type" %}
-                        <select name='{{ field.name }}' id='{{ field.id_for_label }}' 
-                                class='w-full px-4 py-3 bg-bg-primary border border-bg-tertiary rounded-lg text-text-primary focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200'>
-                            {% for choice in field.field.choices %}
-                                <option value='{{ choice.0 }}' {% if field.value == choice.0 %}selected{% endif %}>{{ choice.1 }}</option>
-                            {% endfor %}
-                        </select>
-                    {% elif field.field.widget.input_type == "checkbox" %}
-                        <div class='flex items-center'>
-                            <input type='checkbox' name='{{ field.name }}' id='{{ field.id_for_label }}'
-                                   class='w-4 h-4 bg-bg-primary border border-bg-tertiary rounded text-accent-500 focus:ring-accent-500 focus:ring-offset-bg-secondary'
-                                   {% if field.value %}checked{% endif %}>
-                            <span class='ml-2 text-text-secondary text-sm'>{{ field.label }}</span>
-                        </div>
-                    {% else %}
-                        <input type='{{ field.field.widget.input_type|default:"text" }}' 
-                               name='{{ field.name }}' 
-                               id='{{ field.id_for_label }}'
-                               {% if field.field.widget.input_type == "number" %}step="0.01"{% endif %}
-                               class='w-full px-4 py-3 bg-bg-primary border border-bg-tertiary rounded-lg text-text-primary focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200'
-                               value='{{ field.value|default:"" }}'
-                               {% if field.field.required %}required{% endif %}>
-                    {% endif %}
-                    {% if field.errors %}
-                        <p class='mt-1 text-error text-xs'>{{ field.errors.0 }}</p>
-                    {% endif %}
-                </div>
-                {% endfor %}
+            <!-- Name -->
+            <div class="space-y-1.5">
+                <label class="text-xs font-semibold uppercase tracking-wider text-[#374B5C]">Nome da Conta / Identificação</label>
+                {{ form.name }}
+                {% if form.name.errors %}
+                    <p class="text-xs text-[#E84040]">{{ form.name.errors.0 }}</p>
+                {% endif %}
             </div>
 
-            <div class='mt-10 pt-6 border-t border-bg-tertiary flex justify-end gap-4'>
-                <a href='{% url "accounts:account_list" %}' class='px-6 py-3 bg-bg-tertiary text-text-primary rounded-lg font-bold hover:bg-bg-primary transition-all duration-200 border border-bg-tertiary'>
+            <!-- Bank Name -->
+            <div class="space-y-1.5">
+                <label class="text-xs font-semibold uppercase tracking-wider text-[#374B5C]">Instituição Financeira / Banco</label>
+                {{ form.bank_name }}
+                {% if form.bank_name.errors %}
+                    <p class="text-xs text-[#E84040]">{{ form.bank_name.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Account Type -->
+            <div class="space-y-1.5">
+                <label class="text-xs font-semibold uppercase tracking-wider text-[#374B5C]">Tipo de Conta</label>
+                {{ form.account_type }}
+                {% if form.account_type.errors %}
+                    <p class="text-xs text-[#E84040]">{{ form.account_type.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Balance -->
+            <div class="space-y-1.5">
+                <label class="text-xs font-semibold uppercase tracking-wider text-[#374B5C]">Saldo Atual / Inicial (R$)</label>
+                {{ form.balance }}
+                {% if form.balance.errors %}
+                    <p class="text-xs text-[#E84040]">{{ form.balance.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Pluggy Item ID (Optional) -->
+            <div class="space-y-1.5 pt-2 border-t border-[#1C2A38]">
+                <div class="flex items-center justify-between">
+                    <label class="text-xs font-semibold uppercase tracking-wider text-[#0FC4B3]">Item ID na Pluggy (Opcional)</label>
+                    <span class="text-[10px] text-[#374B5C]">UUID da Conexão</span>
+                </div>
+                {{ form.pluggy_item_id }}
+                {% if form.pluggy_item_id.errors %}
+                    <p class="text-xs text-[#E84040]">{{ form.pluggy_item_id.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Action buttons -->
+            <div class="flex items-center gap-3 pt-3 border-t border-[#1C2A38]">
+                <button type="submit" class="btn-gold flex-1 justify-center py-2.5 text-sm font-bold shadow-md">
+                    Salvar Conta
+                </button>
+                <a href="{% url 'accounts:account_list' %}" class="btn-secondary px-5 py-2.5 text-sm font-medium">
                     Cancelar
                 </a>
-                <button type='submit' class='px-6 py-3 bg-gradient-to-r from-primary-500 to-accent-500 text-white rounded-lg font-bold hover:opacity-90 transition-all duration-200 shadow-lg'>
-                    {% if object %}Salvar Alterações{% else %}Criar Conta{% endif %}
-                </button>
             </div>
         </form>
     </div>

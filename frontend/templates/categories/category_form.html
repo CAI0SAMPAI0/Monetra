@@ -1,68 +1,67 @@
 {% extends 'base.html' %}
 
-{% block title %}{% if object %}Editar Categoria{% else %}Nova Categoria{% endif %}{% endblock %}
+{% block title %}{% if object %}Editar Categoria{% else %}Nova Categoria{% endif %} - Monetra{% endblock %}
 
 {% block content %}
-<div class='max-w-3xl mx-auto'>
-    <div class='mb-8'>
-        <h1 class='text-3xl font-bold text-white'>{% if object %}Editar Categoria{% else %}Nova Categoria{% endif %}</h1>
-        <p class='text-text-secondary'>{% if object %}Atualize os dados da sua categoria.{% else %}Cadastre uma nova categoria para suas transações.{% endif %}</p>
-    </div>
+<div class="max-w-lg mx-auto py-4 sm:py-8">
+    <div class="rounded-xl border border-[#1C2A38] bg-[#0A1018] shadow-2xl overflow-hidden">
+        <!-- Card Header -->
+        <div class="px-6 py-5 border-b border-[#1C2A38] flex items-center justify-between">
+            <h2 class="text-base font-bold font-display text-[#E2EAF0]">
+                {% if object %}Editar Categoria{% else %}Nova Categoria{% endif %}
+            </h2>
+            <a href="{% url 'categories:category_list' %}" class="p-1.5 rounded text-[#374B5C] hover:text-[#C8D4DF] hover:bg-[#141F2A] transition-colors">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </a>
+        </div>
 
-    <div class='bg-bg-secondary rounded-2xl shadow-lg border border-bg-tertiary overflow-hidden'>
-        <form method='post' class='p-8 space-y-6'>
+        <!-- Form -->
+        <form method="post" class="p-6 space-y-5">
             {% csrf_token %}
-            
+
             {% if form.non_field_errors %}
-                <div class='bg-error/10 border border-error/20 rounded-lg p-4 text-error text-sm'>
-                    {% for error in form.non_field_errors %}
-                        {{ error }}
-                    {% endfor %}
-                </div>
+            <div class="p-3 bg-[#E84040]/10 border border-[#E84040]/30 rounded-md text-xs text-[#E84040]">
+                {{ form.non_field_errors }}
+            </div>
             {% endif %}
 
-            <div class='grid grid-cols-1 md:grid-cols-2 gap-6'>
-                {% for field in form %}
-                <div class='{% if field.name == "name" %}md:col-span-2{% endif %}'>
-                    <label for='{{ field.id_for_label }}' class='block text-text-secondary text-sm font-medium mb-2'>
-                        {{ field.label }}
-                    </label>
-                    {% if field.name == "category_type" %}
-                        <select name='{{ field.name }}' id='{{ field.id_for_label }}' 
-                                class='w-full px-4 py-3 bg-bg-primary border border-bg-tertiary rounded-lg text-text-primary focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200'>
-                            {% for choice in field.field.choices %}
-                                <option value='{{ choice.0 }}' {% if field.value == choice.0 %}selected{% endif %}>{{ choice.1 }}</option>
-                            {% endfor %}
-                        </select>
-                    {% elif field.name == "color" %}
-                        <div class='flex items-center gap-3'>
-                            <input type='color' name='{{ field.name }}' id='{{ field.id_for_label }}' 
-                                   class='w-12 h-12 bg-bg-primary border border-bg-tertiary rounded cursor-pointer p-1'
-                                   value='{{ field.value|default:"#331F19" }}'>
-                            <span class='text-text-muted text-sm'>Escolha uma cor para identificar esta categoria.</span>
-                        </div>
-                    {% else %}
-                        <input type='{{ field.field.widget.input_type|default:"text" }}' 
-                               name='{{ field.name }}' 
-                               id='{{ field.id_for_label }}'
-                               class='w-full px-4 py-3 bg-bg-primary border border-bg-tertiary rounded-lg text-text-primary focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200'
-                               value='{{ field.value|default:"" }}'
-                               {% if field.field.required %}required{% endif %}>
-                    {% endif %}
-                    {% if field.errors %}
-                        <p class='mt-1 text-error text-xs'>{{ field.errors.0 }}</p>
-                    {% endif %}
-                </div>
-                {% endfor %}
+            <!-- Name -->
+            <div class="space-y-1.5">
+                <label class="text-xs font-semibold uppercase tracking-wider text-[#374B5C]">Nome da Categoria</label>
+                {{ form.name }}
+                {% if form.name.errors %}
+                    <p class="text-xs text-[#E84040]">{{ form.name.errors.0 }}</p>
+                {% endif %}
             </div>
 
-            <div class='mt-10 pt-6 border-t border-bg-tertiary flex justify-end gap-4'>
-                <a href='{% url "categories:category_list" %}' class='px-6 py-3 bg-bg-tertiary text-text-primary rounded-lg font-bold hover:bg-bg-primary transition-all duration-200 border border-bg-tertiary'>
+            <!-- Type -->
+            <div class="space-y-1.5">
+                <label class="text-xs font-semibold uppercase tracking-wider text-[#374B5C]">Tipo de Categoria</label>
+                {{ form.category_type }}
+                {% if form.category_type.errors %}
+                    <p class="text-xs text-[#E84040]">{{ form.category_type.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Color -->
+            <div class="space-y-1.5">
+                <label class="text-xs font-semibold uppercase tracking-wider text-[#374B5C]">Cor de Identificação</label>
+                {{ form.color }}
+                {% if form.color.errors %}
+                    <p class="text-xs text-[#E84040]">{{ form.color.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Action buttons -->
+            <div class="flex items-center gap-3 pt-3 border-t border-[#1C2A38]">
+                <button type="submit" class="btn-gold flex-1 justify-center py-2.5 text-sm font-bold shadow-md">
+                    Salvar Categoria
+                </button>
+                <a href="{% url 'categories:category_list' %}" class="btn-secondary px-5 py-2.5 text-sm font-medium">
                     Cancelar
                 </a>
-                <button type='submit' class='px-6 py-3 bg-gradient-to-r from-primary-500 to-accent-500 text-white rounded-lg font-bold hover:opacity-90 transition-all duration-200 shadow-lg'>
-                    {% if object %}Salvar Alterações{% else %}Criar Categoria{% endif %}
-                </button>
             </div>
         </form>
     </div>

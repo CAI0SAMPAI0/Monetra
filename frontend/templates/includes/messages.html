@@ -1,14 +1,17 @@
 {% if messages %}
-<div class='mb-6 space-y-4'>
+<div class="space-y-3 mb-6">
     {% for message in messages %}
-    <div class='p-4 rounded-lg border flex items-center justify-between {% if message.tags == "success" %}bg-success/10 border-success/20 text-success{% elif message.tags == "error" %}bg-error/10 border-error/20 text-error{% elif message.tags == "warning" %}bg-warning/10 border-warning/20 text-warning{% else %}bg-info/10 border-info/20 text-info{% endif %}'>
-        <div class='flex items-center'>
-            <span class='font-medium'>{{ message }}</span>
+    <div class="rounded-lg border px-4 py-3 text-sm flex items-center justify-between transition-all {% if message.tags == 'error' %}bg-[#E84040]/10 border-[#E84040]/30 text-[#E84040]{% elif message.tags == 'warning' %}bg-[#C09B2A]/10 border-[#C09B2A]/30 text-[#C09B2A]{% elif message.tags == 'info' %}bg-[#0FC4B3]/10 border-[#0FC4B3]/30 text-[#0FC4B3]{% else %}bg-[#1DCF72]/10 border-[#1DCF72]/30 text-[#1DCF72]{% endif %}">
+        <div class="flex items-center gap-2.5">
+            {% if message.tags == 'error' %}
+            <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+            {% else %}
+            <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+            {% endif %}
+            <span>{{ message }}</span>
         </div>
-        <button onclick='this.parentElement.remove()' class='ml-4 text-current opacity-50 hover:opacity-100 transition-opacity'>
-            <svg class='h-5 w-5' fill='none' viewBox='0 0 24 24' stroke='currentColor'>
-                <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M6 18L18 6M6 6l12 12'></path>
-            </svg>
+        <button onclick="this.parentElement.remove()" class="opacity-60 hover:opacity-100 transition-opacity">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
         </button>
     </div>
     {% endfor %}

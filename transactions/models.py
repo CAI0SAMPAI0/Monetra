@@ -7,6 +7,7 @@ class Transaction(models.Model):
     TRANSACTION_TYPES = [
         ('INCOME', 'Entrada'),
         ('EXPENSE', 'Saída'),
+        ('TRANSFER', 'Transferência'),
     ]
 
     account = models.ForeignKey(

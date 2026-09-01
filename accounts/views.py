@@ -59,6 +59,7 @@ class AccountDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
     def get_queryset(self):
         return Account.objects.filter(user=self.request.user)
 
-    def delete(self, request, *args, **kwargs):
-        messages.success(self.request, self.success_message)
-        return super().delete(request, *args, **kwargs)
+    def form_valid(self, form):
+        self.object = self.get_object()
+        self.object.transactions.all().delete()
+        return super().form_valid(form)

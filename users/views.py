@@ -50,6 +50,10 @@ class CustomLogoutView(LogoutView):
         return super().dispatch(request, *args, **kwargs)
 
 
+from dateutil.relativedelta import relativedelta
+from decimal import Decimal
+
+
 class DashboardView(LoginRequiredMixin, TemplateView):
     template_name = 'dashboard.html'
 
@@ -57,61 +61,78 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         context = super().get_context_data(**kwargs)
         user = self.request.user
 
-        # Current month range
-        today = timezone.now().date()
-        start_of_month = today.replace(day=1)
-
-        # Accounts
+        # User accounts & total balance
         accounts = Account.objects.filter(user=user, is_active=True)
-        total_balance = accounts.aggregate(total=Sum('balance'))['total'] or 0
+        total_balance = accounts.aggregate(total=Sum('balance'))['total'] or Decimal('0.00')
 
-        # Transactions
+        # User transactions
         user_transactions = Transaction.objects.filter(account__user=user).select_related('account', 'category')
+        latest_tx = user_transactions.order_by('-transaction_date').first()
+        today = timezone.now().date()
+        ref_date = latest_tx.transaction_date if latest_tx else today
 
-        # Monthly stats
-        monthly_transactions = user_transactions.filter(transaction_date__gte=start_of_month)
-        monthly_income = monthly_transactions.filter(transaction_type='INCOME').aggregate(total=Sum('amount'))['total'] or 0
-        monthly_expense = monthly_transactions.filter(transaction_type='EXPENSE').aggregate(total=Sum('amount'))['total'] or 0
+        # Monthly stats (based on reference active month)
+        period_txs = user_transactions.filter(
+            transaction_date__year=ref_date.year,
+            transaction_date__month=ref_date.month
+        )
+        monthly_income = period_txs.filter(transaction_type='INCOME').aggregate(total=Sum('amount'))['total'] or Decimal('0.00')
+        monthly_expense = period_txs.filter(transaction_type='EXPENSE').aggregate(total=Sum('amount'))['total'] or Decimal('0.00')
 
-        # Gastos por categoria no mês atual
-        expense_by_category = list(Transaction.objects.filter(
-            account__user=user,
-            transaction_type='EXPENSE',
-            transaction_date__gte=start_of_month
-        ).values('category__name', 'category__color').annotate(total=Sum('amount')).order_by('-total'))
+        # Gastos reais por categoria no período
+        expense_by_category = list(period_txs.filter(
+            transaction_type='EXPENSE'
+        ).values('category__name', 'category__color').annotate(total=Sum('amount')).order_by('-total')[:6])
 
+        # Se não houver despesas no mês de referência, busca as últimas despesas gerais
         if not expense_by_category:
-            expense_by_category = [
-                {'category__name': 'Alimentação', 'category__color': '#EF3823', 'total': 1200.00},
-                {'category__name': 'Transporte', 'category__color': '#F5A623', 'total': 450.00},
-                {'category__name': 'Lazer', 'category__color': '#EDF63B', 'total': 300.00},
-                {'category__name': 'Contas Fixas', 'category__color': '#667eea', 'total': 850.00},
-            ]
+            expense_by_category = list(user_transactions.filter(
+                transaction_type='EXPENSE'
+            ).values('category__name', 'category__color').annotate(total=Sum('amount')).order_by('-total')[:6])
 
-        # Porcentagens para as categorias
-        total_expense_sum = sum(item['total'] for item in expense_by_category) or 1
+        total_expense_sum = sum(item['total'] for item in expense_by_category) or Decimal('1.00')
         for item in expense_by_category:
-            item['percentage'] = round((item['total'] / total_expense_sum) * 100, 1)
+            item['percentage'] = round((float(item['total']) / float(total_expense_sum)) * 100, 1)
 
-        # Histórico de meses para o gráfico de colunas
-        monthly_history = [
-            {'month': 'Abril', 'income': 5200.00, 'expense': 4100.00},
-            {'month': 'Maio', 'income': 6100.00, 'expense': 4800.00},
-            {'month': 'Junho', 'income': float(monthly_income) or 7500.00, 'expense': float(monthly_expense) or 3820.50},
-        ]
+        # Histórico real dos últimos 6 meses para o gráfico de barras
+        months_names = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez']
+        monthly_history = []
+        for i in range(5, -1, -1):
+            m_start = ref_date.replace(day=1) - relativedelta(months=i)
+            m_next = m_start + relativedelta(months=1)
+            m_inc = user_transactions.filter(
+                transaction_type='INCOME',
+                transaction_date__gte=m_start,
+                transaction_date__lt=m_next
+            ).aggregate(total=Sum('amount'))['total'] or 0
+            m_exp = user_transactions.filter(
+                transaction_type='EXPENSE',
+                transaction_date__gte=m_start,
+                transaction_date__lt=m_next
+            ).aggregate(total=Sum('amount'))['total'] or 0
+            monthly_history.append({
+                'month': f'{months_names[m_start.month - 1]}',
+                'income': float(m_inc),
+                'expense': float(m_exp),
+            })
 
-        # Histórico diário para o gráfico de linhas
-        daily_evolution = [
-            {'day': '10/06', 'balance': 10500.00},
-            {'day': '11/06', 'balance': 11200.00},
-            {'day': '12/06', 'balance': 10900.00},
-            {'day': '13/06', 'balance': 12450.00},
-            {'day': '14/06', 'balance': 12100.00},
-            {'day': '15/06', 'balance': 14300.00},
-            {'day': '16/06', 'balance': 13950.00},
-            {'day': '17/06', 'balance': 15200.00},
-            {'day': '18/06', 'balance': float(total_balance) or 15742.50},
-        ]
+        # Histórico diário real de movimentações
+        distinct_days = list(user_transactions.values_list('transaction_date', flat=True).distinct().order_by('transaction_date'))[-10:]
+        daily_evolution = []
+        if distinct_days:
+            for d in distinct_days:
+                d_txs = user_transactions.filter(transaction_date=d)
+                d_inc = d_txs.filter(transaction_type='INCOME').aggregate(total=Sum('amount'))['total'] or 0
+                d_exp = d_txs.filter(transaction_type='EXPENSE').aggregate(total=Sum('amount'))['total'] or 0
+                daily_evolution.append({
+                    'day': d.strftime('%d/%m'),
+                    'balance': float(total_balance) + float(d_inc) - float(d_exp)
+                })
+        else:
+            daily_evolution.append({
+                'day': today.strftime('%d/%m'),
+                'balance': float(total_balance)
+            })
 
         context.update({
             'total_balance': total_balance,
@@ -123,6 +144,8 @@ class DashboardView(LoginRequiredMixin, TemplateView):
             'category_summary': expense_by_category,
             'monthly_history': monthly_history,
             'daily_evolution': daily_evolution,
+            'reference_month': f'{months_names[ref_date.month - 1]}/{ref_date.year}',
         })
 
         return context
+

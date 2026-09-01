@@ -1,504 +1,265 @@
 {% extends 'base.html' %}
-{% block title %}Monetra - Gestão Financeira Inteligente com IA{% endblock %}
+{% load static %}
+
+{% block title %}Monetra - Controle Financeiro com IA{% endblock %}
+
 {% block content %}
-<!-- Main Container with custom animation styles -->
-<div class='flex flex-col items-center justify-center py-4 space-y-24'>
-    
-    <!-- ═══════════ Hero Section ═══════════ -->
-    <section class='w-full max-w-6xl px-4 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center'>
-        <!-- Hero Text (Left) -->
-        <div class='lg:col-span-7 space-y-6'>
-            <div class='inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent-500/10 border border-accent-500/30 text-accent-500 text-xs font-semibold uppercase tracking-wider animate-pulse'>
-                <span>Plataforma Número 1 de IA para Finanças Pessoais</span>
+<div class="min-h-screen flex flex-col bg-[#05090D] text-[#C8D4DF]">
+    <!-- Hero Section -->
+    <section class="max-w-6xl mx-auto px-6 py-20 lg:py-28 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+        <div class="space-y-8">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border text-xs font-semibold uppercase tracking-widest bg-[#C09B2A]/10 border-[#C09B2A]/25 text-[#C09B2A]">
+                <span class="w-1.5 h-1.5 rounded-full bg-current animate-ping"></span>
+                Plataforma financeira com IA
             </div>
-            <h1 class='text-4xl md:text-6xl font-extrabold text-white tracking-tight leading-tight'>
-                Suas finanças com um <span class='text-accent-500'>assistente de IA</span> que nunca dorme
+            
+            <h1 class="text-5xl lg:text-6xl font-extrabold leading-[1.05] tracking-tight font-display text-[#E2EAF0]">
+                Controle total.<br />
+                <span class="text-[#C09B2A]">Clareza financeira.</span>
             </h1>
-            <p class='text-lg md:text-xl text-text-secondary leading-relaxed'>
-                Crie inteligência sobre seus hábitos de consumo. Controle contas, gerencie transações e obtenha análises de IA personalizadas 24/7 sobre suas finanças.
+            
+            <p class="text-lg leading-relaxed text-[#637585] max-w-lg">
+                Gerencie suas contas, categorize receitas e despesas e receba análises inteligentes de inteligência artificial sobre seus hábitos de consumo.
             </p>
-            <div class='flex flex-col sm:flex-row gap-4 pt-2 w-full sm:w-auto'>
-                <a href='{% url "users:signup" %}' class='px-8 py-4 bg-accent-500 text-[#080808] hover:bg-accent-600 font-bold text-lg rounded-xl transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-accent-500/10 hover:shadow-accent-500/25 text-center'>
-                    Começar Grátis Agora
-                </a>
-                <a href='#como-funciona' class='px-8 py-4 bg-bg-secondary text-text-primary hover:bg-bg-tertiary border border-bg-tertiary font-bold text-lg rounded-xl transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] text-center'>
-                    Como Funciona
-                </a>
-            </div>
-            <div class='flex items-center gap-6 pt-2 text-text-muted text-xs font-medium'>
-                <div class='flex items-center gap-1.5'>
-                    <svg class='w-4.5 h-4.5 text-success' fill='none' viewBox='0 0 24 24' stroke='currentColor'>
-                        <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2.5' d='M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z'></path>
-                    </svg>
-                    <span>Sem cartão de crédito</span>
-                </div>
-                <div class='flex items-center gap-1.5'>
-                    <svg class='w-4.5 h-4.5 text-success' fill='none' viewBox='0 0 24 24' stroke='currentColor'>
-                        <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2.5' d='M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z'></path>
-                    </svg>
-                    <span>Pronto em 2 minutos</span>
-                </div>
-            </div>
-        </div>
-        <!-- MonetraBot Chat Mockup (Right) -->
-        <div class='lg:col-span-5 w-full'>
-            <div class='bg-bg-secondary border border-bg-tertiary rounded-2xl p-5 shadow-2xl relative transition-transform duration-500 hover:scale-[1.01]'>
-                <!-- Header -->
-                <div class='flex items-center gap-3 pb-4 border-b border-bg-tertiary mb-4'>
-                    <div class='w-10 h-10 rounded-full bg-accent-500/10 flex items-center justify-center text-accent-500 relative shrink-0'>
-                        <svg class='w-5 h-5' fill='none' viewBox='0 0 24 24' stroke='currentColor'>
-                            <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z'></path>
-                        </svg>
-                        <span class='absolute bottom-0 right-0 w-2.5 h-2.5 bg-success rounded-full border-2 border-bg-secondary animate-ping'></span>
-                        <span class='absolute bottom-0 right-0 w-2.5 h-2.5 bg-success rounded-full border-2 border-bg-secondary'></span>
-                    </div>
-                    <div>
-                        <h4 class='text-sm font-bold text-white'>MonetraBot - Inteligência IA</h4>
-                        <span class='text-xs text-success flex items-center gap-1'>
-                            Online agora
-                        </span>
-                    </div>
-                    <span class='ml-auto bg-accent-500/15 text-accent-500 text-[10px] font-extrabold uppercase px-2 py-0.5 rounded'>ATIVO</span>
-                </div>
-                <!-- Chat Messages Body -->
-                <div class='space-y-4 min-h-[220px] text-xs'>
-                    <!-- Msg 1 User -->
-                    <div class='flex justify-end'>
-                        <div class='bg-bg-tertiary border border-bg-tertiary text-text-primary rounded-2xl p-3 max-w-[85%]'>
-                            <span>Onde gastei mais no mês atual?</span>
-                        </div>
-                    </div>
-                    <!-- Msg 2 Bot -->
-                    <div class='flex gap-3 items-start'>
-                        <div class='w-8 h-8 rounded-full bg-accent-500/10 flex items-center justify-center text-accent-500 shrink-0'>
-                            <svg class='w-4.5 h-4.5' fill='none' viewBox='0 0 24 24' stroke='currentColor'>
-                                <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z'></path>
-                            </svg>
-                        </div>
-                        <div class='bg-[#0D1A0D] border border-accent-500/15 rounded-2xl p-3 max-w-[85%] text-text-secondary space-y-2 leading-relaxed'>
-                            <p>Analisando suas transações registradas: Seu maior gasto acumulado foi na categoria <strong>Alimentação</strong>, totalizando R$ 200,00.</p>
-                        </div>
-                    </div>
-                    <!-- Msg 3 User -->
-                    <div class='flex justify-end'>
-                        <div class='bg-bg-tertiary border border-bg-tertiary text-text-primary rounded-2xl p-3 max-w-[85%]'>
-                            <span>Alguma dica para economizar?</span>
-                        </div>
-                    </div>
-                    <!-- Msg 4 Bot -->
-                    <div class='flex gap-3 items-start'>
-                        <div class='w-8 h-8 rounded-full bg-accent-500/10 flex items-center justify-center text-accent-500 shrink-0'>
-                            <svg class='w-4.5 h-4.5' fill='none' viewBox='0 0 24 24' stroke='currentColor'>
-                                <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z'></path>
-                            </svg>
-                        </div>
-                        <div class='bg-[#0D1A0D] border border-accent-500/15 rounded-2xl p-3 max-w-[85%] text-text-secondary space-y-2 leading-relaxed'>
-                            <p>Dica: Se você economizar 15% na categoria <strong>Alimentação</strong> (R$ 30,00), poderá destinar essa fatia diretamente para cobrir sua reserva financeira.</p>
-                        </div>
-                    </div>
-                </div>
-                <!-- Footer Text Area -->
-                <div class='flex items-center gap-2 pt-3 border-t border-bg-tertiary mt-4'>
-                    <div class='flex-grow bg-bg-tertiary border border-bg-tertiary rounded-lg py-2 px-3 text-text-muted text-xs'>
-                        Digite sua dúvida...
-                    </div>
-                    <div class='w-8 h-8 bg-accent-500 text-[#080808] rounded-full flex items-center justify-center shrink-0 cursor-pointer hover:bg-accent-600 transition-colors'>
-                        <svg class='w-4 h-4' fill='none' viewBox='0 0 24 24' stroke='currentColor'>
-                            <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M14 5l7 7m0 0l-7 7m7-7H3'></path>
-                        </svg>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    <!-- ═══════════ Diferenciais Reais ═══════════ -->
-    <section class='w-full bg-bg-secondary border-y border-bg-tertiary py-8 w-screen max-w-full'>
-        <div class='max-w-6xl mx-auto px-4 grid grid-cols-2 md:grid-cols-4 gap-8 text-center'>
-            <div class='space-y-1'>
-                <div class='w-10 h-10 rounded-full bg-accent-500/10 flex items-center justify-center mx-auto mb-2'>
-                    <svg class='w-5 h-5 text-accent-500' fill='none' viewBox='0 0 24 24' stroke='currentColor'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z'></path></svg>
-                </div>
-                <span class='text-xs text-text-muted font-bold uppercase tracking-wider block'>Multicontas</span>
-                <p class='text-xs text-text-muted leading-snug'>Todas as contas em um painel</p>
-            </div>
-            <div class='space-y-1'>
-                <div class='w-10 h-10 rounded-full bg-accent-500/10 flex items-center justify-center mx-auto mb-2'>
-                    <svg class='w-5 h-5 text-accent-500' fill='none' viewBox='0 0 24 24' stroke='currentColor'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z'></path></svg>
-                </div>
-                <span class='text-xs text-text-muted font-bold uppercase tracking-wider block'>IA Real</span>
-                <p class='text-xs text-text-muted leading-snug'>Analisa seus dados reais de transações</p>
-            </div>
-            <div class='space-y-1'>
-                <div class='w-10 h-10 rounded-full bg-accent-500/10 flex items-center justify-center mx-auto mb-2'>
-                    <svg class='w-5 h-5 text-accent-500' fill='none' viewBox='0 0 24 24' stroke='currentColor'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z'></path></svg>
-                </div>
-                <span class='text-xs text-text-muted font-bold uppercase tracking-wider block'>Gráficos</span>
-                <p class='text-xs text-text-muted leading-snug'>Pizza, barras e linhas interativos</p>
-            </div>
-            <div class='space-y-1'>
-                <div class='w-10 h-10 rounded-full bg-accent-500/10 flex items-center justify-center mx-auto mb-2'>
-                    <svg class='w-5 h-5 text-accent-500' fill='none' viewBox='0 0 24 24' stroke='currentColor'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z'></path></svg>
-                </div>
-                <span class='text-xs text-text-muted font-bold uppercase tracking-wider block'>Privacidade</span>
-                <p class='text-xs text-text-muted leading-snug'>Sem acesso às suas senhas de banco</p>
-            </div>
-        </div>
-    </section>
-    <!-- ═══════════ Challenge vs Transformation ═══════════ -->
-    <section class='w-full max-w-5xl px-4 space-y-12'>
-        <div class='text-center space-y-3'>
-            <span class='badge bg-red-500/10 border border-red-500/30 text-error px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider'>O Desafio</span>
-            <h2 class='text-3xl font-bold text-white tracking-tight'>O problema que todos enfrentam ao gerenciar dinheiro</h2>
-            <p class='text-text-secondary max-w-lg mx-auto text-sm'>Controlar gastos não deveria exigir horas do seu dia com planilhas confusas.</p>
-        </div>
-        <div class='grid grid-cols-1 md:grid-cols-2 gap-8'>
-            <!-- Without Finanpy -->
-            <div class='bg-bg-secondary p-6 rounded-2xl border border-red-500/20 shadow-md flex flex-col space-y-4'>
-                <div class='flex items-center gap-3 border-b border-bg-tertiary pb-3'>
-                    <div class='w-8 h-8 rounded bg-red-500/10 text-error flex items-center justify-center font-bold'>✕</div>
-                    <div>
-                        <h4 class='text-white font-bold text-base'>Sem o Monetra</h4>
-                        <span class='text-xs text-text-muted'>Saldos dispersos e desorganização</span>
-                    </div>
-                </div>
-                <ul class='space-y-3 text-sm text-text-secondary'>
-                    <li class='flex items-start gap-2.5'>
-                        <span class='text-error font-bold mt-0.5'>•</span>
-                        <span>Contas dispersas em vários aplicativos de bancos.</span>
-                    </li>
-                    <li class='flex items-start gap-2.5'>
-                        <span class='text-error font-bold mt-0.5'>•</span>
-                        <span>Falta de clareza sobre para onde vai o dinheiro no fim do mês.</span>
-                    </li>
-                    <li class='flex items-start gap-2.5'>
-                        <span class='text-error font-bold mt-0.5'>•</span>
-                        <span>Planilhas complexas de preenchimento manual lento.</span>
-                    </li>
-                    <li class='flex items-start gap-2.5'>
-                        <span class='text-error font-bold mt-0.5'>•</span>
-                        <span>Dificuldade para identificar gargalos e planejar reservas.</span>
-                    </li>
-                </ul>
-            </div>
-            <!-- With Finanpy -->
-            <div class='bg-bg-secondary p-6 rounded-2xl border border-success/20 shadow-md flex flex-col space-y-4'>
-                <div class='flex items-center gap-3 border-b border-bg-tertiary pb-3'>
-                    <div class='w-8 h-8 rounded bg-success/10 text-success flex items-center justify-center font-bold'>✓</div>
-                    <div>
-                        <h4 class='text-white font-bold text-base'>Com o Monetra</h4>
-                        <span class='text-xs text-success font-semibold'>A transformação inteligente</span>
-                    </div>
-                </div>
-                <ul class='space-y-3 text-sm text-text-secondary'>
-                    <li class='flex items-start gap-2.5'>
-                        <span class='text-success font-bold mt-0.5'>•</span>
-                        <span>Visão consolidada de todos os saldos em tempo real.</span>
-                    </li>
-                    <li class='flex items-start gap-2.5'>
-                        <span class='text-success font-bold mt-0.5'>•</span>
-                        <span>Gráficos visuais simples de categorização automática.</span>
-                    </li>
-                    <li class='flex items-start gap-2.5'>
-                        <span class='text-success font-bold mt-0.5'>•</span>
-                        <span>Insights de economia semanais gerados por IA em 2º plano.</span>
-                    </li>
-                    <li class='flex items-start gap-2.5'>
-                        <span class='text-success font-bold mt-0.5'>•</span>
-                        <span>Lançamento rápido de gastos otimizado para celulares.</span>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </section>
-    <!-- ═══════════ Como Funciona (3 Steps) ═══════════ -->
-    <section class='w-full max-w-6xl px-4 flex flex-col items-center space-y-12' id='como-funciona'>
-        <div class='text-center space-y-3'>
-            <span class='badge bg-accent-500/10 border border-accent-500/30 text-accent-500 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider'>Simples e Direto</span>
-            <h2 class='text-3xl font-bold text-white tracking-tight'>Pronto em 3 passos simples</h2>
-            <p class='text-text-secondary max-w-lg mx-auto text-sm'>Comece a organizar suas finanças em menos de 5 minutos.</p>
-        </div>
-        
-        <div class='grid grid-cols-1 md:grid-cols-3 gap-8 w-full relative'>
-            <!-- Step 1 -->
-            <div class='bg-bg-secondary p-8 rounded-2xl border border-bg-tertiary text-center flex flex-col items-center space-y-4 relative hover:border-accent-500/50 transition-all duration-300 hover:scale-[1.02]'>
-                <div class='w-10 h-10 rounded-full bg-accent-500 text-[#080808] flex items-center justify-center font-extrabold text-sm shadow'>1</div>
-                <h4 class='text-white font-bold text-lg'>Cadastre-se</h4>
-                <p class='text-text-secondary text-sm leading-relaxed'>
-                    Crie sua conta em poucos segundos fornecendo seu e-mail e crie seu perfil financeiro seguro.
-                </p>
-            </div>
             
-            <!-- Step 2 -->
-            <div class='bg-bg-secondary p-8 rounded-2xl border border-bg-tertiary text-center flex flex-col items-center space-y-4 relative hover:border-accent-500/50 transition-all duration-300 hover:scale-[1.02]'>
-                <div class='w-10 h-10 rounded-full bg-accent-500 text-[#080808] flex items-center justify-center font-extrabold text-sm shadow'>2</div>
-                <h4 class='text-white font-bold text-lg'>Configure sua Carteira</h4>
-                <p class='text-text-secondary text-sm leading-relaxed'>
-                    Adicione contas correntes, cartões ou carteiras físicas para unificar seus saldos.
-                </p>
+            <div class="flex flex-wrap items-center gap-4">
+                <a href="{% url 'users:signup' %}" class="btn-gold px-6 py-3 text-base font-bold shadow-lg shadow-[#C09B2A]/10">
+                    Começar grátis agora
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    </svg>
+                </a>
+                <a href="{% url 'users:login' %}" class="btn-secondary px-6 py-3 text-base font-medium">
+                    Acessar minha conta
+                </a>
             </div>
-            <!-- Step 3 -->
-            <div class='bg-bg-secondary p-8 rounded-2xl border border-bg-tertiary text-center flex flex-col items-center space-y-4 relative hover:border-accent-500/50 transition-all duration-300 hover:scale-[1.02]'>
-                <div class='w-10 h-10 rounded-full bg-accent-500 text-[#080808] flex items-center justify-center font-extrabold text-sm shadow'>3</div>
-                <h4 class='text-white font-bold text-lg'>Acompanhe e Economize</h4>
-                <p class='text-text-secondary text-sm leading-relaxed'>
-                    Registre despesas diárias e ative o robô de IA para gerar relatórios detalhados com sugestões reais.
-                </p>
+
+            <!-- Stats strip -->
+            <div class="pt-6 border-t border-[#1C2A38] grid grid-cols-3 gap-6">
+                <div>
+                    <p class="text-2xl font-bold font-mono text-[#E2EAF0]">100%</p>
+                    <p class="text-xs text-[#374B5C]">Controle manual e seguro</p>
+                </div>
+                <div>
+                    <p class="text-2xl font-bold font-mono text-[#0FC4B3]">IA</p>
+                    <p class="text-xs text-[#374B5C]">Assistente inteligente</p>
+                </div>
+                <div>
+                    <p class="text-2xl font-bold font-mono text-[#C09B2A]">Zero</p>
+                    <p class="text-xs text-[#374B5C]">Acesso a senhas bancárias</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Preview Card Mockup -->
+        <div class="relative">
+            <div class="absolute -inset-1 rounded-2xl bg-gradient-to-r from-[#C09B2A]/20 to-[#0FC4B3]/20 blur-xl opacity-50"></div>
+            <div class="relative rounded-xl border border-[#1C2A38] bg-[#0A1018] p-6 shadow-2xl space-y-5">
+                <!-- Mini Header -->
+                <div class="flex items-center justify-between border-b border-[#1C2A38] pb-4">
+                    <div class="flex items-center gap-2">
+                        <span class="w-3 h-3 rounded-full bg-[#E84040]"></span>
+                        <span class="w-3 h-3 rounded-full bg-[#C09B2A]"></span>
+                        <span class="w-3 h-3 rounded-full bg-[#1DCF72]"></span>
+                    </div>
+                    <span class="text-xs font-mono text-[#374B5C]">app.monetra.com.br</span>
+                    <span class="text-xs px-2 py-0.5 rounded bg-[#0FC4B3]/10 text-[#0FC4B3] font-bold">IA Ativa</span>
+                </div>
+
+                <!-- KPI Mini Cards -->
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="rounded-lg border border-[#1C2A38] bg-[#0F1720] p-3.5 space-y-1">
+                        <p class="text-[10px] font-bold uppercase tracking-wider text-[#374B5C]">Saldo Total</p>
+                        <p class="text-xl font-bold font-mono text-[#C09B2A]">R$ 26.290,75</p>
+                        <p class="text-[10px] text-[#1DCF72] flex items-center gap-1">↑ +14.2% este mês</p>
+                    </div>
+                    <div class="rounded-lg border border-[#1C2A38] bg-[#0F1720] p-3.5 space-y-1">
+                        <p class="text-[10px] font-bold uppercase tracking-wider text-[#374B5C]">Balanço Mensal</p>
+                        <p class="text-xl font-bold font-mono text-[#1DCF72]">+R$ 7.154,70</p>
+                        <p class="text-[10px] text-[#374B5C]">Superávit consolidado</p>
+                    </div>
+                </div>
+
+                <!-- Mini AI Insight -->
+                <div class="rounded-lg border border-[#0FC4B3]/20 bg-[#0FC4B3]/5 p-3.5 flex items-start gap-3">
+                    <div class="w-7 h-7 rounded-md bg-[#0FC4B3]/10 flex items-center justify-center shrink-0 text-[#0FC4B3]">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                    </div>
+                    <div class="text-xs space-y-1">
+                        <p class="font-bold text-[#0FC4B3] font-display">Insight Financeiro MonetraBot</p>
+                        <p class="text-[#637585] leading-relaxed">Taxa de poupança em 66,9%! Sua maior despesa foi Moradia (66%). Você está no caminho para atingir sua meta de reserva.</p>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
-    <!-- ═══════════ Benefícios ═══════════ -->
-    <section class='w-full max-w-6xl px-4 flex flex-col items-center space-y-12' id='beneficios'>
-        <div class='text-center space-y-3'>
-            <span class='badge bg-accent-500/10 border border-accent-500/30 text-accent-500 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider'>Vantagens</span>
-            <h2 class='text-3xl font-bold text-white tracking-tight'>Por que escolher o Monetra?</h2>
-            <p class='text-text-secondary max-w-lg mx-auto text-sm'>A combinação ideal de controle diário e inteligência estratégica.</p>
-        </div>
-        
-        <div class='grid grid-cols-1 md:grid-cols-3 gap-8 w-full'>
-            <div class='bg-bg-secondary p-6 border border-bg-tertiary rounded-2xl hover:border-accent-500/50 transition-all duration-300 hover:scale-[1.02] flex flex-col space-y-3'>
-                <div class='w-10 h-10 rounded bg-accent-500/10 text-accent-500 flex items-center justify-center text-xl shrink-0'>
-                    <svg class='w-5.5 h-5.5' fill='none' viewBox='0 0 24 24' stroke='currentColor'>
-                        <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z'></path>
-                    </svg>
-                </div>
-                <h4 class='text-white font-bold text-base'>IA Treinada no seu Histórico</h4>
-                <p class='text-text-muted text-xs leading-relaxed'>O agente financeiro faz a leitura das suas transações reais e gera resumos sob medida para seu perfil.</p>
+
+    <!-- Features Section -->
+    <section id="como-funciona" class="border-t border-[#1C2A38] bg-[#070C12] py-20">
+        <div class="max-w-6xl mx-auto px-6 space-y-12">
+            <div class="text-center space-y-3 max-w-xl mx-auto">
+                <p class="text-xs font-bold uppercase tracking-widest text-[#C09B2A]">Recursos Principais</p>
+                <h2 class="text-3xl font-bold font-display text-[#E2EAF0]">Tudo o que você precisa para dominar suas finanças</h2>
             </div>
-            
-            <div class='bg-bg-secondary p-6 border border-bg-tertiary rounded-2xl hover:border-accent-500/50 transition-all duration-300 hover:scale-[1.02] flex flex-col space-y-3'>
-                <div class='w-10 h-10 rounded bg-accent-500/10 text-accent-500 flex items-center justify-center text-xl shrink-0'>
-                    <svg class='w-5.5 h-5.5' fill='none' viewBox='0 0 24 24' stroke='currentColor'>
-                        <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z'></path>
-                    </svg>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Feature 1 -->
+                <div class="rounded-xl border border-[#1C2A38] bg-[#0A1018] p-6 space-y-4 hover:border-[#253648] transition-colors">
+                    <div class="w-10 h-10 rounded-lg bg-[#C09B2A]/10 text-[#C09B2A] flex items-center justify-center">
+                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                        </svg>
+                    </div>
+                    <h3 class="text-base font-bold font-display text-[#C8D4DF]">Dashboard Completo</h3>
+                    <p class="text-sm text-[#637585] leading-relaxed">Visão consolidada de saldos, gráficos interativos e indicadores de saúde financeira em tempo real.</p>
                 </div>
-                <h4 class='text-white font-bold text-base'>Disponível 24 Horas</h4>
-                <p class='text-text-muted text-xs leading-relaxed'>Consulte relatórios e lance transações quando quiser, sem aguardar sincronizações manuais lentas.</p>
-            </div>
-            <div class='bg-bg-secondary p-6 border border-bg-tertiary rounded-2xl hover:border-accent-500/50 transition-all duration-300 hover:scale-[1.02] flex flex-col space-y-3'>
-                <div class='w-10 h-10 rounded bg-accent-500/10 text-accent-500 flex items-center justify-center text-xl shrink-0'>
-                    <svg class='w-5.5 h-5.5' fill='none' viewBox='0 0 24 24' stroke='currentColor'>
-                        <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z'></path>
-                    </svg>
+
+                <!-- Feature 2 -->
+                <div class="rounded-xl border border-[#1C2A38] bg-[#0A1018] p-6 space-y-4 hover:border-[#253648] transition-colors">
+                    <div class="w-10 h-10 rounded-lg bg-[#0FC4B3]/10 text-[#0FC4B3] flex items-center justify-center">
+                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                        </svg>
+                    </div>
+                    <h3 class="text-base font-bold font-display text-[#C8D4DF]">Análise com IA</h3>
+                    <p class="text-sm text-[#637585] leading-relaxed">Assistente financeiro inteligente que analisa suas movimentações e sugere economias reais.</p>
                 </div>
-                <h4 class='text-white font-bold text-base'>Abordagem Humanizada</h4>
-                <p class='text-text-muted text-xs leading-relaxed'>Nossa IA se comunica em português de forma clara, oferecendo recomendações práticas e diretas.</p>
-            </div>
-            <div class='bg-bg-secondary p-6 border border-bg-tertiary rounded-2xl hover:border-accent-500/50 transition-all duration-300 hover:scale-[1.02] flex flex-col space-y-3'>
-                <div class='w-10 h-10 rounded bg-accent-500/10 text-accent-500 flex items-center justify-center text-xl shrink-0'>
-                    <svg class='w-5.5 h-5.5' fill='none' viewBox='0 0 24 24' stroke='currentColor'>
-                        <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z'></path>
-                    </svg>
+
+                <!-- Feature 3 -->
+                <div class="rounded-xl border border-[#1C2A38] bg-[#0A1018] p-6 space-y-4 hover:border-[#253648] transition-colors">
+                    <div class="w-10 h-10 rounded-lg bg-[#C09B2A]/10 text-[#C09B2A] flex items-center justify-center">
+                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                        </svg>
+                    </div>
+                    <h3 class="text-base font-bold font-display text-[#C8D4DF]">Multicontas</h3>
+                    <p class="text-sm text-[#637585] leading-relaxed">Gerencie contas correntes, investimentos, poupança e carteira física em um só lugar.</p>
                 </div>
-                <h4 class='text-white font-bold text-base'>Identifique Gastos Desnecessários</h4>
-                <p class='text-text-muted text-xs leading-relaxed'>O resumo de IA aponta categorias com maior volume de despesas para você decidir onde reduzir.</p>
-            </div>
-            <div class='bg-bg-secondary p-6 border border-bg-tertiary rounded-2xl hover:border-accent-500/50 transition-all duration-300 hover:scale-[1.02] flex flex-col space-y-3'>
-                <div class='w-10 h-10 rounded bg-accent-500/10 text-accent-500 flex items-center justify-center text-xl shrink-0'>
-                    <svg class='w-5.5 h-5.5' fill='none' viewBox='0 0 24 24' stroke='currentColor'>
-                        <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z'></path>
-                    </svg>
+
+                <!-- Feature 4 -->
+                <div class="rounded-xl border border-[#1C2A38] bg-[#0A1018] p-6 space-y-4 hover:border-[#253648] transition-colors">
+                    <div class="w-10 h-10 rounded-lg bg-[#1DCF72]/10 text-[#1DCF72] flex items-center justify-center">
+                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                        </svg>
+                    </div>
+                    <h3 class="text-base font-bold font-display text-[#C8D4DF]">Privacidade Total</h3>
+                    <p class="text-sm text-[#637585] leading-relaxed">Seus dados são 100% seus. Lançamentos manuais e seguros, sem riscos de integração bancária.</p>
                 </div>
-                <h4 class='text-white font-bold text-base'>Segurança Extrema</h4>
-                <p class='text-text-muted text-xs leading-relaxed'>Todos os dados de transações e contas bancárias são totalmente criptografados e isolados.</p>
-            </div>
-            <div class='bg-bg-secondary p-6 border border-bg-tertiary rounded-2xl hover:border-accent-500/50 transition-all duration-300 hover:scale-[1.02] flex flex-col space-y-3'>
-                <div class='w-10 h-10 rounded bg-accent-500/10 text-accent-500 flex items-center justify-center text-xl shrink-0'>
-                    <svg class='w-5.5 h-5.5' fill='none' viewBox='0 0 24 24' stroke='currentColor'>
-                        <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M7 12l3-3 3 3 4-4M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z'></path>
-                    </svg>
-                </div>
-                <h4 class='text-white font-bold text-base'>Gráficos Dinâmicos Interativos</h4>
-                <p class='text-text-muted text-xs leading-relaxed'>Renderização nativa de gráficos em linha, pizza e barras (Chart.js) no seu Dashboard pessoal.</p>
             </div>
         </div>
     </section>
-    <!-- Seção de depoimentos removida: aguardando avaliações reais de usuários -->
-    <!-- ═══════════ Planos (Plan Cards) ═══════════ -->
-    <section class='w-full max-w-6xl px-4 flex flex-col items-center space-y-12' id='planos'>
-        <div class='text-center space-y-3'>
-            <span class='badge bg-accent-500/10 border border-accent-500/30 text-accent-500 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider'>Planos</span>
-            <h2 class='text-3xl font-bold text-white tracking-tight'>Escolha o plano ideal para suas finanças</h2>
-            <p class='text-text-secondary max-w-lg mx-auto text-sm'>Comece no plano gratuito e faça o upgrade conforme suas necessidades crescem.</p>
+
+    <!-- Pricing Section -->
+    <section id="planos" class="py-20 max-w-6xl mx-auto px-6 space-y-12">
+        <div class="text-center space-y-3 max-w-xl mx-auto">
+            <p class="text-xs font-bold uppercase tracking-widest text-[#C09B2A]">Planos Transparentes</p>
+            <h2 class="text-3xl font-bold font-display text-[#E2EAF0]">Escolha o plano ideal para você</h2>
         </div>
-        
-        <div class='grid grid-cols-1 md:grid-cols-4 gap-6 w-full'>
-            <!-- Plan 1 -->
-            <div class='bg-bg-secondary border border-bg-tertiary rounded-2xl p-6 flex flex-col justify-between text-center hover:scale-[1.02] transition-transform duration-300'>
-                <div class='space-y-4'>
-                    <h4 class='text-white font-bold text-base'>Free</h4>
-                    <p class='text-text-muted text-xs'>Para experimentar o controle essencial</p>
-                    <h3 class='text-3xl font-extrabold text-white'>Grátis</h3>
-                    <ul class='space-y-2 text-start text-xs text-text-secondary pt-4 border-t border-bg-tertiary'>
-                        <li class='flex items-center gap-2'>
-                            <span class='text-success font-bold'>✓</span>
-                            <span>Até 3 contas bancárias</span>
-                        </li>
-                        <li class='flex items-center gap-2'>
-                            <span class='text-success font-bold'>✓</span>
-                            <span>Categorização essencial</span>
-                        </li>
-                        <li class='flex items-center gap-2'>
-                            <span class='text-success font-bold'>✓</span>
-                            <span>Relatórios básicos</span>
-                        </li>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <!-- Free -->
+            <div class="rounded-xl border border-[#1C2A38] bg-[#0A1018] p-6 space-y-6 flex flex-col justify-between">
+                <div class="space-y-4">
+                    <h3 class="text-base font-bold font-display text-[#C8D4DF]">Free</h3>
+                    <div>
+                        <span class="text-3xl font-bold font-mono text-[#E2EAF0]">Grátis</span>
+                    </div>
+                    <ul class="space-y-2.5 text-xs text-[#637585] pt-2">
+                        <li class="flex items-center gap-2">✓ Até 3 contas</li>
+                        <li class="flex items-center gap-2">✓ Categorização básica</li>
+                        <li class="flex items-center gap-2">✓ Relatórios mensais</li>
                     </ul>
                 </div>
-                <a href='{% url "users:signup" %}' class='mt-6 px-4 py-2 border border-accent-500 text-accent-500 hover:bg-accent-500 hover:text-[#080808] font-bold text-sm rounded-lg transition-all w-full block'>
-                    Começar Grátis
-                </a>
+                <a href="{% url 'users:signup' %}" class="btn-secondary w-full text-center justify-center text-sm py-2">Começar grátis</a>
             </div>
-            <!-- Plan 2 -->
-            <div class='bg-bg-secondary border border-bg-tertiary rounded-2xl p-6 flex flex-col justify-between text-center hover:scale-[1.02] transition-transform duration-300'>
-                <div class='space-y-4'>
-                    <h4 class='text-white font-bold text-base'>Starter</h4>
-                    <p class='text-text-muted text-xs'>Para quem está no início do controle</p>
-                    <h3 class='text-3xl font-extrabold text-white'>R$ 9,90<span class='text-xs text-text-muted font-normal'>/mês</span></h3>
-                    <ul class='space-y-2 text-start text-xs text-text-secondary pt-4 border-t border-bg-tertiary'>
-                        <li class='flex items-center gap-2'>
-                            <span class='text-success font-bold'>✓</span>
-                            <span>Até 5 contas bancárias</span>
-                        </li>
-                        <li class='flex items-center gap-2'>
-                            <span class='text-success font-bold'>✓</span>
-                            <span>Categorias ilimitadas</span>
-                        </li>
-                        <li class='flex items-center gap-2'>
-                            <span class='text-success font-bold'>✓</span>
-                            <span>5 Análises de IA/mês</span>
-                        </li>
+
+            <!-- Starter -->
+            <div class="rounded-xl border border-[#1C2A38] bg-[#0A1018] p-6 space-y-6 flex flex-col justify-between">
+                <div class="space-y-4">
+                    <h3 class="text-base font-bold font-display text-[#C8D4DF]">Starter</h3>
+                    <div>
+                        <span class="text-3xl font-bold font-mono text-[#E2EAF0]">R$ 9,90</span>
+                        <span class="text-xs text-[#374B5C]">/mês</span>
+                    </div>
+                    <ul class="space-y-2.5 text-xs text-[#637585] pt-2">
+                        <li class="flex items-center gap-2">✓ Até 5 contas</li>
+                        <li class="flex items-center gap-2">✓ Categorias ilimitadas</li>
+                        <li class="flex items-center gap-2">✓ 5 análises IA/mês</li>
                     </ul>
                 </div>
-                <a href='{% url "users:signup" %}' class='mt-6 px-4 py-2 border border-accent-500 text-accent-500 hover:bg-accent-500 hover:text-[#080808] font-bold text-sm rounded-lg transition-all w-full block'>
-                    Assinar Agora
-                </a>
+                <a href="{% url 'users:signup' %}" class="btn-secondary w-full text-center justify-center text-sm py-2">Assinar Starter</a>
             </div>
-            <!-- Plan 3 (Recommended) -->
-            <div class='bg-bg-secondary border-2 border-accent-500 rounded-2xl p-6 flex flex-col justify-between text-center relative hover:scale-[1.02] transition-transform duration-300'>
-                <div class='absolute -top-3 left-1/2 -translate-x-1/2 bg-accent-500 text-[#080808] text-[10px] font-extrabold uppercase px-3 py-0.5 rounded-full'>
+
+            <!-- Pro (Popular) -->
+            <div class="rounded-xl border-2 border-[#C09B2A] bg-[#0A1018] p-6 space-y-6 flex flex-col justify-between relative shadow-xl shadow-[#C09B2A]/5">
+                <div class="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full bg-[#C09B2A] text-[#05090D] text-[10px] font-extrabold uppercase tracking-widest">
                     Mais Popular
                 </div>
-                <div class='space-y-4'>
-                    <h4 class='text-white font-bold text-base mt-2'>Pro</h4>
-                    <p class='text-text-muted text-xs'>Para escalar com inteligência</p>
-                    <h3 class='text-3xl font-extrabold text-white'>R$ 19,90<span class='text-xs text-text-muted font-normal'>/mês</span></h3>
-                    <ul class='space-y-2 text-start text-xs text-text-secondary pt-4 border-t border-bg-tertiary'>
-                        <li class='flex items-center gap-2'>
-                            <span class='text-success font-bold'>✓</span>
-                            <span>Contas ilimitadas</span>
-                        </li>
-                        <li class='flex items-center gap-2'>
-                            <span class='text-success font-bold'>✓</span>
-                            <span>Categorias ilimitadas</span>
-                        </li>
-                        <li class='flex items-center gap-2'>
-                            <span class='text-success font-bold'>✓</span>
-                            <span>Análises de IA ilimitadas</span>
-                        </li>
-                        <li class='flex items-center gap-2'>
-                            <span class='text-success font-bold'>✓</span>
-                            <span>Suporte prioritário</span>
-                        </li>
+                <div class="space-y-4">
+                    <h3 class="text-base font-bold font-display text-[#C09B2A]">Pro</h3>
+                    <div>
+                        <span class="text-3xl font-bold font-mono text-[#E2EAF0]">R$ 19,90</span>
+                        <span class="text-xs text-[#374B5C]">/mês</span>
+                    </div>
+                    <ul class="space-y-2.5 text-xs text-[#C8D4DF] pt-2">
+                        <li class="flex items-center gap-2">✓ Contas ilimitadas</li>
+                        <li class="flex items-center gap-2">✓ IA ilimitada (MonetraBot)</li>
+                        <li class="flex items-center gap-2">✓ Suporte prioritário</li>
+                        <li class="flex items-center gap-2">✓ Exportação de relatórios</li>
                     </ul>
                 </div>
-                <a href='{% url "users:signup" %}' class='mt-6 px-4 py-2 bg-accent-500 text-[#080808] hover:bg-accent-600 font-bold text-sm rounded-lg transition-all w-full block'>
-                    Assinar Agora
-                </a>
+                <a href="{% url 'users:signup' %}" class="btn-gold w-full text-center justify-center text-sm py-2">Assinar Pro</a>
             </div>
-            <!-- Plan 4 -->
-            <div class='bg-bg-secondary border border-bg-tertiary rounded-2xl p-6 flex flex-col justify-between text-center hover:scale-[1.02] transition-transform duration-300'>
-                <div class='space-y-4'>
-                    <h4 class='text-white font-bold text-base'>Max</h4>
-                    <p class='text-text-muted text-xs'>Para múltiplos perfis familiares</p>
-                    <h3 class='text-3xl font-extrabold text-white'>R$ 29,90<span class='text-xs text-text-muted font-normal'>/mês</span></h3>
-                    <ul class='space-y-2 text-start text-xs text-text-secondary pt-4 border-t border-bg-tertiary'>
-                        <li class='flex items-center gap-2'>
-                            <span class='text-success font-bold'>✓</span>
-                            <span>Tudo do plano Pro</span>
-                        </li>
-                        <li class='flex items-center gap-2'>
-                            <span class='text-success font-bold'>✓</span>
-                            <span>Até 3 perfis vinculados</span>
-                        </li>
-                        <li class='flex items-center gap-2'>
-                            <span class='text-success font-bold'>✓</span>
-                            <span>Exportação CSV/PDF</span>
-                        </li>
+
+            <!-- Max -->
+            <div class="rounded-xl border border-[#1C2A38] bg-[#0A1018] p-6 space-y-6 flex flex-col justify-between">
+                <div class="space-y-4">
+                    <h3 class="text-base font-bold font-display text-[#C8D4DF]">Max</h3>
+                    <div>
+                        <span class="text-3xl font-bold font-mono text-[#E2EAF0]">R$ 29,90</span>
+                        <span class="text-xs text-[#374B5C]">/mês</span>
+                    </div>
+                    <ul class="space-y-2.5 text-xs text-[#637585] pt-2">
+                        <li class="flex items-center gap-2">✓ Tudo do Pro</li>
+                        <li class="flex items-center gap-2">✓ Até 3 perfis vinculados</li>
+                        <li class="flex items-center gap-2">✓ Exportação PDF avançada</li>
+                        <li class="flex items-center gap-2">✓ API de integração</li>
                     </ul>
                 </div>
-                <a href='{% url "users:signup" %}' class='mt-6 px-4 py-2 border border-accent-500 text-accent-500 hover:bg-accent-500 hover:text-[#080808] font-bold text-sm rounded-lg transition-all w-full block'>
-                    Assinar Agora
-                </a>
+                <a href="{% url 'users:signup' %}" class="btn-secondary w-full text-center justify-center text-sm py-2">Assinar Max</a>
             </div>
         </div>
     </section>
-    <!-- ═══════════ FAQ Section (Accordion) ═══════════ -->
-    <section class='w-full max-w-4xl px-4 flex flex-col items-center space-y-12' id='faq'>
-        <div class='text-center space-y-3'>
-            <span class='badge bg-accent-500/10 border border-accent-500/30 text-accent-500 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider'>Dúvidas</span>
-            <h2 class='text-3xl font-bold text-white tracking-tight'>Perguntas Frequentes</h2>
-            <p class='text-text-secondary max-w-lg mx-auto text-sm'>Esclareça suas principais dúvidas antes de começar.</p>
-        </div>
-        <div class='w-full space-y-4'>
-            <!-- FAQ 1 -->
-            <details class='bg-bg-secondary border border-bg-tertiary rounded-xl p-5 group transition-all duration-300'>
-                <summary class='font-bold text-white text-base cursor-pointer list-none flex justify-between items-center select-none'>
-                    <span>Como funciona a análise de IA?</span>
-                    <span class='text-accent-500 transition-transform duration-300 group-open:rotate-180'>↓</span>
-                </summary>
-                <div class='text-text-secondary text-sm mt-3 leading-relaxed border-t border-bg-tertiary pt-3'>
-                    O assistente virtual do Monetra examina com total segurança o histórico de entradas e saídas cadastradas do mês. A partir daí, calcula o percentual de orçamento comprometido e sugere metas realistas de economia focadas na sua maior categoria de gastos daquele período.
+
+    <!-- FAQ Section -->
+    <section id="faq" class="border-t border-[#1C2A38] bg-[#070C12] py-20">
+        <div class="max-w-4xl mx-auto px-6 space-y-8">
+            <div class="text-center space-y-3">
+                <p class="text-xs font-bold uppercase tracking-widest text-[#C09B2A]">Dúvidas Frequentes</p>
+                <h2 class="text-3xl font-bold font-display text-[#E2EAF0]">Perguntas & Respostas</h2>
+            </div>
+
+            <div class="space-y-4">
+                <div class="rounded-lg border border-[#1C2A38] bg-[#0A1018] p-5 space-y-2">
+                    <h3 class="text-sm font-bold font-display text-[#C8D4DF]">Como funciona a análise de IA?</h3>
+                    <p class="text-xs text-[#637585] leading-relaxed">O assistente lê seu histórico de transações e calcula padrões de consumo, apontando as categorias com maior gasto e sugerindo metas de economia realistas.</p>
                 </div>
-            </details>
-            <!-- FAQ 2 -->
-            <details class='bg-bg-secondary border border-bg-tertiary rounded-xl p-5 group transition-all duration-300'>
-                <summary class='font-bold text-white text-base cursor-pointer list-none flex justify-between items-center select-none'>
-                    <span>Meus dados bancários estão seguros?</span>
-                    <span class='text-accent-500 transition-transform duration-300 group-open:rotate-180'>↓</span>
-                </summary>
-                <div class='text-text-secondary text-sm mt-3 leading-relaxed border-t border-bg-tertiary pt-3'>
-                    Sim, a segurança é a nossa prioridade número um. A plataforma foi desenhada sob uma arquitetura multi-tenant robusta. Seus saldos, transações e perfis são acessíveis exclusivamente por você por meio de credenciais com criptografia nativa avançada do Django.
+                <div class="rounded-lg border border-[#1C2A38] bg-[#0A1018] p-5 space-y-2">
+                    <h3 class="text-sm font-bold font-display text-[#C8D4DF]">Preciso fornecer minhas senhas bancárias?</h3>
+                    <p class="text-xs text-[#637585] leading-relaxed">Não. O Monetra funciona com lançamentos manuais. Você tem controle total sobre o que é registrado — sem conexão direta com bancos e com segurança total.</p>
                 </div>
-            </details>
-            <!-- FAQ 3 -->
-            <details class='bg-bg-secondary border border-bg-tertiary rounded-xl p-5 group transition-all duration-300'>
-                <summary class='font-bold text-white text-base cursor-pointer list-none flex justify-between items-center select-none'>
-                    <span>Como funciona o plano Free?</span>
-                    <span class='text-accent-500 transition-transform duration-300 group-open:rotate-180'>↓</span>
-                </summary>
-                <div class='text-text-secondary text-sm mt-3 leading-relaxed border-t border-bg-tertiary pt-3'>
-                    O plano gratuito é projetado para dar acesso a todos os recursos básicos e essenciais. Você pode cadastrar até 3 contas bancárias ativas e gerenciar suas transações diárias ilimitadamente sem pagar nada por isso.
+                <div class="rounded-lg border border-[#1C2A38] bg-[#0A1018] p-5 space-y-2">
+                    <h3 class="text-sm font-bold font-display text-[#C8D4DF]">O plano Free tem limite de transações?</h3>
+                    <p class="text-xs text-[#637585] leading-relaxed">Não. No plano gratuito, o limite é de 3 contas ativas. As transações são ilimitadas em todos os planos.</p>
                 </div>
-            </details>
-            <!-- FAQ 4 -->
-            <details class='bg-bg-secondary border border-bg-tertiary rounded-xl p-5 group transition-all duration-300'>
-                <summary class='font-bold text-white text-base cursor-pointer list-none flex justify-between items-center select-none'>
-                    <span>Preciso sincronizar minhas senhas bancárias?</span>
-                    <span class='text-accent-500 transition-transform duration-300 group-open:rotate-180'>↓</span>
-                </summary>
-                <div class='text-text-secondary text-sm mt-3 leading-relaxed border-t border-bg-tertiary pt-3'>
-                    Não. O Monetra não exige conexões complexas com APIs bancárias ou leitura de suas senhas de acesso de bancos. Os lançamentos e saldos são gerenciados de forma manual e simples por você, garantindo total privacidade e controle.
-                </div>
-            </details>
-        </div>
-    </section>
-    <!-- ═══════════ CTA Final ═══════════ -->
-    <section class='w-full max-w-5xl px-4 mb-8'>
-        <div class='bg-gradient-to-br from-bg-secondary to-bg-tertiary border border-bg-tertiary rounded-3xl p-8 md:p-12 text-center flex flex-col items-center space-y-6 shadow-2xl relative overflow-hidden'>
-            <div class='absolute -top-16 -left-16 w-32 h-32 bg-accent-500/5 rounded-full blur-3xl'></div>
-            <div class='absolute -bottom-16 -right-16 w-32 h-32 bg-accent-500/5 rounded-full blur-3xl'></div>
-            
-            <h2 class='text-3xl md:text-5xl font-extrabold text-white leading-tight'>
-                Pronto para dominar seu fluxo de caixa?
-            </h2>
-            <p class='text-text-secondary max-w-xl leading-relaxed'>
-                Crie sua conta gratuitamente agora mesmo e comece a obter análises personalizadas geradas por IA em poucos cliques.
-            </p>
-            <div class='pt-2'>
-                <a href='{% url "users:signup" %}' class='px-8 py-4 bg-accent-500 text-[#080808] hover:bg-accent-600 font-bold text-lg rounded-xl transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-accent-500/10 hover:shadow-accent-500/25'>
-                    Criar Minha Conta Grátis
-                </a>
             </div>
         </div>
     </section>
+
+    <!-- Footer -->
+    <footer class="border-t border-[#1C2A38] py-8 text-center text-xs text-[#374B5C]">
+        <p>&copy; {% now 'Y' %} Monetra · Controle Financeiro Inteligente. Todos os direitos reservados.</p>
+    </footer>
 </div>
 {% endblock %}

@@ -1,95 +1,126 @@
 {% extends 'base.html' %}
 
-{% block title %}Minhas Categorias{% endblock %}
+{% block title %}Categorias - Monetra{% endblock %}
 
 {% block content %}
-<div class='mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4'>
-    <div>
-        <h1 class='text-3xl font-bold text-white'>Minhas Categorias</h1>
-        <p class='text-text-secondary'>Organize suas transações por tipo e cor.</p>
-    </div>
-    <a href='{% url "categories:category_create" %}' class='px-4 py-2 bg-gradient-to-r from-primary-500 to-accent-500 text-white rounded-lg font-medium hover:opacity-90 transition-all duration-200 shadow-lg flex items-center gap-2'>
-        <svg class='w-5 h-5' fill='none' viewBox='0 0 24 24' stroke='currentColor'>
-            <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M12 4v16m8-8H4'></path>
-        </svg>
-        Nova Categoria
-    </a>
-</div>
-
-<div class='grid grid-cols-1 lg:grid-cols-2 gap-8'>
-    <!-- Income Categories -->
-    <div>
-        <h2 class='text-xl font-bold text-success mb-4 flex items-center gap-2'>
-            <svg class='w-6 h-6' fill='none' viewBox='0 0 24 24' stroke='currentColor'>
-                <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M7 11l5-5m0 0l5 5m-5-5v12'></path>
+<div class="space-y-7 max-w-[900px] mx-auto">
+    <!-- Header -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+            <h1 class="text-2xl font-bold font-display text-[#E2EAF0]">Categorias</h1>
+            <p class="text-xs sm:text-sm text-[#374B5C] mt-0.5">Organize suas transações em categorias personalizadas</p>
+        </div>
+        <a href="{% url 'categories:category_create' %}" class="btn-gold text-xs sm:text-sm self-start sm:self-auto">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
             </svg>
-            Entradas
-        </h2>
-        <div class='bg-bg-secondary rounded-xl shadow-lg border border-bg-tertiary overflow-hidden'>
-            <div class='divide-y divide-bg-tertiary'>
-                {% for category in income_categories %}
-                <div class='p-4 flex items-center justify-between hover:bg-bg-tertiary transition-all duration-150'>
-                    <div class='flex items-center gap-3'>
-                        <div class='w-4 h-4 rounded-full shadow-sm' style='background-color: {{ category.color|default:"#2EC47D" }}'></div>
-                        <span class='text-text-primary font-medium'>{{ category.name }}</span>
-                    </div>
-                    <div class='flex gap-2'>
-                        <a href='{% url "categories:category_update" category.pk %}' class='p-2 text-text-secondary hover:text-accent-500 transition-colors'>
-                            <svg class='w-4 h-4' fill='none' viewBox='0 0 24 24' stroke='currentColor'>
-                                <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z'></path>
-                            </svg>
-                        </a>
-                        <a href='{% url "categories:category_delete" category.pk %}' class='p-2 text-text-secondary hover:text-error transition-colors'>
-                            <svg class='w-4 h-4' fill='none' viewBox='0 0 24 24' stroke='currentColor'>
-                                <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-4v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16'></path>
-                            </svg>
-                        </a>
-                    </div>
-                </div>
-                {% empty %}
-                <div class='p-8 text-center text-text-muted text-sm'>
-                    Nenhuma categoria de entrada cadastrada.
-                </div>
-                {% endfor %}
-            </div>
+            <span>Nova Categoria</span>
+        </a>
+    </div>
+
+    <!-- Expense Categories Table -->
+    <div class="space-y-3">
+        <p class="text-xs font-bold uppercase tracking-widest text-[#E84040]">Despesas</p>
+        <div class="rounded-lg border border-[#1C2A38] bg-[#0A1018] overflow-hidden shadow-lg">
+            <table class="w-full text-left text-sm">
+                <thead>
+                    <tr class="border-b border-[#1C2A38] bg-[#070C12]">
+                        <th class="px-5 py-3.5 text-xs font-semibold uppercase tracking-widest text-[#374B5C]">Categoria</th>
+                        <th class="px-5 py-3.5 text-xs font-semibold uppercase tracking-widest text-[#374B5C]">Tipo</th>
+                        <th class="px-5 py-3.5 text-xs font-semibold uppercase tracking-widest text-[#374B5C] text-right">Ações</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-[#1C2A38]">
+                    {% for cat in expense_categories %}
+                    <tr class="transition-colors hover:bg-[#0F1720]">
+                        <td class="px-5 py-3.5">
+                            <div class="flex items-center gap-3">
+                                <span class="w-3 h-3 rounded-full shrink-0" style="background-color: {{ cat.color|default:'#E84040' }};"></span>
+                                <span class="text-sm font-medium font-display text-[#C8D4DF]">{{ cat.name }}</span>
+                            </div>
+                        </td>
+                        <td class="px-5 py-3.5">
+                            <span class="text-xs px-2.5 py-0.5 rounded-full font-semibold bg-[#E84040]/10 text-[#E84040]">
+                                Despesa
+                            </span>
+                        </td>
+                        <td class="px-5 py-3.5 text-right">
+                            <div class="flex items-center justify-end gap-1.5">
+                                <a href="{% url 'categories:category_update' cat.pk %}" class="p-1.5 rounded text-[#374B5C] hover:text-[#C8D4DF] hover:bg-[#141F2A] transition-colors" title="Editar">
+                                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                    </svg>
+                                </a>
+                                <a href="{% url 'categories:category_delete' cat.pk %}" class="p-1.5 rounded text-[#374B5C] hover:text-[#E84040] hover:bg-[#E84040]/10 transition-colors" title="Excluir">
+                                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-4v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                    </svg>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="3" class="px-5 py-8 text-center text-xs text-[#374B5C]">
+                            Nenhuma categoria de despesa cadastrada.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
 
-    <!-- Expense Categories -->
-    <div>
-        <h2 class='text-xl font-bold text-error mb-4 flex items-center gap-2'>
-            <svg class='w-6 h-6' fill='none' viewBox='0 0 24 24' stroke='currentColor'>
-                <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M17 13l-5 5m0 0l-5-5m5 5V6'></path>
-            </svg>
-            Saídas
-        </h2>
-        <div class='bg-bg-secondary rounded-xl shadow-lg border border-bg-tertiary overflow-hidden'>
-            <div class='divide-y divide-bg-tertiary'>
-                {% for category in expense_categories %}
-                <div class='p-4 flex items-center justify-between hover:bg-bg-tertiary transition-all duration-150'>
-                    <div class='flex items-center gap-3'>
-                        <div class='w-4 h-4 rounded-full shadow-sm' style='background-color: {{ category.color|default:"#EF3823" }}'></div>
-                        <span class='text-text-primary font-medium'>{{ category.name }}</span>
-                    </div>
-                    <div class='flex gap-2'>
-                        <a href='{% url "categories:category_update" category.pk %}' class='p-2 text-text-secondary hover:text-accent-500 transition-colors'>
-                            <svg class='w-4 h-4' fill='none' viewBox='0 0 24 24' stroke='currentColor'>
-                                <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z'></path>
-                            </svg>
-                        </a>
-                        <a href='{% url "categories:category_delete" category.pk %}' class='p-2 text-text-secondary hover:text-error transition-colors'>
-                            <svg class='w-4 h-4' fill='none' viewBox='0 0 24 24' stroke='currentColor'>
-                                <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-4v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16'></path>
-                            </svg>
-                        </a>
-                    </div>
-                </div>
-                {% empty %}
-                <div class='p-8 text-center text-text-muted text-sm'>
-                    Nenhuma categoria de saída cadastrada.
-                </div>
-                {% endfor %}
-            </div>
+    <!-- Income Categories Table -->
+    <div class="space-y-3">
+        <p class="text-xs font-bold uppercase tracking-widest text-[#1DCF72]">Receitas</p>
+        <div class="rounded-lg border border-[#1C2A38] bg-[#0A1018] overflow-hidden shadow-lg">
+            <table class="w-full text-left text-sm">
+                <thead>
+                    <tr class="border-b border-[#1C2A38] bg-[#070C12]">
+                        <th class="px-5 py-3.5 text-xs font-semibold uppercase tracking-widest text-[#374B5C]">Categoria</th>
+                        <th class="px-5 py-3.5 text-xs font-semibold uppercase tracking-widest text-[#374B5C]">Tipo</th>
+                        <th class="px-5 py-3.5 text-xs font-semibold uppercase tracking-widest text-[#374B5C] text-right">Ações</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-[#1C2A38]">
+                    {% for cat in income_categories %}
+                    <tr class="transition-colors hover:bg-[#0F1720]">
+                        <td class="px-5 py-3.5">
+                            <div class="flex items-center gap-3">
+                                <span class="w-3 h-3 rounded-full shrink-0" style="background-color: {{ cat.color|default:'#1DCF72' }};"></span>
+                                <span class="text-sm font-medium font-display text-[#C8D4DF]">{{ cat.name }}</span>
+                            </div>
+                        </td>
+                        <td class="px-5 py-3.5">
+                            <span class="text-xs px-2.5 py-0.5 rounded-full font-semibold bg-[#1DCF72]/10 text-[#1DCF72]">
+                                Receita
+                            </span>
+                        </td>
+                        <td class="px-5 py-3.5 text-right">
+                            <div class="flex items-center justify-end gap-1.5">
+                                <a href="{% url 'categories:category_update' cat.pk %}" class="p-1.5 rounded text-[#374B5C] hover:text-[#C8D4DF] hover:bg-[#141F2A] transition-colors" title="Editar">
+                                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                    </svg>
+                                </a>
+                                <a href="{% url 'categories:category_delete' cat.pk %}" class="p-1.5 rounded text-[#374B5C] hover:text-[#E84040] hover:bg-[#E84040]/10 transition-colors" title="Excluir">
+                                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-4v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                    </svg>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="3" class="px-5 py-8 text-center text-xs text-[#374B5C]">
+                            Nenhuma categoria de receita cadastrada.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
