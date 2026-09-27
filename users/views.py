@@ -142,6 +142,7 @@ class DashboardView(LoginRequiredMixin, TemplateView):
 
         context.update({
             'total_balance': total_balance,
+            'accounts': accounts,
             'monthly_income': monthly_income,
             'monthly_expense': monthly_expense,
             'monthly_balance': monthly_income - monthly_expense,

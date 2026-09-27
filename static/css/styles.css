@@ -1,0 +1,166 @@
+/* ==========================================================================
+   Monetra - Design System (Grana Smart Edition)
+   Tokens, Typography, Component Primitives, Light & Dark Mode
+   ========================================================================== */
+
+/* 1. Global & Scrollbars */
+html {
+  scrollbar-color: light-dark(rgba(22, 29, 24, 0.35), rgba(255, 255, 255, 0.18)) transparent;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(143, 148, 155, 0.25);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(143, 148, 155, 0.45);
+}
+
+/* 2. Atmosphere Backgrounds */
+body {
+  font-family: "Inter Tight", "Inter", system-ui, -apple-system, sans-serif;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Dark mode atmospheric glow from Grana Smart */
+.dark body {
+  background-color: #0A0E13;
+  background-image: 
+    radial-gradient(120% 80% at 50% -10%, rgba(193, 255, 126, 0.04), transparent 60%),
+    radial-gradient(90% 60% at 100% 0%, rgba(1, 159, 96, 0.04), transparent 55%);
+  background-attachment: fixed;
+}
+
+/* Light mode subtle gradient atmosphere */
+body:not(.dark) {
+  background-color: #F1F4FA;
+  background-image: radial-gradient(50vw 57vh at 80vw 10vh, rgba(1, 159, 96, 0.03), transparent 65%);
+  background-attachment: fixed;
+}
+
+/* 3. Cards & Containers */
+.gsm-card {
+  background-color: #FFFFFF;
+  border: 1px solid #E6E9ED;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(16, 21, 18, 0.04);
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+}
+.gsm-card:hover {
+  border-color: #D6D9DE;
+  box-shadow: 0 10px 24px rgba(16, 21, 18, 0.08);
+}
+
+.dark .gsm-card {
+  background-color: #17191E;
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+}
+.dark .gsm-card:hover {
+  border-color: rgba(255, 255, 255, 0.16);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.5);
+}
+
+/* 4. Action Buttons */
+.btn-neon {
+  background-color: #C1FF7E;
+  color: #17191E;
+  font-weight: 600;
+  border-radius: 10px;
+  padding: 8px 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+  font-size: 13px;
+  cursor: pointer;
+  border: none;
+}
+.btn-neon:hover {
+  background-color: #aff565;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(193, 255, 126, 0.28);
+}
+
+.btn-emerald {
+  background-color: #019F60;
+  color: #FFFFFF;
+  font-weight: 600;
+  border-radius: 10px;
+  padding: 8px 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+  font-size: 13px;
+  cursor: pointer;
+  border: none;
+}
+.btn-emerald:hover {
+  background-color: #018550;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(1, 159, 96, 0.25);
+}
+
+/* Compatibility aliases for existing template buttons */
+.btn-gold {
+  background-color: #C1FF7E;
+  color: #17191E;
+  font-weight: 600;
+  border-radius: 10px;
+  padding: 7px 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+}
+.btn-gold:hover {
+  background-color: #aff565;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(193, 255, 126, 0.25);
+}
+
+.btn-teal {
+  background-color: #019F60;
+  color: #FFFFFF;
+  font-weight: 600;
+  border-radius: 10px;
+  padding: 7px 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+}
+.btn-teal:hover {
+  background-color: #018550;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(1, 159, 96, 0.25);
+}
+
+/* 5. Bank Logo Badge Component */
+.bank-logo-box {
+  background-color: #FFFFFF;
+  border: 1px solid #E6E9ED;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(16, 21, 18, 0.05);
+  transition: border-color 0.15s ease;
+}
+.dark .bank-logo-box {
+  background-color: #1A1E24;
+  border-color: rgba(255, 255, 255, 0.1);
+}

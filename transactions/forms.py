@@ -13,10 +13,12 @@ class TransactionForm(forms.ModelForm):
             'transaction_type',
             'amount',
             'transaction_date',
+            'settlement_date',
             'description'
         )
         widgets = {
             'transaction_date': forms.DateInput(attrs={'type': 'date'}),
+            'settlement_date': forms.DateInput(attrs={'type': 'date'}),
         }
 
     def __init__(self, *args, **kwargs):
@@ -29,7 +31,7 @@ class TransactionForm(forms.ModelForm):
 
         for field in self.fields.values():
             field.widget.attrs.update({
-                'class': 'w-full px-3 py-2.5 bg-[#0F1720] border border-[#1C2A38] rounded-md text-[#C8D4DF] text-sm focus:outline-none focus:border-[#C09B2A] transition-all'
+                'class': 'w-full px-3.5 py-2.5 bg-[#F7F9FC] dark:bg-[#1C2026] border border-[#E6E9ED] dark:border-white/10 rounded-xl text-[#17191E] dark:text-[#F1F4FA] text-sm focus:outline-none focus:border-[#019F60] dark:focus:border-[#C1FF7E] transition-all'
             })
     
     def clean(self):
@@ -41,6 +43,12 @@ class TransactionForm(forms.ModelForm):
             if category.category_type != transaction_type:
                 self.add_error('category', 'A categoria deve corresponder ao tipo de transação.')
         
+        transaction_date = cleaned_data.get('transaction_date')
+        settlement_date = cleaned_data.get('settlement_date')
+        if transaction_date and settlement_date:
+            if settlement_date < transaction_date:
+                self.add_error('settlement_date', 'A data de liquidação não pode ser anterior à data da transação.')
+
         amount = cleaned_data.get('amount')
         if amount and amount <= 0:
             self.add_error('amount', 'O valor deve ser maior que zero.')

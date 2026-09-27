@@ -1,120 +1,120 @@
 {% extends 'base.html' %}
 
-{% block title %}Perfil - Monetra{% endblock %}
+{% block title %}Perfil e Conexões - Monetra{% endblock %}
 
 {% block content %}
-<div class="p-4 sm:p-8 space-y-7 max-w-[680px] mx-auto">
+<div class="p-2 sm:p-6 space-y-6 max-w-[760px] mx-auto">
     <div>
-        <h1 class="text-2xl font-bold font-display text-[#E2EAF0]">Perfil e Configurações</h1>
-        <p class="text-xs sm:text-sm text-[#374B5C] mt-0.5">Gerencie suas informações pessoais e conexões bancárias</p>
+        <h1 class="text-2xl font-bold font-sans text-[#17191E] dark:text-[#F1F4FA] tracking-tight">Perfil e Integrações</h1>
+        <p class="text-xs sm:text-sm text-[#61656B] dark:text-[#8F949B] mt-0.5">Gerencie suas conexões bancárias via Open Finance e dados da sua conta</p>
     </div>
 
     <!-- Avatar Header -->
-    <div class="flex items-center gap-5">
-        <div class="w-16 h-16 rounded-2xl flex items-center justify-center text-2xl font-extrabold bg-[#141F2A] text-[#C09B2A] font-display shrink-0 shadow-lg">
+    <div class="flex items-center gap-4">
+        <div class="w-16 h-16 rounded-2xl flex items-center justify-center text-2xl font-extrabold bg-[#C1FF7E] text-[#17191E] font-sans shrink-0 shadow-sm">
             {{ user.profile.full_name|default:user.email|slice:":1"|upper }}
         </div>
         <div class="min-w-0">
-            <p class="font-bold text-base font-display text-[#C8D4DF] truncate">{{ user.profile.full_name|default:user.email }}</p>
-            <p class="text-xs text-[#374B5C] truncate">{{ user.email }}</p>
+            <p class="font-bold text-base font-sans text-[#17191E] dark:text-[#F1F4FA] truncate">{{ user.profile.full_name|default:user.username }}</p>
+            <p class="text-xs text-[#61656B] dark:text-[#8F949B] truncate">{{ user.email }}</p>
         </div>
     </div>
 
     <!-- Personal Info Card -->
-    <div class="rounded-lg border border-[#1C2A38] bg-[#0A1018] p-6 space-y-5 shadow-lg">
-        <div class="flex items-center justify-between border-b border-[#1C2A38] pb-4">
-            <p class="text-sm font-bold font-display text-[#C8D4DF]">Informações Pessoais</p>
-            <a href="{% url 'profiles:profile_update' %}" class="text-xs font-semibold text-[#C09B2A] hover:underline font-display">
+    <div class="rounded-2xl border border-[#E6E9ED] dark:border-white/10 bg-white dark:bg-[#17191E] p-6 space-y-5 shadow-sm">
+        <div class="flex items-center justify-between border-b border-[#E6E9ED] dark:border-white/10 pb-4">
+            <p class="text-sm font-bold font-sans text-[#17191E] dark:text-[#F1F4FA]">Informações Pessoais</p>
+            <a href="{% url 'profiles:profile_update' %}" class="text-xs font-semibold text-[#019F60] dark:text-[#C1FF7E] hover:underline font-sans">
                 Editar dados →
             </a>
         </div>
 
-        <div class="space-y-4 text-sm">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
             <div class="space-y-1">
-                <label class="text-xs font-semibold uppercase tracking-wider text-[#374B5C]">Nome Completo</label>
-                <p class="text-sm font-medium text-[#C8D4DF]">{{ profile.full_name|default:"Não informado" }}</p>
+                <label class="text-[11px] font-semibold uppercase tracking-wider text-[#61656B] dark:text-[#8F949B]">Nome Completo</label>
+                <p class="text-sm font-medium text-[#17191E] dark:text-[#F1F4FA]">{{ profile.full_name|default:"Não informado" }}</p>
             </div>
             <div class="space-y-1">
-                <label class="text-xs font-semibold uppercase tracking-wider text-[#374B5C]">E-mail de Acesso</label>
-                <p class="text-sm font-medium text-[#C8D4DF]">{{ user.email }}</p>
+                <label class="text-[11px] font-semibold uppercase tracking-wider text-[#61656B] dark:text-[#8F949B]">E-mail de Acesso</label>
+                <p class="text-sm font-medium text-[#17191E] dark:text-[#F1F4FA]">{{ user.email }}</p>
             </div>
             <div class="space-y-1">
-                <label class="text-xs font-semibold uppercase tracking-wider text-[#374B5C]">Telefone</label>
-                <p class="text-sm font-medium text-[#C8D4DF]">{{ profile.phone|default:"Não informado" }}</p>
+                <label class="text-[11px] font-semibold uppercase tracking-wider text-[#61656B] dark:text-[#8F949B]">Telefone</label>
+                <p class="text-sm font-medium text-[#17191E] dark:text-[#F1F4FA]">{{ profile.phone|default:"Não informado" }}</p>
             </div>
             <div class="space-y-1">
-                <label class="text-xs font-semibold uppercase tracking-wider text-[#374B5C]">Membro desde</label>
-                <p class="text-xs text-[#637585] font-mono">{{ user.date_joined|date:"d/m/Y" }}</p>
+                <label class="text-[11px] font-semibold uppercase tracking-wider text-[#61656B] dark:text-[#8F949B]">Membro desde</label>
+                <p class="text-xs text-[#61656B] dark:text-[#8F949B] font-mono">{{ user.date_joined|date:"d/m/Y" }}</p>
             </div>
         </div>
     </div>
 
     <!-- Pluggy AI / Open Finance Card -->
-    <div class="rounded-lg border border-[#1C2A38] bg-[#0A1018] p-6 space-y-5 shadow-lg">
-        <div class="flex items-center justify-between border-b border-[#1C2A38] pb-4">
-            <div class="flex items-center gap-2">
-                <div class="w-7 h-7 rounded-md bg-[#0FC4B3]/10 flex items-center justify-center text-[#0FC4B3] shrink-0">
+    <div class="rounded-2xl border border-[#E6E9ED] dark:border-white/10 bg-white dark:bg-[#17191E] p-6 space-y-5 shadow-sm">
+        <div class="flex items-center justify-between border-b border-[#E6E9ED] dark:border-white/10 pb-4">
+            <div class="flex items-center gap-2.5">
+                <div class="w-8 h-8 rounded-xl bg-[#019F60]/10 dark:bg-[#C1FF7E]/10 flex items-center justify-center text-[#019F60] dark:text-[#C1FF7E] shrink-0">
                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
                     </svg>
                 </div>
                 <div>
-                    <p class="text-sm font-bold font-display text-[#E2EAF0]">Open Finance · Pluggy AI</p>
+                    <p class="text-sm font-bold font-sans text-[#17191E] dark:text-[#F1F4FA]">Open Finance · Conexões Bancárias</p>
                 </div>
             </div>
             {% if profile.pluggy_client_id %}
-                <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-[#1DCF72]/10 text-[#1DCF72] border border-[#1DCF72]/20 flex items-center gap-1">
+                <span class="text-[10px] font-bold uppercase px-2.5 py-1 rounded-full bg-[#1DCF72]/15 text-[#1DCF72] border border-[#1DCF72]/30 flex items-center gap-1.5">
                     <span class="w-1.5 h-1.5 rounded-full bg-[#1DCF72]"></span>
-                    {{ profile.pluggy_item_ids_list|length }} Conexão{{ profile.pluggy_item_ids_list|length|pluralize:"ões,ão" }}
+                    {{ profile.pluggy_item_ids_list|length }} Conex{{ profile.pluggy_item_ids_list|length|pluralize:"ão,ões" }}
                 </span>
             {% else %}
-                <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-[#374B5C]/20 text-[#637585] border border-[#1C2A38]">
+                <span class="text-[10px] font-bold uppercase px-2.5 py-1 rounded-full bg-black/5 dark:bg-white/10 text-[#61656B] dark:text-[#8F949B]">
                     Não configurado
                 </span>
             {% endif %}
         </div>
 
-        <p class="text-xs text-[#637585] leading-relaxed">
-            Sincroniza automaticamente suas contas correntes, cartões, extratos e <strong>carteiras de investimentos</strong> via Open Finance.
+        <p class="text-xs text-[#61656B] dark:text-[#8F949B] leading-relaxed">
+            Sincroniza automaticamente suas contas correntes, poupanças e <strong>carteiras de investimentos</strong> via Open Finance oficial com a Pluggy.
         </p>
 
         <!-- Credentials summary -->
-        <div class="space-y-2 text-xs bg-[#0F1720] border border-[#1C2A38] rounded-lg p-3.5">
+        <div class="space-y-2 text-xs bg-[#F7F9FC] dark:bg-white/[0.03] border border-[#E6E9ED] dark:border-white/10 rounded-xl p-3.5">
             <div class="flex justify-between items-center">
-                <span class="text-[#374B5C]">Client ID:</span>
-                <span class="font-mono text-[#C8D4DF]">{% if profile.pluggy_client_id %}{{ profile.pluggy_client_id|truncatechars:20 }}{% else %}Não configurado{% endif %}</span>
+                <span class="text-[#61656B] dark:text-[#8F949B]">Client ID:</span>
+                <span class="font-mono text-[#17191E] dark:text-[#F1F4FA]">{% if profile.pluggy_client_id %}{{ profile.pluggy_client_id|truncatechars:20 }}{% else %}Não configurado{% endif %}</span>
             </div>
             <div class="flex justify-between items-center">
-                <span class="text-[#374B5C]">Client Secret:</span>
-                <span class="font-mono text-[#C8D4DF]">{% if profile.pluggy_client_secret %}••••••••••••••••{% else %}Não configurado{% endif %}</span>
+                <span class="text-[#61656B] dark:text-[#8F949B]">Client Secret:</span>
+                <span class="font-mono text-[#17191E] dark:text-[#F1F4FA]">{% if profile.pluggy_client_secret %}••••••••••••••••{% else %}Não configurado{% endif %}</span>
             </div>
             {% if profile.pluggy_last_sync %}
             <div class="flex justify-between items-center">
-                <span class="text-[#374B5C]">Última Sincronização:</span>
-                <span class="font-mono text-[#0FC4B3]">{{ profile.pluggy_last_sync|date:"d/m/Y H:i:s" }}</span>
+                <span class="text-[#61656B] dark:text-[#8F949B]">Última Sincronização:</span>
+                <span class="font-mono text-[#019F60] dark:text-[#C1FF7E]">{{ profile.pluggy_last_sync|date:"d/m/Y H:i:s" }}</span>
             </div>
             {% endif %}
         </div>
 
         <!-- Connected Banks List -->
-        <div class="space-y-2 pt-2 border-t border-[#1C2A38]">
+        <div class="space-y-3 pt-2 border-t border-[#E6E9ED] dark:border-white/10">
             <div class="flex items-center justify-between">
-                <p class="text-xs font-bold uppercase tracking-wider text-[#C09B2A]">Conexões Bancárias Ativas</p>
-                <span class="text-[10px] text-[#374B5C]">{{ profile.pluggy_item_ids_list|length }} cadastrada{{ profile.pluggy_item_ids_list|length|pluralize }}</span>
+                <p class="text-xs font-bold uppercase tracking-wider text-[#019F60] dark:text-[#C1FF7E]">Conexões Ativas</p>
+                <span class="text-[10px] text-[#61656B] dark:text-[#8F949B]">{{ profile.pluggy_item_ids_list|length }} cadastrada{{ profile.pluggy_item_ids_list|length|pluralize }}</span>
             </div>
 
             {% if profile.pluggy_item_ids_list %}
             <div class="space-y-2">
                 {% for item_uuid in profile.pluggy_item_ids_list %}
-                <div class="flex items-center justify-between p-2.5 rounded-md bg-[#0F1720] border border-[#1C2A38] text-xs">
+                <div class="flex items-center justify-between p-3 rounded-xl bg-[#F7F9FC] dark:bg-white/[0.03] border border-[#E6E9ED] dark:border-white/10 text-xs">
                     <div class="flex items-center gap-2.5 min-w-0">
                         <span class="w-2 h-2 rounded-full bg-[#1DCF72] shrink-0"></span>
-                        <span class="font-mono text-[#C8D4DF] truncate">{{ item_uuid }}</span>
+                        <span class="font-mono text-[#17191E] dark:text-[#F1F4FA] truncate">{{ item_uuid }}</span>
                     </div>
                     <form action="{% url 'profiles:remove_connection' %}" method="post" class="shrink-0 ml-2" onsubmit="return confirm('Remover esta conexão bancária?');">
                         {% csrf_token %}
                         <input type="hidden" name="item_id" value="{{ item_uuid }}">
-                        <button type="submit" class="text-[11px] text-[#374B5C] hover:text-[#E84040] hover:bg-[#E84040]/10 px-2 py-1 rounded transition-colors" title="Remover Conexão">
+                        <button type="submit" class="text-[11px] text-[#61656B] hover:text-[#E84040] hover:bg-[#E84040]/10 px-2.5 py-1 rounded-lg transition-colors font-medium" title="Remover Conexão">
                             Remover
                         </button>
                     </form>
@@ -122,22 +122,22 @@
                 {% endfor %}
             </div>
             {% else %}
-            <p class="text-xs text-[#374B5C] italic p-2 bg-[#0F1720]/50 rounded border border-[#1C2A38]">
-                Nenhum Item ID adicionado ainda. Adicione uma conexão abaixo ou conecte seu banco.
+            <p class="text-xs text-[#61656B] dark:text-[#8F949B] italic p-3 bg-[#F7F9FC] dark:bg-white/[0.02] rounded-xl border border-[#E6E9ED] dark:border-white/10">
+                Nenhum Item ID adicionado ainda. Conecte sua conta abaixo.
             </p>
             {% endif %}
 
             <!-- Add new connection form -->
-            <form action="{% url 'profiles:add_connection' %}" method="post" class="pt-2 flex gap-2">
+            <form action="{% url 'profiles:add_connection' %}" method="post" class="pt-2 flex flex-col sm:flex-row gap-2">
                 {% csrf_token %}
                 <input 
                     type="text" 
                     name="item_id" 
                     placeholder="Cole o novo Item ID (UUID) do banco..." 
                     required 
-                    class="flex-1 px-3 py-2 rounded-md text-xs bg-[#0F1720] border border-[#1C2A38] text-[#C8D4DF] focus:outline-none focus:border-[#0FC4B3] font-mono"
+                    class="flex-1 px-3 py-2 rounded-xl text-xs bg-white dark:bg-[#1C2026] border border-[#E6E9ED] dark:border-white/10 text-[#17191E] dark:text-[#F1F4FA] focus:outline-none focus:border-[#019F60] dark:focus:border-[#C1FF7E] font-mono shadow-sm"
                 />
-                <button type="submit" class="btn-teal text-xs py-2 px-3.5 shrink-0 flex items-center gap-1.5">
+                <button type="submit" class="btn-teal text-xs py-2 px-4 shrink-0 flex items-center justify-center gap-1.5">
                     <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
                     </svg>
@@ -147,18 +147,18 @@
         </div>
 
         <!-- Sync Actions -->
-        <div class="pt-3 border-t border-[#1C2A38] flex flex-col sm:flex-row gap-3">
+        <div class="pt-3 border-t border-[#E6E9ED] dark:border-white/10 flex flex-col sm:flex-row gap-3">
             {% if profile.pluggy_client_id %}
-                <form action="{% url 'profiles:sync_pluggy' %}" method="post" class="flex-1">
+                <form action="{% url 'profiles:sync_pluggy' %}" method="post" class="flex-1" onsubmit="const btn = this.querySelector('button'); btn.disabled = true; btn.classList.add('opacity-75', 'cursor-wait'); btn.innerHTML = '<svg class=\'w-4 h-4 animate-spin\' fill=\'none\' viewBox=\'0 0 24 24\' stroke=\'currentColor\'><path stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'2\' d=\'M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15\' /></svg><span>Sincronizando todas as contas...</span>';">
                     {% csrf_token %}
-                    <button type="submit" class="btn-gold w-full text-center justify-center text-xs py-2.5 flex items-center gap-2 font-bold shadow">
+                    <button type="submit" class="btn-gold w-full text-center justify-center text-xs py-2.5 flex items-center gap-2 font-bold shadow-sm">
                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                         </svg>
-                        Sincronizar Todas as Contas & Investimentos
+                        <span>Sincronizar Todas as Contas & Investimentos</span>
                     </button>
                 </form>
-                <a href="{% url 'profiles:profile_update' %}" class="btn-secondary text-center justify-center text-xs py-2.5 px-4">
+                <a href="{% url 'profiles:profile_update' %}" class="px-4 py-2.5 rounded-xl border border-[#E6E9ED] dark:border-white/10 text-center text-xs font-semibold text-[#17191E] dark:text-[#F1F4FA] hover:bg-black/5 dark:hover:bg-white/5 transition-all">
                     Configurar Chaves
                 </a>
             {% else %}
@@ -170,14 +170,14 @@
     </div>
 
     <!-- Danger Zone Card -->
-    <div class="rounded-lg border border-[#E84040]/30 bg-[#0A1018] p-6 space-y-3 shadow-lg">
-        <p class="text-sm font-bold font-display text-[#E84040]">Zona de Perigo</p>
-        <p class="text-xs text-[#374B5C] leading-relaxed">
-            Para desconectar da sessão atual ou encerrar a conta:
+    <div class="rounded-2xl border border-[#E84040]/30 bg-white dark:bg-[#17191E] p-6 space-y-3 shadow-sm">
+        <p class="text-sm font-bold font-sans text-[#E84040]">Zona de Perigo</p>
+        <p class="text-xs text-[#61656B] dark:text-[#8F949B] leading-relaxed">
+            Para desconectar da sessão atual ou encerrar a conta neste dispositivo:
         </p>
         <form action="{% url 'users:logout' %}" method="post">
             {% csrf_token %}
-            <button type="submit" class="text-xs font-semibold px-4 py-2 rounded-md bg-[#E84040]/10 text-[#E84040] border border-[#E84040]/30 hover:bg-[#E84040] hover:text-white transition-all font-display">
+            <button type="submit" class="text-xs font-semibold px-4 py-2 rounded-xl bg-[#E84040]/10 text-[#E84040] border border-[#E84040]/30 hover:bg-[#E84040] hover:text-white transition-all font-sans">
                 Desconectar da conta
             </button>
         </form>

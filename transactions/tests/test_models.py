@@ -23,3 +23,16 @@ class TestTransactionModel:
     def test_transaction_type_choices(self):
         transaction = TransactionFactory(transaction_type='INCOME')
         assert transaction.get_transaction_type_display() == 'Entrada'
+
+    def test_transaction_type_investment_and_settlement_date(self):
+        from datetime import date, timedelta
+        tx_date = date.today()
+        settle_date = tx_date + timedelta(days=2)
+        transaction = TransactionFactory(
+            transaction_type='INVESTMENT',
+            transaction_date=tx_date,
+            settlement_date=settle_date
+        )
+        assert transaction.get_transaction_type_display() == 'Investimento'
+        assert transaction.settlement_date == settle_date
+        assert transaction.is_scheduled is True

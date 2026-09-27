@@ -1,15 +1,17 @@
 {% extends 'base.html' %}
-{% load currency_filters %}
+{% load currency_filters static %}
 
-{% block title %}Dashboard - Monetra{% endblock %}
+{% block title %}Painel - Monetra{% endblock %}
 
 {% block content %}
-<div class="space-y-7 max-w-[1200px] mx-auto">
+<div class="space-y-6 max-w-[1240px] mx-auto">
     <!-- Header -->
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-            <h1 class="text-2xl font-bold font-display text-[#E2EAF0]">Dashboard</h1>
-            <p class="text-xs sm:text-sm text-[#374B5C] mt-0.5">Olá, {{ user.get_full_name|default:user.email }} · Panorama geral das suas finanças</p>
+            <h1 class="text-2xl font-bold font-sans text-[#17191E] dark:text-[#F1F4FA] tracking-tight">Painel Financeiro</h1>
+            <p class="text-xs sm:text-sm text-[#61656B] dark:text-[#8F949B] mt-0.5">
+                Olá, {{ user.get_full_name|default:user.username }} · Visão consolidada de contas, investimentos e movimentações
+            </p>
         </div>
         <div class="flex items-center gap-3">
             <button id="btn-ai-summary" class="btn-teal text-xs sm:text-sm">
@@ -28,19 +30,19 @@
     </div>
 
     <!-- AI Summary Box (Expandable) -->
-    <div id="ai-summary-container" class="hidden rounded-lg border border-[#0FC4B3]/25 bg-[#0FC4B3]/5 p-5 transition-all duration-300">
+    <div id="ai-summary-container" class="hidden rounded-2xl border border-[#019F60]/20 dark:border-[#C1FF7E]/25 bg-[#019F60]/5 dark:bg-[#C1FF7E]/5 p-5 transition-all duration-300">
         <div class="flex items-start gap-3.5">
-            <div class="w-9 h-9 rounded-md bg-[#0FC4B3]/10 flex items-center justify-center shrink-0 text-[#0FC4B3]">
+            <div class="w-9 h-9 rounded-xl bg-[#019F60]/10 dark:bg-[#C1FF7E]/10 flex items-center justify-center shrink-0 text-[#019F60] dark:text-[#C1FF7E]">
                 <svg class="w-5 h-5 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
             </div>
             <div class="flex-1 space-y-2">
                 <div class="flex items-center justify-between">
-                    <p class="text-sm font-bold font-display text-[#0FC4B3]">Análise Inteligente MonetraBot</p>
-                    <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-[#0FC4B3]/10 text-[#0FC4B3] tracking-widest">LangChain IA</span>
+                    <p class="text-sm font-bold font-sans text-[#019F60] dark:text-[#C1FF7E]">Análise Inteligente MonetraBot</p>
+                    <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded-full bg-[#019F60]/10 dark:bg-[#C1FF7E]/10 text-[#019F60] dark:text-[#C1FF7E] tracking-widest font-mono">DeepSeek IA</span>
                 </div>
-                <div id="ai-summary-text" class="text-xs sm:text-sm text-[#637585] leading-relaxed whitespace-pre-line">
+                <div id="ai-summary-text" class="text-xs sm:text-sm text-[#17191E] dark:text-[#F1F4FA] leading-relaxed whitespace-pre-line">
                     Processando seus dados financeiros...
                 </div>
             </div>
@@ -48,52 +50,97 @@
     </div>
 
     <!-- KPI Cards Grid -->
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <!-- Saldo Total -->
-        <div class="rounded-lg border border-[#1C2A38] bg-[#0A1018] p-5 space-y-2.5">
-            <p class="text-[10px] font-bold uppercase tracking-widest text-[#374B5C]">Saldo Total</p>
-            <p class="text-2xl font-extrabold font-mono text-[#C09B2A] leading-none">{{ total_balance|currency }}</p>
-            <p class="text-xs text-[#374B5C]">{{ active_accounts_count }} contas consolidadas</p>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-stretch">
+        <!-- Saldo Total (com detalhamento visual de cada conta) -->
+        <div class="rounded-2xl border border-[#E6E9ED] dark:border-white/10 bg-white dark:bg-[#17191E] p-5 space-y-3 flex flex-col justify-between shadow-sm transition-all hover:border-[#D6D9DE] dark:hover:border-white/20">
+            <div>
+                <div class="flex items-center justify-between">
+                    <p class="text-[10px] font-bold uppercase tracking-widest text-[#61656B] dark:text-[#8F949B]">Saldo Total</p>
+                    <span class="text-[10px] font-mono text-[#019F60] dark:text-[#C1FF7E] bg-[#019F60]/10 dark:bg-[#C1FF7E]/10 px-2 py-0.5 rounded-full border border-[#019F60]/20 dark:border-[#C1FF7E]/20 font-semibold">{{ active_accounts_count }} conta{{ active_accounts_count|pluralize }}</span>
+                </div>
+                <p class="text-2xl font-extrabold font-mono text-[#17191E] dark:text-[#F1F4FA] leading-tight mt-1">{{ total_balance|currency }}</p>
+            </div>
+
+            <!-- Lista de contas e saldos individuais com Logos Grandes e Claras -->
+            <div class="pt-3 border-t border-[#E6E9ED] dark:border-white/10 space-y-2.5 max-h-[170px] overflow-y-auto pr-1">
+                {% for acc in accounts %}
+                <div class="flex items-center justify-between text-xs group py-1">
+                    <div class="flex items-center gap-2.5 min-w-0 pr-2">
+                        <!-- Logo do Banco em Tamanho Legível (36px x 36px) -->
+                        <div class="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 bg-white dark:bg-[#1C2026] border border-[#E6E9ED] dark:border-white/10 p-1.5 shadow-sm overflow-hidden">
+                            {% if acc.bank_brand.logo_svg and acc.bank_brand.name != 'Banco' %}
+                                <img src="{% static acc.bank_brand.logo_svg %}" alt="{{ acc.bank_brand.name }}" class="w-full h-full object-contain">
+                            {% elif acc.logo_url %}
+                                <img src="{{ acc.logo_url }}" alt="{{ acc.bank_brand.name }}" class="w-full h-full object-contain" onerror="this.onerror=null; this.src='{% static acc.bank_brand.logo_svg %}';">
+                            {% elif acc.bank_brand.logo_svg %}
+                                <img src="{% static acc.bank_brand.logo_svg %}" alt="{{ acc.bank_brand.name }}" class="w-full h-full object-contain">
+                            {% else %}
+                                <span class="text-xs font-bold font-sans {{ acc.bank_brand.text_class }}">{{ acc.bank_brand.initials }}</span>
+                            {% endif %}
+                        </div>
+                        <div class="min-w-0 flex flex-col">
+                            <span class="text-[#17191E] dark:text-[#F1F4FA] group-hover:text-[#019F60] dark:group-hover:text-[#C1FF7E] transition-colors truncate text-xs font-semibold" title="{{ acc.name }}">
+                                {{ acc.name }}
+                            </span>
+                            <span class="text-[10px] text-[#8F949B] truncate">
+                                {{ acc.get_account_type_display|default:acc.account_type }}
+                            </span>
+                        </div>
+                    </div>
+                    <span class="font-mono text-xs font-bold shrink-0 {% if acc.balance >= 0 %}text-[#1DCF72]{% else %}text-[#E84040]{% endif %}">
+                        {{ acc.balance|currency }}
+                    </span>
+                </div>
+                {% empty %}
+                <p class="text-[11px] text-[#8F949B] italic py-1">Nenhuma conta cadastrada</p>
+                {% endfor %}
+            </div>
         </div>
 
         <!-- Entradas -->
-        <div class="rounded-lg border border-[#1C2A38] bg-[#0A1018] p-5 space-y-2.5">
-            <p class="text-[10px] font-bold uppercase tracking-widest text-[#374B5C]">Entradas (Mês)</p>
-            <p class="text-2xl font-extrabold font-mono text-[#1DCF72] leading-none">{{ monthly_income|currency }}</p>
-            <p class="text-xs text-[#374B5C]">Receitas do período</p>
+        <div class="rounded-2xl border border-[#E6E9ED] dark:border-white/10 bg-white dark:bg-[#17191E] p-5 space-y-2.5 flex flex-col justify-between shadow-sm transition-all hover:border-[#D6D9DE] dark:hover:border-white/20">
+            <div>
+                <p class="text-[10px] font-bold uppercase tracking-widest text-[#61656B] dark:text-[#8F949B]">Entradas (Mês)</p>
+                <p class="text-2xl font-extrabold font-mono text-[#1DCF72] leading-tight mt-1">{{ monthly_income|currency }}</p>
+            </div>
+            <p class="text-xs text-[#8F949B] pt-2 border-t border-[#E6E9ED] dark:border-white/10">Receitas do período</p>
         </div>
 
         <!-- Saídas -->
-        <div class="rounded-lg border border-[#1C2A38] bg-[#0A1018] p-5 space-y-2.5">
-            <p class="text-[10px] font-bold uppercase tracking-widest text-[#374B5C]">Saídas (Mês)</p>
-            <p class="text-2xl font-extrabold font-mono text-[#E84040] leading-none">{{ monthly_expense|currency }}</p>
-            <p class="text-xs text-[#374B5C]">Despesas do período</p>
+        <div class="rounded-2xl border border-[#E6E9ED] dark:border-white/10 bg-white dark:bg-[#17191E] p-5 space-y-2.5 flex flex-col justify-between shadow-sm transition-all hover:border-[#D6D9DE] dark:hover:border-white/20">
+            <div>
+                <p class="text-[10px] font-bold uppercase tracking-widest text-[#61656B] dark:text-[#8F949B]">Saídas (Mês)</p>
+                <p class="text-2xl font-extrabold font-mono text-[#E84040] leading-tight mt-1">{{ monthly_expense|currency }}</p>
+            </div>
+            <p class="text-xs text-[#8F949B] pt-2 border-t border-[#E6E9ED] dark:border-white/10">Despesas do período</p>
         </div>
 
         <!-- Balanço Líquido -->
-        <div class="rounded-lg border border-[#1C2A38] bg-[#0A1018] p-5 space-y-2.5">
-            <p class="text-[10px] font-bold uppercase tracking-widest text-[#374B5C]">Balanço (Mês)</p>
-            <p class="text-2xl font-extrabold font-mono leading-none {% if monthly_balance >= 0 %}text-[#1DCF72]{% else %}text-[#E84040]{% endif %}">
-                {{ monthly_balance|currency }}
-            </p>
-            <p class="text-xs text-[#374B5C]">Saldo líquido do período</p>
+        <div class="rounded-2xl border border-[#E6E9ED] dark:border-white/10 bg-white dark:bg-[#17191E] p-5 space-y-2.5 flex flex-col justify-between shadow-sm transition-all hover:border-[#D6D9DE] dark:hover:border-white/20">
+            <div>
+                <p class="text-[10px] font-bold uppercase tracking-widest text-[#61656B] dark:text-[#8F949B]">Balanço Líquido (Mês)</p>
+                <p class="text-2xl font-extrabold font-mono leading-tight mt-1 {% if monthly_balance >= 0 %}text-[#1DCF72]{% else %}text-[#E84040]{% endif %}">
+                    {{ monthly_balance|currency }}
+                </p>
+            </div>
+            <p class="text-xs text-[#8F949B] pt-2 border-t border-[#E6E9ED] dark:border-white/10">Saldo líquido do período</p>
         </div>
     </div>
 
     <!-- Charts Row 1 -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
         <!-- Daily Evolution Chart -->
-        <div class="lg:col-span-2 rounded-lg border border-[#1C2A38] bg-[#0A1018] p-5">
-            <p class="text-sm font-bold font-display text-[#C8D4DF] mb-4">Evolução do Saldo</p>
+        <div class="lg:col-span-2 rounded-2xl border border-[#E6E9ED] dark:border-white/10 bg-white dark:bg-[#17191E] p-5 shadow-sm">
+            <p class="text-sm font-bold font-sans text-[#17191E] dark:text-[#F1F4FA] mb-4">Evolução Diária do Saldo</p>
             <div class="relative h-[220px] w-full">
                 <canvas id="chart-daily-evolution"></canvas>
             </div>
         </div>
 
         <!-- Category Expenses Doughnut Chart -->
-        <div class="rounded-lg border border-[#1C2A38] bg-[#0A1018] p-5 flex flex-col justify-between">
+        <div class="rounded-2xl border border-[#E6E9ED] dark:border-white/10 bg-white dark:bg-[#17191E] p-5 flex flex-col justify-between shadow-sm">
             <div>
-                <p class="text-sm font-bold font-display text-[#C8D4DF] mb-3">Gastos por Categoria</p>
+                <p class="text-sm font-bold font-sans text-[#17191E] dark:text-[#F1F4FA] mb-3">Gastos por Categoria</p>
                 <div class="relative h-[150px] w-full flex items-center justify-center">
                     <canvas id="chart-category-donut"></canvas>
                 </div>
@@ -102,13 +149,13 @@
                 {% for item in category_summary|slice:":4" %}
                 <div class="flex items-center justify-between text-xs">
                     <div class="flex items-center gap-2">
-                        <span class="w-2 h-2 rounded-full shrink-0" style="background-color: {{ item.category__color|default:'#C09B2A' }};"></span>
-                        <span class="text-[#637585] truncate max-w-[120px]">{{ item.category__name }}</span>
+                        <span class="w-2.5 h-2.5 rounded-full shrink-0" style="background-color: {{ item.category__color|default:'#019F60' }};"></span>
+                        <span class="text-[#61656B] dark:text-[#8F949B] truncate max-w-[120px]">{{ item.category__name }}</span>
                     </div>
-                    <span class="font-mono text-[#C8D4DF] font-medium">{{ item.total|currency }}</span>
+                    <span class="font-mono text-[#17191E] dark:text-[#F1F4FA] font-medium">{{ item.total|currency }}</span>
                 </div>
                 {% empty %}
-                <p class="text-xs text-[#374B5C] text-center py-2">Nenhum gasto registrado este mês.</p>
+                <p class="text-xs text-[#8F949B] text-center py-2">Nenhum gasto registrado este mês.</p>
                 {% endfor %}
             </div>
         </div>
@@ -117,68 +164,68 @@
     <!-- Charts Row 2 -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
         <!-- Monthly History Bar Chart -->
-        <div class="lg:col-span-2 rounded-lg border border-[#1C2A38] bg-[#0A1018] p-5">
-            <p class="text-sm font-bold font-display text-[#C8D4DF] mb-4">Entradas vs Saídas — Histórico</p>
+        <div class="lg:col-span-2 rounded-2xl border border-[#E6E9ED] dark:border-white/10 bg-white dark:bg-[#17191E] p-5 shadow-sm">
+            <p class="text-sm font-bold font-sans text-[#17191E] dark:text-[#F1F4FA] mb-4">Entradas vs Saídas — Histórico Mensal</p>
             <div class="relative h-[220px] w-full">
                 <canvas id="chart-monthly-bars"></canvas>
             </div>
         </div>
 
         <!-- Category Progress Bars -->
-        <div class="rounded-lg border border-[#1C2A38] bg-[#0A1018] p-5 space-y-4">
-            <p class="text-sm font-bold font-display text-[#C8D4DF]">Progresso por Categoria</p>
+        <div class="rounded-2xl border border-[#E6E9ED] dark:border-white/10 bg-white dark:bg-[#17191E] p-5 space-y-4 shadow-sm">
+            <p class="text-sm font-bold font-sans text-[#17191E] dark:text-[#F1F4FA]">Composição por Categoria</p>
             <div class="space-y-3.5">
                 {% for item in category_summary %}
                 <div class="space-y-1.5">
                     <div class="flex items-center justify-between text-xs">
-                        <span class="text-[#637585]">{{ item.category__name }}</span>
-                        <span class="font-mono text-[#C8D4DF]">{{ item.percentage }}% · {{ item.total|currency }}</span>
+                        <span class="text-[#61656B] dark:text-[#8F949B]">{{ item.category__name }}</span>
+                        <span class="font-mono text-[#17191E] dark:text-[#F1F4FA] font-semibold">{{ item.percentage }}% · {{ item.total|currency }}</span>
                     </div>
-                    <div class="h-1.5 rounded-full overflow-hidden bg-[#141F2A]">
-                        <div class="h-full rounded-full transition-all duration-500" style="width: {{ item.percentage }}%; background-color: {{ item.category__color|default:'#C09B2A' }};"></div>
+                    <div class="h-2 rounded-full overflow-hidden bg-[#E6E9ED] dark:bg-white/10">
+                        <div class="h-full rounded-full transition-all duration-500" style="width: {{ item.percentage }}%; background-color: {{ item.category__color|default:'#019F60' }};"></div>
                     </div>
                 </div>
                 {% empty %}
-                <p class="text-xs text-[#374B5C] text-center py-4">Sem dados de categorias no período.</p>
+                <p class="text-xs text-[#8F949B] text-center py-4">Sem dados de categorias no período.</p>
                 {% endfor %}
             </div>
         </div>
     </div>
 
     <!-- Recent Transactions Table -->
-    <div class="rounded-lg border border-[#1C2A38] bg-[#0A1018] overflow-hidden">
-        <div class="px-5 py-4 border-b border-[#1C2A38] flex items-center justify-between">
-            <p class="text-sm font-bold font-display text-[#C8D4DF]">Últimas Transações</p>
-            <a href="{% url 'transactions:transaction_list' %}" class="text-xs font-semibold text-[#C09B2A] hover:underline font-display">
+    <div class="rounded-2xl border border-[#E6E9ED] dark:border-white/10 bg-white dark:bg-[#17191E] overflow-hidden shadow-sm">
+        <div class="px-5 py-4 border-b border-[#E6E9ED] dark:border-white/10 flex items-center justify-between">
+            <p class="text-sm font-bold font-sans text-[#17191E] dark:text-[#F1F4FA]">Últimas Transações</p>
+            <a href="{% url 'transactions:transaction_list' %}" class="text-xs font-semibold text-[#019F60] dark:text-[#C1FF7E] hover:underline font-sans">
                 Ver todas →
             </a>
         </div>
         <div class="overflow-x-auto">
             <table class="w-full text-left text-sm">
                 <thead>
-                    <tr class="border-b border-[#1C2A38] bg-[#070C12]">
-                        <th class="px-5 py-3.5 text-xs font-semibold uppercase tracking-widest text-[#374B5C]">Data</th>
-                        <th class="px-5 py-3.5 text-xs font-semibold uppercase tracking-widest text-[#374B5C]">Descrição</th>
-                        <th class="px-5 py-3.5 text-xs font-semibold uppercase tracking-widest text-[#374B5C]">Categoria</th>
-                        <th class="px-5 py-3.5 text-xs font-semibold uppercase tracking-widest text-[#374B5C]">Conta</th>
-                        <th class="px-5 py-3.5 text-xs font-semibold uppercase tracking-widest text-[#374B5C] text-right">Valor</th>
+                    <tr class="border-b border-[#E6E9ED] dark:border-white/10 bg-[#F7F9FC] dark:bg-white/[0.02]">
+                        <th class="px-5 py-3 text-[11px] font-semibold uppercase tracking-wider text-[#61656B] dark:text-[#8F949B]">Data</th>
+                        <th class="px-5 py-3 text-[11px] font-semibold uppercase tracking-wider text-[#61656B] dark:text-[#8F949B]">Descrição</th>
+                        <th class="px-5 py-3 text-[11px] font-semibold uppercase tracking-wider text-[#61656B] dark:text-[#8F949B]">Categoria</th>
+                        <th class="px-5 py-3 text-[11px] font-semibold uppercase tracking-wider text-[#61656B] dark:text-[#8F949B]">Conta</th>
+                        <th class="px-5 py-3 text-[11px] font-semibold uppercase tracking-wider text-[#61656B] dark:text-[#8F949B] text-right">Valor</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-[#1C2A38]">
+                <tbody class="divide-y divide-[#E6E9ED] dark:divide-white/10">
                     {% for transaction in recent_transactions %}
-                    <tr class="transition-colors hover:bg-[#0F1720]">
-                        <td class="px-5 py-3.5 font-mono text-xs text-[#374B5C]">
+                    <tr class="transition-colors hover:bg-[#F7F9FC] dark:hover:bg-white/[0.04]">
+                        <td class="px-5 py-3.5 font-mono text-xs text-[#61656B] dark:text-[#8F949B]">
                             {{ transaction.transaction_date|date:"d/m/Y" }}
                         </td>
-                        <td class="px-5 py-3.5 text-xs font-medium text-[#C8D4DF]">
+                        <td class="px-5 py-3.5 text-xs font-medium text-[#17191E] dark:text-[#F1F4FA]">
                             {{ transaction.description }}
                         </td>
                         <td class="px-5 py-3.5">
-                            <span class="inline-flex items-center gap-1.5 text-xs px-2 py-0.5 rounded-full font-medium" style="background-color: {{ transaction.category.color|default:'#C09B2A' }}18; color: {{ transaction.category.color|default:'#C09B2A' }};">
+                            <span class="inline-flex items-center gap-1.5 text-xs px-2.5 py-0.5 rounded-full font-medium" style="background-color: {{ transaction.category.color|default:'#019F60' }}18; color: {{ transaction.category.color|default:'#019F60' }};">
                                 {{ transaction.category.name|default:"Geral" }}
                             </span>
                         </td>
-                        <td class="px-5 py-3.5 text-xs text-[#374B5C]">
+                        <td class="px-5 py-3.5 text-xs text-[#61656B] dark:text-[#8F949B]">
                             {{ transaction.account.name }}
                         </td>
                         <td class="px-5 py-3.5 font-mono font-bold text-xs text-right {% if transaction.transaction_type == 'INCOME' %}text-[#1DCF72]{% else %}text-[#E84040]{% endif %}">
@@ -187,7 +234,7 @@
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="5" class="px-5 py-10 text-center text-xs text-[#374B5C]">
+                        <td colspan="5" class="px-5 py-10 text-center text-xs text-[#8F949B]">
                             Nenhuma transação registrada até o momento.
                         </td>
                     </tr>
@@ -205,9 +252,12 @@
 {{ monthly_history|json_script:"history-data" }}
 
 <script>
-    // Configurações padrão do Chart.js para o tema escuro Monetra
-    Chart.defaults.color = '#374B5C';
-    Chart.defaults.font.family = 'JetBrains Mono, monospace';
+    const isDark = document.documentElement.classList.contains('dark');
+    const gridColor = isDark ? 'rgba(255, 255, 255, 0.06)' : 'rgba(0, 0, 0, 0.05)';
+    const textColor = isDark ? '#8F949B' : '#61656B';
+
+    Chart.defaults.color = textColor;
+    Chart.defaults.font.family = '"JetBrains Mono", monospace';
     Chart.defaults.font.size = 10;
 
     const dailyData = JSON.parse(document.getElementById('daily-data').textContent || '[]');
@@ -224,14 +274,14 @@
                 datasets: [{
                     label: 'Saldo (R$)',
                     data: dailyData.map(d => d.balance),
-                    borderColor: '#C09B2A',
-                    backgroundColor: 'rgba(192, 155, 42, 0.08)',
+                    borderColor: '#019F60',
+                    backgroundColor: 'rgba(1, 159, 96, 0.08)',
                     borderWidth: 2,
                     fill: true,
                     tension: 0.35,
                     pointRadius: 0,
                     pointHoverRadius: 5,
-                    pointHoverBackgroundColor: '#C09B2A'
+                    pointHoverBackgroundColor: '#C1FF7E'
                 }]
             },
             options: {
@@ -240,11 +290,11 @@
                 plugins: {
                     legend: { display: false },
                     tooltip: {
-                        backgroundColor: '#0F1720',
-                        borderColor: '#253648',
+                        backgroundColor: isDark ? '#17191E' : '#FFFFFF',
+                        borderColor: isDark ? 'rgba(255,255,255,0.1)' : '#E6E9ED',
                         borderWidth: 1,
-                        titleColor: '#C8D4DF',
-                        bodyColor: '#C09B2A',
+                        titleColor: isDark ? '#F1F4FA' : '#17191E',
+                        bodyColor: '#019F60',
                         callbacks: {
                             label: ctx => `Saldo: R$ ${ctx.parsed.y.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`
                         }
@@ -253,7 +303,7 @@
                 scales: {
                     x: { grid: { display: false }, border: { display: false } },
                     y: {
-                        grid: { color: '#1C2A38' },
+                        grid: { color: gridColor },
                         border: { display: false },
                         ticks: {
                             callback: v => `R$ ${(v/1000).toFixed(0)}k`
@@ -273,8 +323,8 @@
                 labels: categoryData.map(c => c.category__name),
                 datasets: [{
                     data: categoryData.map(c => c.total),
-                    backgroundColor: categoryData.map(c => c.category__color || '#C09B2A'),
-                    borderColor: '#0A1018',
+                    backgroundColor: categoryData.map(c => c.category__color || '#019F60'),
+                    borderColor: isDark ? '#17191E' : '#FFFFFF',
                     borderWidth: 2,
                     hoverOffset: 4
                 }]
@@ -286,11 +336,11 @@
                 plugins: {
                     legend: { display: false },
                     tooltip: {
-                        backgroundColor: '#0F1720',
-                        borderColor: '#253648',
+                        backgroundColor: isDark ? '#17191E' : '#FFFFFF',
+                        borderColor: isDark ? 'rgba(255,255,255,0.1)' : '#E6E9ED',
                         borderWidth: 1,
-                        titleColor: '#C8D4DF',
-                        bodyColor: '#C8D4DF',
+                        titleColor: isDark ? '#F1F4FA' : '#17191E',
+                        bodyColor: isDark ? '#F1F4FA' : '#17191E',
                         callbacks: {
                             label: ctx => `${ctx.label}: R$ ${ctx.parsed.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`
                         }
@@ -312,7 +362,7 @@
                         label: 'Entradas',
                         data: historyData.map(h => h.income),
                         backgroundColor: '#1DCF72',
-                        borderRadius: 3,
+                        borderRadius: 4,
                         barPercentage: 0.6,
                         categoryPercentage: 0.6
                     },
@@ -320,7 +370,7 @@
                         label: 'Saídas',
                         data: historyData.map(h => h.expense),
                         backgroundColor: '#E84040',
-                        borderRadius: 3,
+                        borderRadius: 4,
                         barPercentage: 0.6,
                         categoryPercentage: 0.6
                     }
@@ -333,20 +383,20 @@
                     legend: {
                         position: 'top',
                         align: 'end',
-                        labels: { boxWidth: 10, boxHeight: 10, color: '#637585' }
+                        labels: { boxWidth: 10, boxHeight: 10, color: textColor }
                     },
                     tooltip: {
-                        backgroundColor: '#0F1720',
-                        borderColor: '#253648',
+                        backgroundColor: isDark ? '#17191E' : '#FFFFFF',
+                        borderColor: isDark ? 'rgba(255,255,255,0.1)' : '#E6E9ED',
                         borderWidth: 1,
-                        titleColor: '#C8D4DF',
-                        bodyColor: '#C8D4DF'
+                        titleColor: isDark ? '#F1F4FA' : '#17191E',
+                        bodyColor: isDark ? '#F1F4FA' : '#17191E'
                     }
                 },
                 scales: {
                     x: { grid: { display: false }, border: { display: false } },
                     y: {
-                        grid: { color: '#1C2A38' },
+                        grid: { color: gridColor },
                         border: { display: false },
                         ticks: {
                             callback: v => `R$ ${(v/1000).toFixed(0)}k`

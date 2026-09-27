@@ -11,13 +11,14 @@ def update_balance_on_create(sender, instance, created, **kwargs):
     # Pluggy accounts have authoritative live balances from Open Finance
     if instance.account.pluggy_account_id:
         return
-    if created and instance.transaction_type in ['INCOME', 'EXPENSE']:
+    if created and instance.transaction_type in ['INCOME', 'EXPENSE', 'INVESTMENT']:
         account = instance.account
         amount = Decimal(str(instance.amount))
+        current_bal = Decimal(str(account.balance))
         if instance.transaction_type == 'INCOME':
-            account.balance += amount
-        elif instance.transaction_type == 'EXPENSE':
-            account.balance -= amount
+            account.balance = current_bal + amount
+        elif instance.transaction_type in ['EXPENSE', 'INVESTMENT']:
+            account.balance = current_bal - amount
         account.save(update_fields=['balance'])
 
 
@@ -27,13 +28,14 @@ def update_balance_on_delete(sender, instance, **kwargs):
         return
     if instance.account.pluggy_account_id:
         return
-    if instance.transaction_type in ['INCOME', 'EXPENSE']:
+    if instance.transaction_type in ['INCOME', 'EXPENSE', 'INVESTMENT']:
         account = instance.account
         amount = Decimal(str(instance.amount))
+        current_bal = Decimal(str(account.balance))
         if instance.transaction_type == 'INCOME':
-            account.balance -= amount
-        elif instance.transaction_type == 'EXPENSE':
-            account.balance += amount
+            account.balance = current_bal - amount
+        elif instance.transaction_type in ['EXPENSE', 'INVESTMENT']:
+            account.balance = current_bal + amount
         account.save(update_fields=['balance'])
 
 
@@ -54,23 +56,28 @@ def update_balance_on_update(sender, instance, **kwargs):
         old_amount = Decimal(str(old_instance.amount))
         new_amount = Decimal(str(instance.amount))
 
+        old_bal = Decimal(str(old_account.balance))
         # Revert old balance
         if old_instance.transaction_type == 'INCOME':
-            old_account.balance -= old_amount
-        elif old_instance.transaction_type == 'EXPENSE':
-            old_account.balance += old_amount
+            old_bal -= old_amount
+        elif old_instance.transaction_type in ['EXPENSE', 'INVESTMENT']:
+            old_bal += old_amount
 
         if old_account == new_account:
             if instance.transaction_type == 'INCOME':
-                old_account.balance += new_amount
-            elif instance.transaction_type == 'EXPENSE':
-                old_account.balance -= new_amount
+                old_bal += new_amount
+            elif instance.transaction_type in ['EXPENSE', 'INVESTMENT']:
+                old_bal -= new_amount
+            old_account.balance = old_bal
             old_account.save(update_fields=['balance'])
         else:
+            old_account.balance = old_bal
             old_account.save(update_fields=['balance'])
+            new_bal = Decimal(str(new_account.balance))
             if instance.transaction_type == 'INCOME':
-                new_account.balance += new_amount
-            elif instance.transaction_type == 'EXPENSE':
-                new_account.balance -= new_amount
+                new_bal += new_amount
+            elif instance.transaction_type in ['EXPENSE', 'INVESTMENT']:
+                new_bal -= new_amount
+            new_account.balance = new_bal
             new_account.save(update_fields=['balance'])
 

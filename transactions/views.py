@@ -22,9 +22,9 @@ class TransactionListView(LoginRequiredMixin, ListView):
         if account_id and account_id.isdigit():
             qs = qs.filter(account_id=int(account_id))
 
-        # Filter by Type (INCOME / EXPENSE / TRANSFER)
+        # Filter by Type (INCOME / EXPENSE / TRANSFER / INVESTMENT)
         tx_type = self.request.GET.get('type')
-        if tx_type in ['INCOME', 'EXPENSE', 'TRANSFER']:
+        if tx_type in ['INCOME', 'EXPENSE', 'TRANSFER', 'INVESTMENT']:
             qs = qs.filter(transaction_type=tx_type)
 
 

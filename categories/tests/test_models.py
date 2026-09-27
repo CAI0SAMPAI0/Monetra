@@ -19,6 +19,10 @@ class TestCategoryModel:
         category = CategoryFactory(category_type='EXPENSE')
         assert category.get_category_type_display() == 'Saída'
 
+    def test_category_type_investment(self):
+        category = CategoryFactory(category_type='INVESTMENT')
+        assert category.get_category_type_display() == 'Investimento'
+
     def test_unique_together_user_name(self):
         c1 = CategoryFactory(name='Food')
         with pytest.raises(Exception):

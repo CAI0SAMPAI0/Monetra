@@ -1,21 +1,21 @@
 {% extends 'base.html' %}
-{% load currency_filters %}
+{% load currency_filters static %}
 
 {% block title %}Contas - Monetra{% endblock %}
 
 {% block content %}
-<div class="space-y-7 max-w-[900px] mx-auto">
+<div class="space-y-6 max-w-[1000px] mx-auto">
     <!-- Header -->
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-            <h1 class="text-2xl font-bold font-display text-[#E2EAF0]">Contas</h1>
-            <p class="text-xs sm:text-sm text-[#374B5C] mt-0.5">Gerencie suas contas bancárias e carteiras</p>
+            <h1 class="text-2xl font-bold font-sans text-[#17191E] dark:text-[#F1F4FA] tracking-tight">Suas Contas</h1>
+            <p class="text-xs sm:text-sm text-[#61656B] dark:text-[#8F949B] mt-0.5">Gerencie contas bancárias, carteiras e investimentos conectados</p>
         </div>
         <div class="flex items-center gap-2.5 self-start sm:self-auto">
-            <form action="{% url 'accounts:sync_pluggy' %}" method="post" class="inline">
+            <form action="{% url 'accounts:sync_pluggy' %}" method="post" class="inline" onsubmit="const btn = this.querySelector('button'); btn.disabled = true; btn.classList.add('opacity-75', 'cursor-wait'); btn.innerHTML = '<svg class=\'w-3.5 h-3.5 animate-spin\' fill=\'none\' viewBox=\'0 0 24 24\' stroke=\'currentColor\'><path stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'2\' d=\'M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15\' /></svg><span>Sincronizando...</span>';">
                 {% csrf_token %}
                 <input type="hidden" name="next" value="accounts:account_list">
-                <button type="submit" class="btn-teal text-xs sm:text-sm py-2 px-3.5 flex items-center gap-1.5 shadow" title="Puxar contas e saldos atualizados da Pluggy">
+                <button type="submit" class="btn-teal text-xs sm:text-sm py-2 px-3.5 flex items-center gap-1.5 shadow-sm" title="Puxar contas e saldos atualizados da Pluggy">
                     <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                     </svg>
@@ -32,25 +32,33 @@
     </div>
 
     <!-- Consolidated Balance Summary Card -->
-    <div class="rounded-lg border border-[#1C2A38] bg-[#0A1018] p-5 space-y-1.5 shadow-lg">
-        <p class="text-[10px] font-bold uppercase tracking-widest text-[#374B5C]">Saldo Total Consolidado</p>
-        <p class="text-3xl font-extrabold font-mono text-[#C09B2A]">{{ total_balance|currency }}</p>
-        <p class="text-xs text-[#374B5C]">{{ accounts.count }} conta{{ accounts.count|pluralize }} ativa{{ accounts.count|pluralize }}</p>
+    <div class="rounded-2xl border border-[#E6E9ED] dark:border-white/10 bg-white dark:bg-[#17191E] p-5 space-y-1.5 shadow-sm">
+        <p class="text-[10px] font-bold uppercase tracking-widest text-[#61656B] dark:text-[#8F949B]">Saldo Total Consolidado</p>
+        <p class="text-3xl font-extrabold font-mono text-[#17191E] dark:text-[#F1F4FA]">{{ total_balance|currency }}</p>
+        <p class="text-xs text-[#61656B] dark:text-[#8F949B]">{{ accounts.count }} conta{{ accounts.count|pluralize }} ativa{{ accounts.count|pluralize }}</p>
     </div>
 
     <!-- Accounts Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         {% for account in accounts %}
-        <div class="rounded-lg border border-[#1C2A38] bg-[#0A1018] p-5 flex items-center gap-4 transition-all hover:border-[#253648] hover:bg-[#0F1720]/40">
+        <div class="rounded-2xl border border-[#E6E9ED] dark:border-white/10 bg-white dark:bg-[#17191E] p-5 flex items-center gap-4 transition-all hover:border-[#D6D9DE] dark:hover:border-white/20 shadow-sm">
             <!-- Bank Logo / Brand Badge -->
-            <div class="w-12 h-12 rounded-xl flex items-center justify-center font-bold text-sm font-display shrink-0 {{ account.bank_brand.bg_class }} {{ account.bank_brand.text_class }} border {{ account.bank_brand.border_class }} shadow-sm">
-                {{ account.bank_brand.initials }}
+            <div class="w-12 h-12 rounded-xl flex items-center justify-center shrink-0 bg-white dark:bg-[#1C2026] border border-[#E6E9ED] dark:border-white/10 shadow-sm overflow-hidden p-2">
+                {% if account.bank_brand.logo_svg and account.bank_brand.name != 'Banco' %}
+                    <img src="{% static account.bank_brand.logo_svg %}" alt="{{ account.bank_brand.name }}" class="w-full h-full object-contain">
+                {% elif account.logo_url %}
+                    <img src="{{ account.logo_url }}" alt="{{ account.bank_brand.name }}" class="w-full h-full object-contain" onerror="this.onerror=null; this.src='{% static account.bank_brand.logo_svg %}';">
+                {% elif account.bank_brand.logo_svg %}
+                    <img src="{% static account.bank_brand.logo_svg %}" alt="{{ account.bank_brand.name }}" class="w-full h-full object-contain">
+                {% else %}
+                    <span class="font-bold text-sm font-sans {{ account.bank_brand.text_class }}">{{ account.bank_brand.initials }}</span>
+                {% endif %}
             </div>
 
             <!-- Details -->
             <div class="flex-1 min-w-0">
-                <p class="font-bold text-sm font-display text-[#C8D4DF] truncate">{{ account.name }}</p>
-                <p class="text-xs text-[#374B5C] truncate mt-0.5">
+                <p class="font-bold text-sm font-sans text-[#17191E] dark:text-[#F1F4FA] truncate">{{ account.name }}</p>
+                <p class="text-xs text-[#61656B] dark:text-[#8F949B] truncate mt-0.5">
                     {{ account.get_account_type_display|default:account.account_type }} {% if account.bank_name %}· {{ account.bank_name }}{% endif %}
                 </p>
             </div>
@@ -60,25 +68,25 @@
                 <p class="font-bold text-sm font-mono {% if account.balance >= 0 %}text-[#1DCF72]{% else %}text-[#E84040]{% endif %}">
                     {{ account.balance|currency }}
                 </p>
-                <p class="text-[10px] text-[#374B5C] mt-0.5">saldo atual</p>
+                <p class="text-[10px] text-[#61656B] dark:text-[#8F949B] mt-0.5">saldo atual</p>
             </div>
 
             <!-- Actions -->
             <div class="flex items-center gap-1 shrink-0">
-                <a href="{% url 'accounts:account_update' account.pk %}" class="p-1.5 rounded text-[#374B5C] hover:text-[#C8D4DF] hover:bg-[#141F2A] transition-colors" title="Editar">
-                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <a href="{% url 'accounts:account_update' account.pk %}" class="p-2 rounded-lg text-[#61656B] dark:text-[#8F949B] hover:text-[#17191E] dark:hover:text-[#F1F4FA] hover:bg-black/5 dark:hover:bg-white/5 transition-colors" title="Editar">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                     </svg>
                 </a>
-                <a href="{% url 'accounts:account_delete' account.pk %}" class="p-1.5 rounded text-[#374B5C] hover:text-[#E84040] hover:bg-[#E84040]/10 transition-colors" title="Excluir">
-                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <a href="{% url 'accounts:account_delete' account.pk %}" class="p-2 rounded-lg text-[#61656B] dark:text-[#8F949B] hover:text-[#E84040] hover:bg-[#E84040]/10 transition-colors" title="Excluir">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-4v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                     </svg>
                 </a>
             </div>
         </div>
         {% empty %}
-        <div class="col-span-full rounded-lg border border-[#1C2A38] bg-[#0A1018] p-12 text-center text-xs text-[#374B5C]">
+        <div class="col-span-full rounded-2xl border border-[#E6E9ED] dark:border-white/10 bg-white dark:bg-[#17191E] p-12 text-center text-xs text-[#61656B] dark:text-[#8F949B]">
             Nenhuma conta bancária cadastrada. Clique em "Nova Conta" para começar.
         </div>
         {% endfor %}

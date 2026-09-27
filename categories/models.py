@@ -7,6 +7,7 @@ class Category(models.Model):
         ('INCOME', 'Entrada'),
         ('EXPENSE', 'Saída'),
         ('TRANSFER', 'Transferência'),
+        ('INVESTMENT', 'Investimento'),
     ]
 
     user = models.ForeignKey(

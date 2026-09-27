@@ -1,12 +1,12 @@
 {% extends 'base.html' %}
+{% load static %}
 
-{% block title %}Chat IA - MonetraBot & Pluggy AI{% endblock %}
+{% block title %}Conversas IA - MonetraBot{% endblock %}
 
 {% block extra_head %}
 <!-- Markdown Parser (marked.js) -->
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <style>
-    /* Estilos para renderização de Markdown no Chat Monetra */
     .chat-markdown p {
         margin-bottom: 0.6rem;
     }
@@ -14,18 +14,12 @@
         margin-bottom: 0;
     }
     .chat-markdown strong, .chat-markdown b {
-        color: #E2EAF0;
         font-weight: 700;
-    }
-    .chat-markdown em, .chat-markdown i {
-        color: #C09B2A;
-        font-style: italic;
     }
     .chat-markdown ul {
         list-style-type: disc;
         margin-left: 1.25rem;
         margin-bottom: 0.6rem;
-        space-y: 0.25rem;
     }
     .chat-markdown ol {
         list-style-type: decimal;
@@ -36,172 +30,266 @@
         margin-bottom: 0.25rem;
     }
     .chat-markdown h1, .chat-markdown h2, .chat-markdown h3, .chat-markdown h4 {
-        color: #E2EAF0;
         font-weight: 700;
         margin-top: 0.75rem;
         margin-bottom: 0.35rem;
-        font-family: 'DM Sans', sans-serif;
     }
     .chat-markdown h1 { font-size: 1.15rem; }
     .chat-markdown h2 { font-size: 1.05rem; }
     .chat-markdown h3 { font-size: 0.95rem; }
     .chat-markdown code {
-        background-color: #0F1720;
-        color: #0FC4B3;
+        background-color: rgba(1, 159, 96, 0.1);
+        color: #019F60;
         padding: 0.15rem 0.35rem;
         border-radius: 0.25rem;
         font-family: 'JetBrains Mono', monospace;
         font-size: 0.85em;
-        border: 1px solid #1C2A38;
+    }
+    .dark .chat-markdown code {
+        color: #C1FF7E;
+        background-color: rgba(193, 255, 126, 0.1);
     }
     .chat-markdown blockquote {
-        border-left: 3px solid #0FC4B3;
+        border-left: 3px solid #019F60;
         padding-left: 0.75rem;
         margin-left: 0;
-        color: #637585;
         font-style: italic;
+    }
+    .dark .chat-markdown blockquote {
+        border-left-color: #C1FF7E;
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="flex flex-col h-[calc(100vh-4.5rem)] max-w-[1100px] w-full mx-auto rounded-xl border border-[#1C2A38] bg-[#070C12] overflow-hidden shadow-2xl">
-    <!-- Header -->
-    <div class="px-5 sm:px-6 py-3.5 border-b border-[#1C2A38] bg-[#0A1018] flex items-center justify-between shrink-0">
-        <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-lg flex items-center justify-center bg-[#0FC4B3]/10 text-[#0FC4B3] shrink-0">
-                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-                </svg>
-            </div>
-            <div>
-                <div class="flex items-center gap-2">
-                    <h1 class="text-base font-bold font-display text-[#E2EAF0]">MonetraBot</h1>
-                    <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-[#0FC4B3]/10 text-[#0FC4B3] border border-[#0FC4B3]/25 flex items-center gap-1.5 tracking-wider">
-                        <span class="w-1.5 h-1.5 rounded-full bg-[#0FC4B3] animate-pulse"></span>
-                        Pluggy AI Ready
-                    </span>
-                </div>
-                <p class="text-xs text-[#374B5C]">Assistente financeiro pessoal · AntIA v3 Engine</p>
-            </div>
-        </div>
-        <div class="flex items-center gap-3">
-            <button id="clear-chat-btn" class="text-xs px-3 py-1.5 rounded text-[#374B5C] hover:text-[#E84040] hover:bg-[#E84040]/10 transition-colors font-medium" title="Limpar conversa">
-                Limpar histórico
-            </button>
-        </div>
-    </div>
+<div class="flex h-[calc(100vh-4.5rem)] max-w-[1280px] w-full mx-auto rounded-2xl border border-[#E6E9ED] dark:border-white/10 bg-white dark:bg-[#17191E] overflow-hidden shadow-sm relative">
 
-    <!-- Messages Scroll Area -->
-    <div id="chat-messages-container" class="flex-1 overflow-y-auto p-4 sm:p-5 pt-3 space-y-3 bg-[#05090D]">
-        <!-- Welcome Message -->
-        <div class="flex gap-3 items-start">
-            <div class="w-8 h-8 rounded-md bg-[#0FC4B3]/10 flex items-center justify-center shrink-0 text-[#0FC4B3]">
-                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-                </svg>
-            </div>
-            <div class="px-4 py-3 rounded-xl max-w-[85%] text-xs sm:text-sm leading-relaxed bg-[#0FC4B3]/5 border border-[#0FC4B3]/15 text-[#C8D4DF] chat-markdown">
-                <p>Olá, <strong>{% if user.profile.full_name %}{{ user.profile.full_name }}{% elif user.first_name %}{{ user.first_name }}{% elif user.get_full_name %}{{ user.get_full_name }}{% else %}{{ user.email|slice:":12" }}{% endif %}</strong>. Sou o MonetraBot, seu assistente financeiro conectado ao Open Finance e aos seus registros de contas. Posso analisar seus gastos, verificar seu saldo consolidado ou identificar oportunidades para otimizar suas finanças. O que você gostaria de analisar hoje?</p>
-            </div>
-        </div>
+    <!-- Mobile Drawer Overlay -->
+    <div id="sidebar-backdrop" class="fixed inset-0 bg-black/40 z-30 hidden md:hidden transition-opacity"></div>
 
-        <!-- History Messages -->
-        {% for msg in chat_messages %}
-            {% if msg.is_from_bot %}
-            <div class="flex gap-3 items-start">
-                <div class="w-8 h-8 rounded-md bg-[#0FC4B3]/10 flex items-center justify-center shrink-0 text-[#0FC4B3]">
-                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+    <!-- Conversations History Sidebar -->
+    <aside id="chat-sidebar" class="fixed inset-y-0 left-0 z-40 w-72 md:static md:w-72 shrink-0 border-r border-[#E6E9ED] dark:border-white/10 bg-[#F7F9FC] dark:bg-[#13161B] flex flex-col transform -translate-x-full md:translate-x-0 transition-transform duration-200 ease-in-out">
+        <!-- Sidebar Header: Nova Conversa -->
+        <div class="p-4 border-b border-[#E6E9ED] dark:border-white/10 flex flex-col gap-3 shrink-0">
+            <div class="flex items-center justify-between">
+                <span class="text-xs font-bold uppercase tracking-wider text-[#61656B] dark:text-[#8F949B]">Histórico</span>
+                <button type="button" id="close-sidebar-btn" class="md:hidden p-1 text-[#61656B] dark:text-[#8F949B] hover:text-[#17191E] dark:hover:text-[#F1F4FA]">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                     </svg>
-                </div>
-                <div class="px-4 py-3 rounded-xl max-w-[85%] text-xs sm:text-sm leading-relaxed bg-[#0FC4B3]/5 border border-[#0FC4B3]/15 text-[#C8D4DF] chat-markdown bot-rendered-msg" data-raw="{{ msg.message_text }}"></div>
+                </button>
             </div>
-            {% else %}
-            <div class="flex justify-end">
-                <div class="px-4 py-2.5 rounded-xl max-w-[85%] text-xs sm:text-sm leading-normal bg-[#141F2A] border border-[#1C2A38] text-[#C8D4DF] whitespace-pre-line">{{ msg.message_text }}</div>
-            </div>
-            {% endif %}
-        {% endfor %}
-
-        <!-- Typing Indicator -->
-        <div id="typing-indicator" class="hidden flex gap-3 items-start">
-            <div class="w-8 h-8 rounded-md bg-[#0FC4B3]/10 flex items-center justify-center shrink-0 text-[#0FC4B3]">
-                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-                </svg>
-            </div>
-            <div class="px-4 py-2.5 rounded-xl bg-[#0FC4B3]/5 border border-[#0FC4B3]/15 text-xs text-[#0FC4B3] flex items-center gap-1.5">
-                <span>MonetraBot analisando</span>
-                <span class="inline-block w-1.5 h-1.5 rounded-full bg-[#0FC4B3] animate-bounce"></span>
-                <span class="inline-block w-1.5 h-1.5 rounded-full bg-[#0FC4B3] animate-bounce" style="animation-delay: 0.2s"></span>
-                <span class="inline-block w-1.5 h-1.5 rounded-full bg-[#0FC4B3] animate-bounce" style="animation-delay: 0.4s"></span>
-            </div>
-        </div>
-    </div>
-
-    <!-- Quick Prompts Bar -->
-    <div class="px-5 sm:px-6 py-2.5 bg-[#0A1018] border-t border-[#1C2A38] flex flex-wrap gap-2 shrink-0">
-        <button type="button" onclick="sendQuickPrompt('Onde gastei mais este mês?')" class="text-xs px-3 py-1.5 rounded-full border border-[#1C2A38] bg-[#0F1720] text-[#637585] hover:text-[#C8D4DF] hover:border-[#253648] transition-colors">
-            Onde gastei mais este mês?
-        </button>
-        <button type="button" onclick="sendQuickPrompt('Como posso economizar com base nos meus gastos?')" class="text-xs px-3 py-1.5 rounded-full border border-[#1C2A38] bg-[#0F1720] text-[#637585] hover:text-[#C8D4DF] hover:border-[#253648] transition-colors">
-            Como posso economizar?
-        </button>
-        <button type="button" onclick="sendQuickPrompt('Qual é meu saldo consolidado e fluxo de caixa?')" class="text-xs px-3 py-1.5 rounded-full border border-[#1C2A38] bg-[#0F1720] text-[#637585] hover:text-[#C8D4DF] hover:border-[#253648] transition-colors">
-            Qual é meu saldo consolidado?
-        </button>
-        <button type="button" onclick="sendQuickPrompt('Faça uma análise dos meus hábitos de consumo')" class="text-xs px-3 py-1.5 rounded-full border border-[#1C2A38] bg-[#0F1720] text-[#637585] hover:text-[#C8D4DF] hover:border-[#253648] transition-colors">
-            Analise meus hábitos de consumo
-        </button>
-    </div>
-
-    <!-- Input Form -->
-    <div class="px-5 sm:px-6 py-3.5 bg-[#0A1018] border-t border-[#1C2A38] shrink-0">
-        <form id="chat-form" class="flex items-center gap-3">
-            {% csrf_token %}
-            <input 
-                type="text" 
-                id="chat-input" 
-                placeholder="Pergunte ao MonetraBot ou selecione uma opção acima..." 
-                autocomplete="off" 
-                class="flex-1 px-4 py-2.5 rounded-lg text-sm bg-[#0F1720] border border-[#1C2A38] text-[#C8D4DF] focus:outline-none focus:border-[#C09B2A]"
-            />
             <button 
-                type="submit" 
-                class="w-10 h-10 rounded-lg flex items-center justify-center bg-[#C09B2A] text-[#05090D] hover:opacity-90 transition-opacity shrink-0 font-bold shadow"
+                type="button" 
+                id="btn-new-session" 
+                class="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-[#C1FF7E] text-[#17191E] hover:bg-[#aff565] font-bold text-xs shadow-sm transition-all"
             >
                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
                 </svg>
+                <span>Nova conversa</span>
             </button>
-        </form>
-    </div>
+        </div>
+
+        <!-- Sessions List -->
+        <div class="flex-1 overflow-y-auto p-2.5 space-y-1" id="sessions-list">
+            {% for s in sessions %}
+            <div class="group relative flex items-center justify-between rounded-xl px-3 py-2.5 text-xs transition-all {% if s.id == active_session.id %}bg-[#019F60]/10 dark:bg-[#C1FF7E]/10 border border-[#019F60]/30 dark:border-[#C1FF7E]/30 text-[#019F60] dark:text-[#C1FF7E] font-semibold{% else %}text-[#17191E] dark:text-[#F1F4FA] hover:bg-black/5 dark:hover:bg-white/5 border border-transparent{% endif %}">
+                <a href="{% url 'chatbot:chat' %}?session_id={{ s.id }}" class="flex items-center gap-2.5 min-w-0 flex-1 pr-2">
+                    <svg class="w-4 h-4 shrink-0 {% if s.id == active_session.id %}text-[#019F60] dark:text-[#C1FF7E]{% else %}text-[#61656B] dark:text-[#8F949B]{% endif %}" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                    </svg>
+                    <div class="min-w-0 flex-1">
+                        <p class="truncate" title="{{ s.title }}">{{ s.title }}</p>
+                        <p class="text-[10px] text-[#8F949B] font-mono mt-0.5">{{ s.updated_at|date:"d/m H:i" }}</p>
+                    </div>
+                </a>
+                <button 
+                    type="button" 
+                    onclick="deleteSession('{{ s.id }}', '{{ s.title|escapejs }}')" 
+                    class="opacity-0 group-hover:opacity-100 p-1 text-[#8F949B] hover:text-[#E84040] rounded transition-all shrink-0" 
+                    title="Excluir conversa"
+                >
+                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-4v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                </button>
+            </div>
+            {% empty %}
+            <div class="p-4 text-center text-xs text-[#8F949B]">
+                Nenhuma conversa anterior encontrada.
+            </div>
+            {% endfor %}
+        </div>
+    </aside>
+
+    <!-- Main Chat Content -->
+    <main class="flex-1 flex flex-col h-full min-w-0 overflow-hidden bg-white dark:bg-[#17191E]">
+        <!-- Top Chat Header -->
+        <div class="px-5 sm:px-6 py-3.5 border-b border-[#E6E9ED] dark:border-white/10 bg-[#F7F9FC] dark:bg-[#17191E] flex items-center justify-between shrink-0">
+            <div class="flex items-center gap-3 min-w-0">
+                <!-- Mobile Drawer Toggle -->
+                <button type="button" id="open-sidebar-btn" class="md:hidden p-1.5 rounded-lg border border-[#E6E9ED] dark:border-white/10 text-[#61656B] dark:text-[#8F949B] hover:text-[#17191E] dark:hover:text-[#F1F4FA] shrink-0">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
+
+                <div class="w-10 h-10 rounded-xl flex items-center justify-center bg-[#019F60]/10 dark:bg-[#C1FF7E]/10 text-[#019F60] dark:text-[#C1FF7E] shrink-0">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                    </svg>
+                </div>
+                <div class="min-w-0">
+                    <div class="flex items-center gap-2">
+                        <h1 id="active-session-title" class="text-sm sm:text-base font-bold font-sans text-[#17191E] dark:text-[#F1F4FA] truncate" title="{{ active_session.title }}">
+                            {{ active_session.title }}
+                        </h1>
+                        <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded-full bg-[#019F60]/10 dark:bg-[#C1FF7E]/10 text-[#019F60] dark:text-[#C1FF7E] border border-[#019F60]/20 dark:border-[#C1FF7E]/25 shrink-0 hidden sm:flex items-center gap-1.5 tracking-wider font-mono">
+                            <span class="w-1.5 h-1.5 rounded-full bg-[#019F60] dark:bg-[#C1FF7E] animate-pulse"></span>
+                            DeepSeek IA
+                        </span>
+                    </div>
+                    <p class="text-xs text-[#61656B] dark:text-[#8F949B] truncate">MonetraBot · AntIA v3 Engine</p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-2 shrink-0">
+                <button id="clear-chat-btn" class="text-xs px-3 py-1.5 rounded-lg text-[#61656B] dark:text-[#8F949B] hover:text-[#E84040] hover:bg-[#E84040]/10 transition-colors font-medium" title="Limpar mensagens desta conversa">
+                    Limpar conversa
+                </button>
+            </div>
+        </div>
+
+        <!-- Messages Scroll Area -->
+        <div id="chat-messages-container" class="flex-1 overflow-y-auto p-4 sm:p-5 pt-3 space-y-3 bg-[#F1F4FA] dark:bg-[#0A0E13]">
+            <!-- Welcome Message -->
+            <div class="flex gap-3 items-start">
+                <div class="w-8 h-8 rounded-xl bg-white dark:bg-[#17191E] border border-[#E6E9ED] dark:border-white/10 flex items-center justify-center shrink-0 text-[#019F60] dark:text-[#C1FF7E] shadow-sm">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                </div>
+                <div class="px-4 py-3 rounded-2xl max-w-[85%] text-xs sm:text-sm leading-relaxed bg-white dark:bg-[#17191E] border border-[#E6E9ED] dark:border-white/10 text-[#17191E] dark:text-[#F1F4FA] shadow-sm chat-markdown">
+                    <p>Olá, <strong>{% if user.profile.full_name %}{{ user.profile.full_name }}{% elif user.first_name %}{{ user.first_name }}{% elif user.get_full_name %}{{ user.get_full_name }}{% else %}{{ user.email|slice:":12" }}{% endif %}</strong>. Sou o MonetraBot, seu assistente financeiro integrado ao Open Finance e aos registros das suas contas. Posso analisar suas despesas, verificar seus investimentos e orientar suas decisões orçamentárias. Como posso te apoiar hoje?</p>
+                </div>
+            </div>
+
+            <!-- History Messages for Active Session -->
+            {% for msg in chat_messages %}
+                {% if msg.is_from_bot %}
+                <div class="flex gap-3 items-start">
+                    <div class="w-8 h-8 rounded-xl bg-white dark:bg-[#17191E] border border-[#E6E9ED] dark:border-white/10 flex items-center justify-center shrink-0 text-[#019F60] dark:text-[#C1FF7E] shadow-sm">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                        </svg>
+                    </div>
+                    <div class="px-4 py-3 rounded-2xl max-w-[85%] text-xs sm:text-sm leading-relaxed bg-white dark:bg-[#17191E] border border-[#E6E9ED] dark:border-white/10 text-[#17191E] dark:text-[#F1F4FA] shadow-sm chat-markdown bot-rendered-msg" data-raw="{{ msg.message_text }}"></div>
+                </div>
+                {% else %}
+                <div class="flex justify-end">
+                    <div class="px-4 py-2.5 rounded-2xl max-w-[85%] text-xs sm:text-sm leading-normal bg-[#17191E] text-white dark:bg-[#C1FF7E] dark:text-[#17191E] font-medium shadow-sm whitespace-pre-line">{{ msg.message_text }}</div>
+                </div>
+                {% endif %}
+            {% endfor %}
+
+            <!-- Typing Indicator -->
+            <div id="typing-indicator" class="hidden flex gap-3 items-start">
+                <div class="w-8 h-8 rounded-xl bg-white dark:bg-[#17191E] border border-[#E6E9ED] dark:border-white/10 flex items-center justify-center shrink-0 text-[#019F60] dark:text-[#C1FF7E] shadow-sm">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                </div>
+                <div class="px-4 py-2.5 rounded-2xl bg-white dark:bg-[#17191E] border border-[#E6E9ED] dark:border-white/10 text-xs text-[#019F60] dark:text-[#C1FF7E] flex items-center gap-1.5 shadow-sm">
+                    <span>MonetraBot analisando</span>
+                    <span class="inline-block w-1.5 h-1.5 rounded-full bg-[#019F60] dark:bg-[#C1FF7E] animate-bounce"></span>
+                    <span class="inline-block w-1.5 h-1.5 rounded-full bg-[#019F60] dark:bg-[#C1FF7E] animate-bounce" style="animation-delay: 0.2s"></span>
+                    <span class="inline-block w-1.5 h-1.5 rounded-full bg-[#019F60] dark:bg-[#C1FF7E] animate-bounce" style="animation-delay: 0.4s"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Prompts Bar (Sugestões Dinâmicas) -->
+        <div id="quick-prompts-bar" class="px-5 sm:px-6 py-2.5 bg-[#F7F9FC] dark:bg-[#17191E] border-t border-[#E6E9ED] dark:border-white/10 shrink-0">
+            <div class="flex items-center gap-1.5 mb-1.5 text-[11px] font-medium text-[#61656B] dark:text-[#8F949B]">
+                <svg class="w-3.5 h-3.5 text-[#019F60] dark:text-[#C1FF7E]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+                <span>Sugestões para continuar:</span>
+            </div>
+            <div id="quick-prompts-container" class="flex flex-wrap gap-2 transition-opacity duration-200">
+                {% for prompt in initial_suggestions %}
+                <button type="button" onclick="sendQuickPrompt('{{ prompt|escapejs }}')" class="quick-suggestion-btn text-xs px-3 py-1.5 rounded-full border border-[#E6E9ED] dark:border-white/10 bg-white dark:bg-[#1C2026] text-[#61656B] dark:text-[#8F949B] hover:text-[#019F60] dark:hover:text-[#C1FF7E] hover:border-[#019F60]/40 dark:hover:border-[#C1FF7E]/40 hover:bg-[#019F60]/5 dark:hover:bg-[#C1FF7E]/5 transition-all shadow-sm">
+                    {{ prompt }}
+                </button>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Input Form -->
+        <div class="px-5 sm:px-6 py-3.5 bg-white dark:bg-[#17191E] border-t border-[#E6E9ED] dark:border-white/10 shrink-0">
+            <form id="chat-form" class="flex items-center gap-3">
+                {% csrf_token %}
+                <input 
+                    type="text" 
+                    id="chat-input" 
+                    placeholder="Pergunte ao MonetraBot ou selecione uma opção acima..." 
+                    autocomplete="off" 
+                    class="flex-1 px-4 py-2.5 rounded-xl text-sm bg-[#F7F9FC] dark:bg-[#1C2026] border border-[#E6E9ED] dark:border-white/10 text-[#17191E] dark:text-[#F1F4FA] focus:outline-none focus:border-[#019F60] dark:focus:border-[#C1FF7E] shadow-sm"
+                />
+                <button 
+                    type="submit" 
+                    class="w-10 h-10 rounded-xl flex items-center justify-center bg-[#C1FF7E] text-[#17191E] hover:bg-[#aff565] transition-all shrink-0 font-bold shadow-sm"
+                    title="Enviar mensagem"
+                >
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    </svg>
+                </button>
+            </form>
+        </div>
+    </main>
 </div>
 {% endblock %}
 
 {% block extra_js %}
 <script>
+    let currentSessionId = "{{ active_session.id }}";
     const chatContainer = document.getElementById('chat-messages-container');
     const chatForm = document.getElementById('chat-form');
     const chatInput = document.getElementById('chat-input');
     const typingIndicator = document.getElementById('typing-indicator');
     const clearBtn = document.getElementById('clear-chat-btn');
+    const quickPromptsBar = document.getElementById('quick-prompts-bar');
+    const quickPromptsContainer = document.getElementById('quick-prompts-container');
+    const sessionTitleEl = document.getElementById('active-session-title');
 
-    // Configuração do Marked para conversão de Markdown
-    if (typeof marked !== 'undefined') {
-        marked.setOptions({
-            breaks: true,
-            gfm: true
-        });
+    // Mobile sidebar controls
+    const chatSidebar = document.getElementById('chat-sidebar');
+    const openSidebarBtn = document.getElementById('open-sidebar-btn');
+    const closeSidebarBtn = document.getElementById('close-sidebar-btn');
+    const sidebarBackdrop = document.getElementById('sidebar-backdrop');
+
+    function toggleSidebar(open) {
+        if (!chatSidebar) return;
+        if (open) {
+            chatSidebar.classList.remove('-translate-x-full');
+            if (sidebarBackdrop) sidebarBackdrop.classList.remove('hidden');
+        } else {
+            chatSidebar.classList.add('-translate-x-full');
+            if (sidebarBackdrop) sidebarBackdrop.classList.add('hidden');
+        }
     }
+
+    if (openSidebarBtn) openSidebarBtn.addEventListener('click', () => toggleSidebar(true));
+    if (closeSidebarBtn) closeSidebarBtn.addEventListener('click', () => toggleSidebar(false));
+    if (sidebarBackdrop) sidebarBackdrop.addEventListener('click', () => toggleSidebar(false));
 
     function renderMarkdownToHTML(text) {
         if (!text) return '';
         if (typeof marked !== 'undefined') {
             return marked.parse(text);
         }
-        // Fallback básico caso marked não carregue
         return String(text)
             .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
             .replace(/\*(.*?)\*/g, '<em>$1</em>')
@@ -236,21 +324,39 @@
         if (isBot) {
             div.className = 'flex gap-3 items-start';
             div.innerHTML = `
-                <div class="w-8 h-8 rounded-md bg-[#0FC4B3]/10 flex items-center justify-center shrink-0 text-[#0FC4B3]">
+                <div class="w-8 h-8 rounded-xl bg-white dark:bg-[#17191E] border border-[#E6E9ED] dark:border-white/10 flex items-center justify-center shrink-0 text-[#019F60] dark:text-[#C1FF7E] shadow-sm">
                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
                     </svg>
                 </div>
-                <div class="px-4 py-3 rounded-xl max-w-[85%] text-xs sm:text-sm leading-relaxed bg-[#0FC4B3]/5 border border-[#0FC4B3]/15 text-[#C8D4DF] chat-markdown">${renderMarkdownToHTML(text)}</div>
+                <div class="px-4 py-3 rounded-2xl max-w-[85%] text-xs sm:text-sm leading-relaxed bg-white dark:bg-[#17191E] border border-[#E6E9ED] dark:border-white/10 text-[#17191E] dark:text-[#F1F4FA] shadow-sm chat-markdown">${renderMarkdownToHTML(text)}</div>
             `;
         } else {
             div.className = 'flex justify-end';
             div.innerHTML = `
-                <div class="px-4 py-2.5 rounded-xl max-w-[85%] text-xs sm:text-sm leading-normal bg-[#141F2A] border border-[#1C2A38] text-[#C8D4DF] whitespace-pre-line">${escapeHTML(text)}</div>
+                <div class="px-4 py-2.5 rounded-2xl max-w-[85%] text-xs sm:text-sm leading-normal bg-[#17191E] text-white dark:bg-[#C1FF7E] dark:text-[#17191E] font-medium shadow-sm whitespace-pre-line">${escapeHTML(text)}</div>
             `;
         }
         chatContainer.insertBefore(div, typingIndicator);
         scrollToBottom();
+    }
+
+    function renderSuggestions(suggestions) {
+        if (!quickPromptsContainer) return;
+        quickPromptsContainer.innerHTML = '';
+        if (!suggestions || !suggestions.length) {
+            if (quickPromptsBar) quickPromptsBar.classList.add('hidden');
+            return;
+        }
+        if (quickPromptsBar) quickPromptsBar.classList.remove('hidden');
+        suggestions.forEach(text => {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'quick-suggestion-btn text-xs px-3 py-1.5 rounded-full border border-[#E6E9ED] dark:border-white/10 bg-white dark:bg-[#1C2026] text-[#61656B] dark:text-[#8F949B] hover:text-[#019F60] dark:hover:text-[#C1FF7E] hover:border-[#019F60]/40 dark:hover:border-[#C1FF7E]/40 hover:bg-[#019F60]/5 dark:hover:bg-[#C1FF7E]/5 transition-all shadow-sm';
+            btn.textContent = text;
+            btn.onclick = () => sendQuickPrompt(text);
+            quickPromptsContainer.appendChild(btn);
+        });
     }
 
     async function sendMessage(text) {
@@ -258,6 +364,9 @@
         appendMessage(text, false);
         chatInput.value = '';
         typingIndicator.classList.remove('hidden');
+        if (quickPromptsContainer) {
+            quickPromptsContainer.classList.add('opacity-40', 'pointer-events-none');
+        }
         scrollToBottom();
 
         try {
@@ -267,19 +376,37 @@
                     'Content-Type': 'application/json',
                     'X-CSRFToken': '{{ csrf_token }}'
                 },
-                body: JSON.stringify({ message: text })
+                body: JSON.stringify({ 
+                    message: text,
+                    session_id: currentSessionId
+                })
             });
 
             typingIndicator.classList.add('hidden');
+            if (quickPromptsContainer) {
+                quickPromptsContainer.classList.remove('opacity-40', 'pointer-events-none');
+            }
 
             if (response.ok) {
                 const data = await response.json();
                 appendMessage(data.response || 'Não foi possível obter uma resposta.', true);
+                if (data.session_id) {
+                    currentSessionId = data.session_id;
+                }
+                if (data.session_title && sessionTitleEl) {
+                    sessionTitleEl.textContent = data.session_title;
+                }
+                if (data.suggestions && Array.isArray(data.suggestions)) {
+                    renderSuggestions(data.suggestions);
+                }
             } else {
                 appendMessage('Desculpe, ocorreu uma instabilidade momentânea no servidor. Por favor, tente novamente.', true);
             }
         } catch (error) {
             typingIndicator.classList.add('hidden');
+            if (quickPromptsContainer) {
+                quickPromptsContainer.classList.remove('opacity-40', 'pointer-events-none');
+            }
             appendMessage('Erro de conexão ao enviar mensagem. Verifique sua rede e tente novamente.', true);
         }
         scrollToBottom();
@@ -297,15 +424,57 @@
         });
     }
 
-    if (clearBtn) {
-        clearBtn.addEventListener('click', async () => {
-            if (!confirm('Deseja limpar todo o histórico de conversas do chat?')) return;
+    // Criar nova conversa
+    const btnNewSession = document.getElementById('btn-new-session');
+    if (btnNewSession) {
+        btnNewSession.addEventListener('click', async () => {
             try {
-                const res = await fetch('{% url "chatbot:clear" %}', {
+                const res = await fetch('{% url "chatbot:new_session" %}', {
                     method: 'POST',
                     headers: {
                         'X-CSRFToken': '{{ csrf_token }}'
                     }
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    window.location.href = '{% url "chatbot:chat" %}?session_id=' + data.session_id;
+                }
+            } catch (err) {
+                console.error('Erro ao criar sessão:', err);
+            }
+        });
+    }
+
+    // Excluir conversa individual
+    window.deleteSession = async function(sessionId, sessionTitle) {
+        if (!confirm(`Deseja realmente excluir a conversa "${sessionTitle}"?`)) return;
+        try {
+            const url = `{% url "chatbot:chat" %}session/${sessionId}/delete/`;
+            const res = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}'
+                }
+            });
+            if (res.ok) {
+                window.location.href = '{% url "chatbot:chat" %}';
+            }
+        } catch (err) {
+            console.error('Erro ao excluir sessão:', err);
+        }
+    };
+
+    if (clearBtn) {
+        clearBtn.addEventListener('click', async () => {
+            if (!confirm('Deseja limpar as mensagens desta conversa?')) return;
+            try {
+                const res = await fetch('{% url "chatbot:clear" %}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    body: `session_id=${encodeURIComponent(currentSessionId)}`
                 });
                 if (res.ok) {
                     window.location.reload();

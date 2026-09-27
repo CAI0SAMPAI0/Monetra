@@ -1,21 +1,21 @@
 {% extends 'base.html' %}
-{% load currency_filters %}
+{% load currency_filters static %}
 
 {% block title %}Transações - Monetra{% endblock %}
 
 {% block content %}
-<div class="space-y-7 max-w-[1100px] mx-auto">
+<div class="space-y-6 max-w-[1240px] mx-auto">
     <!-- Header -->
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-            <h1 class="text-2xl font-bold font-display text-[#E2EAF0]">Transações</h1>
-            <p class="text-xs sm:text-sm text-[#374B5C] mt-0.5">Gerencie suas entradas, saídas e transferências entre contas</p>
+            <h1 class="text-2xl font-bold font-sans text-[#17191E] dark:text-[#F1F4FA] tracking-tight">Transações</h1>
+            <p class="text-xs sm:text-sm text-[#61656B] dark:text-[#8F949B] mt-0.5">Gerencie suas entradas, saídas e transferências entre contas</p>
         </div>
         <div class="flex items-center gap-3">
-            <form action="{% url 'accounts:sync_pluggy' %}" method="post" class="inline">
+            <form action="{% url 'accounts:sync_pluggy' %}" method="post" class="inline" onsubmit="const btn = this.querySelector('button'); btn.disabled = true; btn.classList.add('opacity-75', 'cursor-wait'); btn.innerHTML = '<svg class=\'w-3.5 h-3.5 animate-spin\' fill=\'none\' viewBox=\'0 0 24 24\' stroke=\'currentColor\'><path stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'2\' d=\'M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15\' /></svg><span>Sincronizando...</span>';">
                 {% csrf_token %}
                 <input type="hidden" name="next" value="transactions:transaction_list">
-                <button type="submit" class="btn-teal text-xs sm:text-sm py-2 px-3.5 flex items-center gap-1.5 shadow" title="Puxar movimentações atualizadas da Pluggy">
+                <button type="submit" class="btn-teal text-xs sm:text-sm py-2 px-3.5 flex items-center gap-1.5 shadow-sm" title="Puxar movimentações atualizadas da Pluggy">
                     <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                     </svg>
@@ -39,11 +39,11 @@
             id="tx-search" 
             placeholder="Buscar transação..." 
             value="{{ search_query }}"
-            class="px-3 py-2 rounded-md text-xs sm:text-sm bg-[#0A1018] border border-[#1C2A38] text-[#C8D4DF] focus:outline-none focus:border-[#C09B2A] w-full sm:w-64"
+            class="px-3 py-2 rounded-xl text-xs sm:text-sm bg-white dark:bg-[#17191E] border border-[#E6E9ED] dark:border-white/10 text-[#17191E] dark:text-[#F1F4FA] focus:outline-none focus:border-[#019F60] dark:focus:border-[#C1FF7E] w-full sm:w-64 shadow-sm"
         />
 
         <!-- Account Filter Selector -->
-        <select id="account-filter" class="px-3 py-2 rounded-md text-xs sm:text-sm bg-[#0A1018] border border-[#1C2A38] text-[#C8D4DF] focus:outline-none focus:border-[#C09B2A]">
+        <select id="account-filter" class="px-3 py-2 rounded-xl text-xs sm:text-sm bg-white dark:bg-[#17191E] border border-[#E6E9ED] dark:border-white/10 text-[#17191E] dark:text-[#F1F4FA] focus:outline-none focus:border-[#019F60] dark:focus:border-[#C1FF7E] shadow-sm">
             <option value="">Todas as Contas ({{ accounts.count }})</option>
             {% for acc in accounts %}
                 <option value="{{ acc.id }}" {% if selected_account == acc.id|stringformat:"s" %}selected{% endif %}>
@@ -53,70 +53,93 @@
         </select>
 
         <!-- Type Filter Buttons -->
-        <div class="flex rounded-md overflow-hidden border border-[#1C2A38]">
-            <button type="button" data-filter="ALL" class="tx-filter-btn px-3.5 py-2 text-xs font-semibold {% if not selected_type %}bg-[#141F2A] text-[#C8D4DF]{% else %}bg-[#0A1018] text-[#374B5C]{% endif %}">
+        <div class="flex rounded-xl overflow-hidden border border-[#E6E9ED] dark:border-white/10 bg-white dark:bg-[#17191E] shadow-sm p-0.5">
+            <button type="button" data-filter="ALL" class="tx-filter-btn px-3 py-1.5 text-xs font-semibold rounded-lg transition-all {% if not selected_type %}bg-[#17191E] text-white dark:bg-[#C1FF7E] dark:text-[#17191E]{% else %}text-[#61656B] dark:text-[#8F949B] hover:text-[#17191E] dark:hover:text-[#F1F4FA]{% endif %}">
                 Todos
             </button>
-            <button type="button" data-filter="INCOME" class="tx-filter-btn px-3.5 py-2 text-xs font-semibold {% if selected_type == 'INCOME' %}bg-[#141F2A] text-[#1DCF72]{% else %}bg-[#0A1018] text-[#374B5C] hover:text-[#1DCF72]{% endif %}">
+            <button type="button" data-filter="INCOME" class="tx-filter-btn px-3 py-1.5 text-xs font-semibold rounded-lg transition-all {% if selected_type == 'INCOME' %}bg-[#1DCF72]/15 text-[#1DCF72]{% else %}text-[#61656B] dark:text-[#8F949B] hover:text-[#1DCF72]{% endif %}">
                 Entradas
             </button>
-            <button type="button" data-filter="EXPENSE" class="tx-filter-btn px-3.5 py-2 text-xs font-semibold {% if selected_type == 'EXPENSE' %}bg-[#141F2A] text-[#E84040]{% else %}bg-[#0A1018] text-[#374B5C] hover:text-[#E84040]{% endif %}">
+            <button type="button" data-filter="EXPENSE" class="tx-filter-btn px-3 py-1.5 text-xs font-semibold rounded-lg transition-all {% if selected_type == 'EXPENSE' %}bg-[#E84040]/15 text-[#E84040]{% else %}text-[#61656B] dark:text-[#8F949B] hover:text-[#E84040]{% endif %}">
                 Saídas
             </button>
-            <button type="button" data-filter="TRANSFER" class="tx-filter-btn px-3.5 py-2 text-xs font-semibold {% if selected_type == 'TRANSFER' %}bg-[#141F2A] text-[#0FC4B3]{% else %}bg-[#0A1018] text-[#374B5C] hover:text-[#0FC4B3]{% endif %}">
+            <button type="button" data-filter="TRANSFER" class="tx-filter-btn px-3 py-1.5 text-xs font-semibold rounded-lg transition-all {% if selected_type == 'TRANSFER' %}bg-[#019F60]/15 text-[#019F60] dark:text-[#C1FF7E]{% else %}text-[#61656B] dark:text-[#8F949B] hover:text-[#019F60]{% endif %}">
                 Transferências
+            </button>
+            <button type="button" data-filter="INVESTMENT" class="tx-filter-btn px-3 py-1.5 text-xs font-semibold rounded-lg transition-all {% if selected_type == 'INVESTMENT' %}bg-[#0284C7]/15 text-[#0284C7] dark:text-[#38BDF8]{% else %}text-[#61656B] dark:text-[#8F949B] hover:text-[#0284C7] dark:hover:text-[#38BDF8]{% endif %}">
+                Investimentos
             </button>
         </div>
     </div>
 
     <!-- Table -->
-    <div class="rounded-lg border border-[#1C2A38] bg-[#0A1018] overflow-hidden shadow-xl">
+    <div class="rounded-2xl border border-[#E6E9ED] dark:border-white/10 bg-white dark:bg-[#17191E] overflow-hidden shadow-sm">
         <div class="overflow-x-auto">
             <table class="w-full text-left text-sm" id="transactions-table">
                 <thead>
-                    <tr class="border-b border-[#1C2A38] bg-[#070C12]">
-                        <th class="px-5 py-3.5 text-xs font-semibold uppercase tracking-widest text-[#374B5C]">Data</th>
-                        <th class="px-5 py-3.5 text-xs font-semibold uppercase tracking-widest text-[#374B5C]">Descrição</th>
-                        <th class="px-5 py-3.5 text-xs font-semibold uppercase tracking-widest text-[#374B5C]">Categoria</th>
-                        <th class="px-5 py-3.5 text-xs font-semibold uppercase tracking-widest text-[#374B5C]">Conta Bancária</th>
-                        <th class="px-5 py-3.5 text-xs font-semibold uppercase tracking-widest text-[#374B5C]">Valor</th>
-                        <th class="px-5 py-3.5 text-xs font-semibold uppercase tracking-widest text-[#374B5C] text-right">Ações</th>
+                    <tr class="border-b border-[#E6E9ED] dark:border-white/10 bg-[#F7F9FC] dark:bg-white/[0.02]">
+                        <th class="px-5 py-3 text-[11px] font-semibold uppercase tracking-wider text-[#61656B] dark:text-[#8F949B]">Data</th>
+                        <th class="px-5 py-3 text-[11px] font-semibold uppercase tracking-wider text-[#61656B] dark:text-[#8F949B]">Descrição</th>
+                        <th class="px-5 py-3 text-[11px] font-semibold uppercase tracking-wider text-[#61656B] dark:text-[#8F949B]">Categoria</th>
+                        <th class="px-5 py-3 text-[11px] font-semibold uppercase tracking-wider text-[#61656B] dark:text-[#8F949B]">Conta Bancária</th>
+                        <th class="px-5 py-3 text-[11px] font-semibold uppercase tracking-wider text-[#61656B] dark:text-[#8F949B]">Valor</th>
+                        <th class="px-5 py-3 text-[11px] font-semibold uppercase tracking-wider text-[#61656B] dark:text-[#8F949B] text-right">Ações</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-[#1C2A38]">
+                <tbody class="divide-y divide-[#E6E9ED] dark:divide-white/10">
                     {% for transaction in transactions %}
-                    <tr class="tx-row transition-colors hover:bg-[#0F1720]" data-type="{{ transaction.transaction_type }}" data-account="{{ transaction.account.id }}" data-desc="{{ transaction.description|lower }}">
-                        <td class="px-5 py-3.5 font-mono text-xs text-[#637585] whitespace-nowrap">
-                            {{ transaction.transaction_date|date:"d/m/Y" }}
+                    <tr class="tx-row transition-colors hover:bg-[#F7F9FC] dark:hover:bg-white/[0.04]" data-type="{{ transaction.transaction_type }}" data-account="{{ transaction.account.id }}" data-desc="{{ transaction.description|lower }}">
+                        <td class="px-5 py-3.5 font-mono text-xs text-[#61656B] dark:text-[#8F949B] whitespace-nowrap">
+                            <div>{{ transaction.transaction_date|date:"d/m/Y" }}</div>
+                            {% if transaction.settlement_date %}
+                                {% if transaction.is_scheduled %}
+                                <span class="inline-flex items-center gap-1 mt-1 px-1.5 py-0.5 rounded text-[10px] font-sans font-medium bg-[#0284C7]/10 text-[#0284C7] dark:bg-[#0284C7]/20 dark:text-[#38BDF8] border border-[#0284C7]/20">
+                                    <span class="w-1 h-1 rounded-full bg-[#0284C7] dark:bg-[#38BDF8] animate-pulse"></span>
+                                    Liq: {{ transaction.settlement_date|date:"d/m/Y" }}
+                                </span>
+                                {% else %}
+                                <span class="text-[10px] text-[#8F949B] block font-sans mt-0.5">
+                                    Liq: {{ transaction.settlement_date|date:"d/m/Y" }}
+                                </span>
+                                {% endif %}
+                            {% endif %}
                         </td>
-                        <td class="px-5 py-3.5 text-xs font-medium text-[#C8D4DF]">
+                        <td class="px-5 py-3.5 text-xs font-medium text-[#17191E] dark:text-[#F1F4FA]">
                             {{ transaction.description|default:"Sem descrição" }}
                         </td>
                         <td class="px-5 py-3.5 whitespace-nowrap">
-                            <span class="inline-flex items-center gap-1.5 text-xs px-2 py-0.5 rounded-full font-medium" style="background-color: {{ transaction.category.color|default:'#C09B2A' }}18; color: {{ transaction.category.color|default:'#C09B2A' }};">
+                            <span class="inline-flex items-center gap-1.5 text-xs px-2.5 py-0.5 rounded-full font-medium" style="background-color: {{ transaction.category.color|default:'#019F60' }}18; color: {{ transaction.category.color|default:'#019F60' }};">
                                 {{ transaction.category.name|default:"Geral" }}
                             </span>
                         </td>
-                        <td class="px-5 py-3.5 text-xs text-[#C8D4DF] whitespace-nowrap">
+                        <td class="px-5 py-3.5 text-xs text-[#17191E] dark:text-[#F1F4FA] whitespace-nowrap">
                             <div class="inline-flex items-center gap-2">
-                                <span class="px-1.5 py-0.5 rounded text-[10px] font-bold font-display {{ transaction.account.bank_brand.bg_class }} {{ transaction.account.bank_brand.text_class }} border {{ transaction.account.bank_brand.border_class }}">
-                                    {{ transaction.account.bank_brand.initials }}
-                                </span>
-                                <span>{{ transaction.account.name }}</span>
+                                <div class="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 bg-white dark:bg-[#1C2026] border border-[#E6E9ED] dark:border-white/10 p-1 shadow-sm overflow-hidden">
+                                    {% if transaction.account.bank_brand.logo_svg and transaction.account.bank_brand.name != 'Banco' %}
+                                        <img src="{% static transaction.account.bank_brand.logo_svg %}" alt="{{ transaction.account.bank_brand.name }}" class="w-full h-full object-contain">
+                                    {% elif transaction.account.logo_url %}
+                                        <img src="{{ transaction.account.logo_url }}" alt="{{ transaction.account.bank_brand.name }}" class="w-full h-full object-contain" onerror="this.onerror=null; this.src='{% static transaction.account.bank_brand.logo_svg %}';">
+                                    {% elif transaction.account.bank_brand.logo_svg %}
+                                        <img src="{% static transaction.account.bank_brand.logo_svg %}" alt="{{ transaction.account.bank_brand.name }}" class="w-full h-full object-contain">
+                                    {% else %}
+                                        <span class="text-[9px] font-bold font-sans {{ transaction.account.bank_brand.text_class }}">{{ transaction.account.bank_brand.initials }}</span>
+                                    {% endif %}
+                                </div>
+                                <span class="font-medium">{{ transaction.account.name }}</span>
                             </div>
                         </td>
-                        <td class="px-5 py-3.5 font-mono font-bold text-xs whitespace-nowrap {% if transaction.transaction_type == 'INCOME' %}text-[#1DCF72]{% elif transaction.transaction_type == 'TRANSFER' %}text-[#0FC4B3]{% else %}text-[#E84040]{% endif %}">
-                            {% if transaction.transaction_type == 'INCOME' %}+{% elif transaction.transaction_type == 'TRANSFER' %}⇄ {% else %}−{% endif %}{{ transaction.amount|currency }}
+                        <td class="px-5 py-3.5 font-mono font-bold text-xs whitespace-nowrap {% if transaction.transaction_type == 'INCOME' %}text-[#1DCF72]{% elif transaction.transaction_type == 'TRANSFER' %}text-[#019F60] dark:text-[#C1FF7E]{% elif transaction.transaction_type == 'INVESTMENT' %}text-[#0284C7] dark:text-[#38BDF8]{% else %}text-[#E84040]{% endif %}">
+                            {% if transaction.transaction_type == 'INCOME' %}+{% elif transaction.transaction_type == 'TRANSFER' %}⇄ {% elif transaction.transaction_type == 'INVESTMENT' %}📈 {% else %}−{% endif %}{{ transaction.amount|currency }}
                         </td>
                         <td class="px-5 py-3.5 text-right whitespace-nowrap">
-                            <div class="flex items-center justify-end gap-1.5">
-                                <a href="{% url 'transactions:transaction_update' transaction.pk %}" class="p-1.5 rounded text-[#374B5C] hover:text-[#C8D4DF] hover:bg-[#141F2A] transition-colors" title="Editar">
-                                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <div class="flex items-center justify-end gap-1">
+                                <a href="{% url 'transactions:transaction_update' transaction.pk %}" class="p-1.5 rounded-lg text-[#61656B] dark:text-[#8F949B] hover:text-[#17191E] dark:hover:text-[#F1F4FA] hover:bg-black/5 dark:hover:bg-white/5 transition-colors" title="Editar">
+                                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                     </svg>
                                 </a>
-                                <a href="{% url 'transactions:transaction_delete' transaction.pk %}" class="p-1.5 rounded text-[#374B5C] hover:text-[#E84040] hover:bg-[#E84040]/10 transition-colors" title="Excluir">
-                                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <a href="{% url 'transactions:transaction_delete' transaction.pk %}" class="p-1.5 rounded-lg text-[#61656B] dark:text-[#8F949B] hover:text-[#E84040] hover:bg-[#E84040]/10 transition-colors" title="Excluir">
+                                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-4v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                     </svg>
                                 </a>
@@ -125,7 +148,7 @@
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="6" class="px-5 py-12 text-center text-xs text-[#374B5C]">
+                        <td colspan="6" class="px-5 py-12 text-center text-xs text-[#61656B] dark:text-[#8F949B]">
                             Nenhuma transação encontrada nesta seleção.
                         </td>
                     </tr>
@@ -140,25 +163,26 @@
 {% block extra_js %}
 <script>
     const searchInput = document.getElementById('tx-search');
-    const accountSelect = document.getElementById('account-filter');
-    const filterBtns = document.querySelectorAll('.tx-filter-btn');
+    const accountFilter = document.getElementById('account-filter');
+    const filterButtons = document.querySelectorAll('.tx-filter-btn');
     const rows = document.querySelectorAll('.tx-row');
-    let currentType = 'ALL';
+
+    let currentType = '{{ selected_type|default:"ALL" }}';
 
     function applyFilters() {
-        const query = (searchInput ? searchInput.value : '').toLowerCase().trim();
-        const selectedAcc = (accountSelect ? accountSelect.value : '');
+        const query = searchInput.value.toLowerCase().trim();
+        const selectedAcc = accountFilter.value;
 
         rows.forEach(row => {
-            const rowType = row.getAttribute('data-type');
-            const rowAccount = row.getAttribute('data-account');
-            const rowDesc = row.getAttribute('data-desc');
+            const desc = row.getAttribute('data-desc');
+            const type = row.getAttribute('data-type');
+            const acc = row.getAttribute('data-account');
 
-            const matchType = (currentType === 'ALL' || rowType === currentType);
-            const matchAccount = (!selectedAcc || rowAccount === selectedAcc);
-            const matchSearch = (!query || (rowDesc && rowDesc.includes(query)));
+            const matchesQuery = !query || desc.includes(query);
+            const matchesAcc = !selectedAcc || acc === selectedAcc;
+            const matchesType = currentType === 'ALL' || type === currentType;
 
-            if (matchType && matchAccount && matchSearch) {
+            if (matchesQuery && matchesAcc && matchesType) {
                 row.style.display = '';
             } else {
                 row.style.display = 'none';
@@ -169,26 +193,29 @@
     if (searchInput) {
         searchInput.addEventListener('input', applyFilters);
     }
-
-    if (accountSelect) {
-        accountSelect.addEventListener('change', applyFilters);
+    if (accountFilter) {
+        accountFilter.addEventListener('change', applyFilters);
     }
 
-    filterBtns.forEach(btn => {
+    filterButtons.forEach(btn => {
         btn.addEventListener('click', () => {
-            filterBtns.forEach(b => {
-                b.classList.remove('bg-[#141F2A]', 'text-[#C8D4DF]', 'text-[#1DCF72]', 'text-[#E84040]', 'text-[#0FC4B3]');
-                b.classList.add('bg-[#0A1018]', 'text-[#374B5C]');
-            });
-            btn.classList.remove('bg-[#0A1018]', 'text-[#374B5C]');
-            btn.classList.add('bg-[#141F2A]');
+            currentType = btn.getAttribute('data-filter');
 
-            const f = btn.getAttribute('data-filter');
-            currentType = f;
-            if (f === 'INCOME') btn.classList.add('text-[#1DCF72]');
-            else if (f === 'EXPENSE') btn.classList.add('text-[#E84040]');
-            else if (f === 'TRANSFER') btn.classList.add('text-[#0FC4B3]');
-            else btn.classList.add('text-[#C8D4DF]');
+            filterButtons.forEach(b => {
+                b.classList.remove('bg-[#17191E]', 'text-white', 'dark:bg-[#C1FF7E]', 'dark:text-[#17191E]', 'bg-[#1DCF72]/15', 'bg-[#E84040]/15', 'bg-[#019F60]/15');
+                b.classList.add('text-[#61656B]', 'dark:text-[#8F949B]');
+            });
+
+            if (currentType === 'ALL') {
+                btn.classList.add('bg-[#17191E]', 'text-white', 'dark:bg-[#C1FF7E]', 'dark:text-[#17191E]');
+                btn.classList.remove('text-[#61656B]', 'dark:text-[#8F949B]');
+            } else if (currentType === 'INCOME') {
+                btn.classList.add('bg-[#1DCF72]/15', 'text-[#1DCF72]');
+            } else if (currentType === 'EXPENSE') {
+                btn.classList.add('bg-[#E84040]/15', 'text-[#E84040]');
+            } else if (currentType === 'TRANSFER') {
+                btn.classList.add('bg-[#019F60]/15', 'text-[#019F60]', 'dark:text-[#C1FF7E]');
+            }
 
             applyFilters();
         });

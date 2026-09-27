@@ -8,55 +8,73 @@
     <title>{% block title %}Monetra{% endblock %} - Controle Financeiro Inteligente</title>
     <link rel="shortcut icon" href="{% static 'images/logo1.png' %}" type="image/png">
     
-    <!-- Google Fonts -->
+    <!-- Script Anti-Flash de Tema (Executado imediatamente antes do render) -->
+    <script>
+        (function() {
+            try {
+                const storedTheme = localStorage.getItem('monetra_theme');
+                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                const isDark = storedTheme === 'dark' || (!storedTheme && prefersDark) || (storedTheme === 'system' && prefersDark);
+                if (isDark) {
+                    document.documentElement.classList.add('dark');
+                    document.documentElement.style.colorScheme = 'dark';
+                } else {
+                    document.documentElement.classList.remove('dark');
+                    document.documentElement.style.colorScheme = 'light';
+                }
+            } catch (e) {}
+        })();
+    </script>
+
+    <!-- Google Fonts (Inter Tight e Inter canônicos do Grana Smart) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:ital,wght@0,300..900;1,300..900&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- CSS & Tailwind CDN -->
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
+            darkMode: 'class',
             theme: {
                 extend: {
                     colors: {
-                        bg: '#05090D',
-                        surface: '#0A1018',
-                        'surface-2': '#0F1720',
-                        'surface-3': '#141F2A',
-                        border: '#1C2A38',
-                        'border-2': '#253648',
-                        'text-main': '#C8D4DF',
-                        'text-2': '#637585',
-                        'text-3': '#374B5C',
-                        gold: '#C09B2A',
-                        'gold-dim': '#8A6F1E',
-                        teal: '#0FC4B3',
+                        gsm: {
+                            bg: '#F1F4FA',
+                            'bg-dark': '#0A0E13',
+                            sidebar: '#17191E',
+                            card: '#FFFFFF',
+                            'card-dark': '#17191E',
+                            border: '#E6E9ED',
+                            'border-dark': 'rgba(255, 255, 255, 0.08)',
+                            neon: '#C1FF7E',
+                            green: '#019F60',
+                            ink: '#17191E',
+                            'ink-dark': '#F1F4FA',
+                            muted: '#61656B',
+                            'muted-dark': '#9EA3AC',
+                            subtle: '#8F949B',
+                        },
+                        // Paleta do Design System Grana Smart
+                        bg: '#F1F4FA',
+                        surface: '#FFFFFF',
+                        'surface-2': '#F7F9FC',
+                        'surface-3': '#E6E9ED',
+                        border: '#E6E9ED',
+                        'border-2': '#D6D9DE',
+                        'text-main': '#17191E',
+                        'text-2': '#61656B',
+                        'text-3': '#8F949B',
+                        gold: '#C1FF7E',
+                        teal: '#019F60',
                         income: '#1DCF72',
                         expense: '#E84040',
-
-                        // Compatibility aliases
-                        'bg-primary': '#05090D',
-                        'bg-secondary': '#0A1018',
-                        'bg-tertiary': '#141F2A',
-                        'text-primary': '#C8D4DF',
-                        'text-secondary': '#637585',
-                        'text-muted': '#374B5C',
-                        accent: {
-                            500: '#C09B2A',
-                            600: '#8A6F1E',
-                            700: '#685315',
-                        },
-                        success: '#1DCF72',
-                        error: '#E84040',
-                        warning: '#C09B2A',
-                        info: '#0FC4B3',
                     },
                     fontFamily: {
-                        sans: ['Inter', 'system-ui', 'sans-serif'],
-                        display: ['DM Sans', 'sans-serif'],
-                        mono: ['JetBrains Mono', 'monospace'],
+                        sans: ['"Inter Tight"', 'Inter', 'system-ui', 'sans-serif'],
+                        display: ['"Inter Tight"', 'Inter', 'sans-serif'],
+                        mono: ['"JetBrains Mono"', 'monospace'],
                     },
                 }
             }
@@ -69,7 +87,7 @@
 
     {% block extra_head %}{% endblock %}
 </head>
-<body class="min-h-screen bg-[#05090D] text-[#C8D4DF] font-sans antialiased flex flex-col">
+<body class="min-h-screen bg-[#F1F4FA] dark:bg-[#0A0E13] text-[#17191E] dark:text-[#F1F4FA] font-sans antialiased flex flex-col transition-colors duration-200">
 
     {% if not user.is_authenticated %}
         <!-- Top Navbar for Public / Landing pages -->
@@ -113,15 +131,15 @@
         {% endif %}
 
         <!-- Content Area -->
-        <div class="flex-1 flex flex-col min-w-0 bg-[#05090D] {% if user.is_authenticated %}overflow-y-auto{% endif %}">
+        <div class="flex-1 flex flex-col min-w-0 bg-[#F1F4FA] dark:bg-[#0A0E13] {% if user.is_authenticated %}overflow-y-auto{% endif %}">
             {% if user.is_authenticated %}
                 <!-- Mobile Top Bar for Auth -->
-                <div class="md:hidden flex items-center justify-between px-4 py-3 border-b border-[#1C2A38] bg-[#070C12]">
+                <div class="md:hidden flex items-center justify-between px-4 py-3 border-b border-[#E6E9ED] dark:border-white/10 bg-white dark:bg-[#17191E]">
                     <div class="flex items-center gap-2">
-                        <div class="w-7 h-7 rounded flex items-center justify-center font-bold text-xs bg-[#C09B2A] text-[#05090D] font-display">M</div>
-                        <span class="font-bold text-sm font-display text-[#C8D4DF]">Monetra</span>
+                        <div class="w-7 h-7 rounded-lg flex items-center justify-center font-bold text-xs bg-[#C1FF7E] text-[#17191E] font-display">M</div>
+                        <span class="font-bold text-sm font-display text-[#17191E] dark:text-[#F1F4FA]">Monetra</span>
                     </div>
-                    <button id="open-mobile-drawer" class="p-1.5 rounded text-[#637585] hover:text-[#C8D4DF]">
+                    <button id="open-mobile-drawer" class="p-1.5 rounded-lg text-[#61656B] dark:text-[#9EA3AC] hover:bg-black/5 dark:hover:bg-white/5">
                         <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
                     </button>
                 </div>
@@ -146,6 +164,54 @@
         if (closeBtn && drawer) {
             closeBtn.addEventListener('click', () => drawer.classList.add('hidden'));
         }
+
+        // Funções Globais do Gerenciador de Tema (Sistema / Claro / Escuro)
+        window.setMonetraTheme = function(theme) {
+            localStorage.setItem('monetra_theme', theme);
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const isDark = theme === 'dark' || (theme === 'system' && prefersDark);
+            
+            if (isDark) {
+                document.documentElement.classList.add('dark');
+                document.documentElement.style.colorScheme = 'dark';
+            } else {
+                document.documentElement.classList.remove('dark');
+                document.documentElement.style.colorScheme = 'light';
+            }
+            updateThemeButtons(theme);
+        };
+
+        function updateThemeButtons(currentTheme) {
+            document.querySelectorAll('[data-theme-btn]').forEach(btn => {
+                const btnTheme = btn.getAttribute('data-theme-btn');
+                if (btnTheme === currentTheme) {
+                    btn.classList.add('bg-[#C1FF7E]', 'text-[#17191E]', 'font-bold', 'shadow-sm');
+                    btn.classList.remove('text-[#8F949B]', 'hover:text-white', 'text-opacity-80');
+                } else {
+                    btn.classList.remove('bg-[#C1FF7E]', 'text-[#17191E]', 'font-bold', 'shadow-sm');
+                    btn.classList.add('text-[#8F949B]', 'hover:text-white');
+                }
+            });
+        }
+
+        // Observa alterações no SO em tempo real quando em modo 'system'
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
+            const stored = localStorage.getItem('monetra_theme');
+            if (!stored || stored === 'system') {
+                if (e.matches) {
+                    document.documentElement.classList.add('dark');
+                    document.documentElement.style.colorScheme = 'dark';
+                } else {
+                    document.documentElement.classList.remove('dark');
+                    document.documentElement.style.colorScheme = 'light';
+                }
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const stored = localStorage.getItem('monetra_theme') || 'system';
+            updateThemeButtons(stored);
+        });
     </script>
     {% block extra_js %}{% endblock %}
 </body>

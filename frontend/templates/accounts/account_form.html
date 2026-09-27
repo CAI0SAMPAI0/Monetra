@@ -3,14 +3,19 @@
 {% block title %}{% if object %}Editar Conta{% else %}Nova Conta{% endif %} - Monetra{% endblock %}
 
 {% block content %}
-<div class="max-w-lg mx-auto py-4 sm:py-8">
-    <div class="rounded-xl border border-[#1C2A38] bg-[#0A1018] shadow-2xl overflow-hidden">
+<div class="max-w-xl mx-auto py-4 sm:py-8">
+    <div class="rounded-2xl border border-[#E6E9ED] dark:border-white/10 bg-white dark:bg-[#17191E] shadow-sm overflow-hidden">
         <!-- Card Header -->
-        <div class="px-6 py-5 border-b border-[#1C2A38] flex items-center justify-between">
-            <h2 class="text-base font-bold font-display text-[#E2EAF0]">
-                {% if object %}Editar Conta{% else %}Nova Conta{% endif %}
-            </h2>
-            <a href="{% url 'accounts:account_list' %}" class="p-1.5 rounded text-[#374B5C] hover:text-[#C8D4DF] hover:bg-[#141F2A] transition-colors">
+        <div class="px-6 py-4.5 border-b border-[#E6E9ED] dark:border-white/10 flex items-center justify-between bg-[#F7F9FC] dark:bg-[#17191E]">
+            <div>
+                <h2 class="text-base font-bold font-sans text-[#17191E] dark:text-[#F1F4FA]">
+                    {% if object %}Editar Conta{% else %}Nova Conta{% endif %}
+                </h2>
+                <p class="text-xs text-[#61656B] dark:text-[#8F949B]">
+                    {% if object %}Atualize os dados e conexão da sua conta bancária.{% else %}Cadastre uma nova conta manual ou vincule ao Open Finance.{% endif %}
+                </p>
+            </div>
+            <a href="{% url 'accounts:account_list' %}" class="p-2 rounded-xl text-[#61656B] dark:text-[#8F949B] hover:text-[#17191E] dark:hover:text-[#F1F4FA] hover:bg-black/5 dark:hover:bg-white/5 transition-colors">
                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                 </svg>
@@ -22,14 +27,14 @@
             {% csrf_token %}
 
             {% if form.non_field_errors %}
-            <div class="p-3 bg-[#E84040]/10 border border-[#E84040]/30 rounded-md text-xs text-[#E84040]">
+            <div class="p-3.5 bg-[#E84040]/10 border border-[#E84040]/30 rounded-xl text-xs text-[#E84040] leading-relaxed">
                 {{ form.non_field_errors }}
             </div>
             {% endif %}
 
             <!-- Name -->
             <div class="space-y-1.5">
-                <label class="text-xs font-semibold uppercase tracking-wider text-[#374B5C]">Nome da Conta / Identificação</label>
+                <label class="text-xs font-semibold uppercase tracking-wider text-[#61656B] dark:text-[#8F949B]">Nome da Conta / Identificação</label>
                 {{ form.name }}
                 {% if form.name.errors %}
                     <p class="text-xs text-[#E84040]">{{ form.name.errors.0 }}</p>
@@ -38,7 +43,7 @@
 
             <!-- Bank Name -->
             <div class="space-y-1.5">
-                <label class="text-xs font-semibold uppercase tracking-wider text-[#374B5C]">Instituição Financeira / Banco</label>
+                <label class="text-xs font-semibold uppercase tracking-wider text-[#61656B] dark:text-[#8F949B]">Instituição Financeira / Banco</label>
                 {{ form.bank_name }}
                 {% if form.bank_name.errors %}
                     <p class="text-xs text-[#E84040]">{{ form.bank_name.errors.0 }}</p>
@@ -47,7 +52,7 @@
 
             <!-- Account Type -->
             <div class="space-y-1.5">
-                <label class="text-xs font-semibold uppercase tracking-wider text-[#374B5C]">Tipo de Conta</label>
+                <label class="text-xs font-semibold uppercase tracking-wider text-[#61656B] dark:text-[#8F949B]">Tipo de Conta</label>
                 {{ form.account_type }}
                 {% if form.account_type.errors %}
                     <p class="text-xs text-[#E84040]">{{ form.account_type.errors.0 }}</p>
@@ -56,7 +61,7 @@
 
             <!-- Balance -->
             <div class="space-y-1.5">
-                <label class="text-xs font-semibold uppercase tracking-wider text-[#374B5C]">Saldo Atual / Inicial (R$)</label>
+                <label class="text-xs font-semibold uppercase tracking-wider text-[#61656B] dark:text-[#8F949B]">Saldo Atual / Inicial (R$)</label>
                 {{ form.balance }}
                 {% if form.balance.errors %}
                     <p class="text-xs text-[#E84040]">{{ form.balance.errors.0 }}</p>
@@ -64,10 +69,10 @@
             </div>
 
             <!-- Pluggy Item ID (Optional) -->
-            <div class="space-y-1.5 pt-2 border-t border-[#1C2A38]">
+            <div class="space-y-1.5 pt-3 border-t border-[#E6E9ED] dark:border-white/10">
                 <div class="flex items-center justify-between">
-                    <label class="text-xs font-semibold uppercase tracking-wider text-[#0FC4B3]">Item ID na Pluggy (Opcional)</label>
-                    <span class="text-[10px] text-[#374B5C]">UUID da Conexão</span>
+                    <label class="text-xs font-semibold uppercase tracking-wider text-[#019F60] dark:text-[#C1FF7E]">Item ID na Pluggy (Opcional)</label>
+                    <span class="text-[10px] text-[#61656B] dark:text-[#8F949B]">UUID da Conexão</span>
                 </div>
                 {{ form.pluggy_item_id }}
                 {% if form.pluggy_item_id.errors %}
@@ -76,13 +81,13 @@
             </div>
 
             <!-- Action buttons -->
-            <div class="flex items-center gap-3 pt-3 border-t border-[#1C2A38]">
-                <button type="submit" class="btn-gold flex-1 justify-center py-2.5 text-sm font-bold shadow-md">
-                    Salvar Conta
-                </button>
-                <a href="{% url 'accounts:account_list' %}" class="btn-secondary px-5 py-2.5 text-sm font-medium">
+            <div class="flex flex-col-reverse sm:flex-row items-center gap-3 pt-4 border-t border-[#E6E9ED] dark:border-white/10">
+                <a href="{% url 'accounts:account_list' %}" class="w-full sm:w-auto px-5 py-2.5 rounded-xl text-sm font-medium border border-[#E6E9ED] dark:border-white/10 bg-white dark:bg-[#1C2026] text-[#61656B] dark:text-[#8F949B] hover:text-[#17191E] dark:hover:text-[#F1F4FA] text-center transition-colors">
                     Cancelar
                 </a>
+                <button type="submit" class="w-full sm:flex-1 py-2.5 px-5 rounded-xl text-sm font-bold bg-[#C1FF7E] text-[#17191E] hover:bg-[#aff565] transition-all shadow-sm">
+                    Salvar Conta
+                </button>
             </div>
         </form>
     </div>

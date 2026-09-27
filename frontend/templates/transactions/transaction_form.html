@@ -3,14 +3,19 @@
 {% block title %}{% if object %}Editar Transação{% else %}Nova Transação{% endif %} - Monetra{% endblock %}
 
 {% block content %}
-<div class="max-w-lg mx-auto py-4 sm:py-8">
-    <div class="rounded-xl border border-[#1C2A38] bg-[#0A1018] shadow-2xl overflow-hidden">
+<div class="max-w-xl mx-auto py-4 sm:py-8">
+    <div class="rounded-2xl border border-[#E6E9ED] dark:border-white/10 bg-white dark:bg-[#17191E] shadow-sm overflow-hidden">
         <!-- Card Header -->
-        <div class="px-6 py-5 border-b border-[#1C2A38] flex items-center justify-between">
-            <h2 class="text-base font-bold font-display text-[#E2EAF0]">
-                {% if object %}Editar Transação{% else %}Nova Transação{% endif %}
-            </h2>
-            <a href="{% url 'transactions:transaction_list' %}" class="p-1.5 rounded text-[#374B5C] hover:text-[#C8D4DF] hover:bg-[#141F2A] transition-colors">
+        <div class="px-6 py-4.5 border-b border-[#E6E9ED] dark:border-white/10 flex items-center justify-between bg-[#F7F9FC] dark:bg-[#17191E]">
+            <div>
+                <h2 class="text-base font-bold font-sans text-[#17191E] dark:text-[#F1F4FA]">
+                    {% if object %}Editar Transação{% else %}Nova Transação{% endif %}
+                </h2>
+                <p class="text-xs text-[#61656B] dark:text-[#8F949B]">
+                    {% if object %}Atualize os dados da movimentação financeira.{% else %}Registre uma nova entrada, saída, transferência ou investimento.{% endif %}
+                </p>
+            </div>
+            <a href="{% url 'transactions:transaction_list' %}" class="p-2 rounded-xl text-[#61656B] dark:text-[#8F949B] hover:text-[#17191E] dark:hover:text-[#F1F4FA] hover:bg-black/5 dark:hover:bg-white/5 transition-colors">
                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                 </svg>
@@ -22,14 +27,14 @@
             {% csrf_token %}
 
             {% if form.non_field_errors %}
-            <div class="p-3 bg-[#E84040]/10 border border-[#E84040]/30 rounded-md text-xs text-[#E84040]">
+            <div class="p-3.5 bg-[#E84040]/10 border border-[#E84040]/30 rounded-xl text-xs text-[#E84040] leading-relaxed">
                 {{ form.non_field_errors }}
             </div>
             {% endif %}
 
             <!-- Transaction Type -->
             <div class="space-y-1.5">
-                <label class="text-xs font-semibold uppercase tracking-wider text-[#374B5C]">Tipo de Movimentação</label>
+                <label class="text-xs font-semibold uppercase tracking-wider text-[#61656B] dark:text-[#8F949B]">Tipo de Movimentação</label>
                 {{ form.transaction_type }}
                 {% if form.transaction_type.errors %}
                     <p class="text-xs text-[#E84040]">{{ form.transaction_type.errors.0 }}</p>
@@ -38,34 +43,46 @@
 
             <!-- Description -->
             <div class="space-y-1.5">
-                <label class="text-xs font-semibold uppercase tracking-wider text-[#374B5C]">Descrição</label>
+                <label class="text-xs font-semibold uppercase tracking-wider text-[#61656B] dark:text-[#8F949B]">Descrição</label>
                 {{ form.description }}
                 {% if form.description.errors %}
                     <p class="text-xs text-[#E84040]">{{ form.description.errors.0 }}</p>
                 {% endif %}
             </div>
 
-            <!-- Amount & Date Grid -->
+            <!-- Amount -->
+            <div class="space-y-1.5">
+                <label class="text-xs font-semibold uppercase tracking-wider text-[#61656B] dark:text-[#8F949B]">Valor (R$)</label>
+                {{ form.amount }}
+                {% if form.amount.errors %}
+                    <p class="text-xs text-[#E84040]">{{ form.amount.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Dates Grid (Purchase Date and Settlement Date) -->
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div class="space-y-1.5">
-                    <label class="text-xs font-semibold uppercase tracking-wider text-[#374B5C]">Valor (R$)</label>
-                    {{ form.amount }}
-                    {% if form.amount.errors %}
-                        <p class="text-xs text-[#E84040]">{{ form.amount.errors.0 }}</p>
-                    {% endif %}
-                </div>
-                <div class="space-y-1.5">
-                    <label class="text-xs font-semibold uppercase tracking-wider text-[#374B5C]">Data</label>
+                    <label class="text-xs font-semibold uppercase tracking-wider text-[#61656B] dark:text-[#8F949B]">Data da Operação / Compra</label>
                     {{ form.transaction_date }}
                     {% if form.transaction_date.errors %}
                         <p class="text-xs text-[#E84040]">{{ form.transaction_date.errors.0 }}</p>
+                    {% endif %}
+                </div>
+                <div class="space-y-1.5">
+                    <div class="flex items-center justify-between">
+                        <label class="text-xs font-semibold uppercase tracking-wider text-[#61656B] dark:text-[#8F949B]">Liquidação / Agendada</label>
+                        <span class="text-[10px] text-[#61656B] dark:text-[#8F949B]">Opcional (D+N)</span>
+                    </div>
+                    {{ form.settlement_date }}
+                    {% if form.settlement_date.errors %}
+                        <p class="text-xs text-[#E84040]">{{ form.settlement_date.errors.0 }}</p>
                     {% endif %}
                 </div>
             </div>
 
             <!-- Category -->
             <div class="space-y-1.5">
-                <label class="text-xs font-semibold uppercase tracking-wider text-[#374B5C]">Categoria</label>
+                <label class="text-xs font-semibold uppercase tracking-wider text-[#61656B] dark:text-[#8F949B]">Categoria</label>
                 {{ form.category }}
                 {% if form.category.errors %}
                     <p class="text-xs text-[#E84040]">{{ form.category.errors.0 }}</p>
@@ -74,7 +91,7 @@
 
             <!-- Account -->
             <div class="space-y-1.5">
-                <label class="text-xs font-semibold uppercase tracking-wider text-[#374B5C]">Conta Bancária / Carteira</label>
+                <label class="text-xs font-semibold uppercase tracking-wider text-[#61656B] dark:text-[#8F949B]">Conta Bancária / Carteira</label>
                 {{ form.account }}
                 {% if form.account.errors %}
                     <p class="text-xs text-[#E84040]">{{ form.account.errors.0 }}</p>
@@ -82,15 +99,71 @@
             </div>
 
             <!-- Action buttons -->
-            <div class="flex items-center gap-3 pt-3 border-t border-[#1C2A38]">
-                <button type="submit" class="btn-gold flex-1 justify-center py-2.5 text-sm font-bold shadow-md">
-                    Salvar Transação
-                </button>
-                <a href="{% url 'transactions:transaction_list' %}" class="btn-secondary px-5 py-2.5 text-sm font-medium">
+            <div class="flex flex-col-reverse sm:flex-row items-center gap-3 pt-4 border-t border-[#E6E9ED] dark:border-white/10">
+                <a href="{% url 'transactions:transaction_list' %}" class="w-full sm:w-auto px-5 py-2.5 rounded-xl text-sm font-medium border border-[#E6E9ED] dark:border-white/10 bg-white dark:bg-[#1C2026] text-[#61656B] dark:text-[#8F949B] hover:text-[#17191E] dark:hover:text-[#F1F4FA] text-center transition-colors">
                     Cancelar
                 </a>
+                <button type="submit" class="w-full sm:flex-1 py-2.5 px-5 rounded-xl text-sm font-bold bg-[#C1FF7E] text-[#17191E] hover:bg-[#aff565] transition-all shadow-sm">
+                    Salvar Transação
+                </button>
             </div>
         </form>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const typeSelect = document.getElementById('id_transaction_type');
+        const categorySelect = document.getElementById('id_category');
+
+        if (!typeSelect || !categorySelect) return;
+
+        // Mapeamento de id da categoria -> tipo de categoria
+        const categoryTypeMap = {
+            {% for cat in form.category.field.queryset %}
+            '{{ cat.id }}': '{{ cat.category_type }}'{% if not forloop.last %},{% endif %}
+            {% endfor %}
+        };
+
+        function filterCategories() {
+            const selectedType = typeSelect.value;
+            let currentSelectedValid = false;
+            let firstValidOption = null;
+
+            Array.from(categorySelect.options).forEach(opt => {
+                if (!opt.value) {
+                    // Mantém a opção em branco / placeholder
+                    opt.hidden = false;
+                    opt.disabled = false;
+                    return;
+                }
+                const catType = categoryTypeMap[opt.value];
+                const matches = !selectedType || catType === selectedType;
+
+                opt.hidden = !matches;
+                opt.disabled = !matches;
+
+                if (matches) {
+                    if (opt.selected) {
+                        currentSelectedValid = true;
+                    }
+                    if (!firstValidOption) {
+                        firstValidOption = opt;
+                    }
+                }
+            });
+
+            // Se a opção selecionada ficou inválida para o novo tipo, seleciona a primeira opção válida
+            if (!currentSelectedValid && firstValidOption) {
+                categorySelect.value = firstValidOption.value;
+            }
+        }
+
+        typeSelect.addEventListener('change', filterCategories);
+        // Aplica filtro inicial na carga da página
+        filterCategories();
+    });
+</script>
 {% endblock %}

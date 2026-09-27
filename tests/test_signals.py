@@ -106,3 +106,25 @@ def test_account_balance_update_on_transaction_delete():
     transaction.delete()
     account.refresh_from_db()
     assert account.balance == Decimal('1000.00')
+
+
+@pytest.mark.django_db
+def test_account_balance_update_on_investment_transaction():
+    '''Test account balance debit when creating an INVESTMENT transaction.'''
+    account = AccountFactory(balance=Decimal('2000.00'))
+    category = CategoryFactory(user=account.user, category_type='INVESTMENT')
+    
+    tx = Transaction.objects.create(
+        account=account,
+        category=category,
+        transaction_type='INVESTMENT',
+        amount=Decimal('450.00'),
+        transaction_date='2026-09-27'
+    )
+    account.refresh_from_db()
+    assert account.balance == Decimal('1550.00')
+
+    # Delete investment transaction restores balance
+    tx.delete()
+    account.refresh_from_db()
+    assert account.balance == Decimal('2000.00')
